@@ -43,9 +43,7 @@ public class xtGraphics extends Panel implements Runnable {
     /**
      * starting colors for the special screen in the credits
      */
-    private final int[] credColors = {
-            25, 50, 100
-    };
+    private final int[] credColors = RenderConfig.CRED_COLORS;
     /**
      * test image for the network load feature
      */
@@ -248,19 +246,18 @@ public class xtGraphics extends Panel implements Runnable {
     private int flkat;
     private int movly;
 
-    private int press_enter_to_continue_height = GameFacts.screenHeight - 100;
 
-    /* TODO: define each page's constants in their own files */
+    private int press_enter_to_continue_height = RenderConfig.PRESS_ENTER_TO_CONTINUE_HEIGHT;
+
     /* main menu */
-    private int main_menu_height_origin = (int) (GameFacts.screenHeight * 0.2);
-
-    private int main_menu_button_height = 22;
-    private int main_menu_op_0_y = 246 + main_menu_height_origin;
-    private int main_menu_op_0_width = 110;
-    private int main_menu_op_1_y = 275 + main_menu_height_origin;
-    private int main_menu_op_1_width = 196;
-    private int main_menu_op_2_y = 306 + main_menu_height_origin;
-    private int main_menu_op_2_width = 85;
+    private int main_menu_height_origin = RenderConfig.MAIN_MENU_HEIGHT_ORIGIN;
+    private int main_menu_button_height = RenderConfig.MAIN_MENU_BUTTON_HEIGHT;
+    private int main_menu_op_0_y = RenderConfig.MAIN_MENU_OP_0_Y;
+    private int main_menu_op_0_width = RenderConfig.MAIN_MENU_OP_0_WIDTH;
+    private int main_menu_op_1_y = RenderConfig.MAIN_MENU_OP_1_Y;
+    private int main_menu_op_1_width = RenderConfig.MAIN_MENU_OP_1_WIDTH;
+    private int main_menu_op_2_y = RenderConfig.MAIN_MENU_OP_2_Y;
+    private int main_menu_op_2_width = RenderConfig.MAIN_MENU_OP_2_WIDTH;
 
     private int insano_mainmenu_x;
     private int insano_mainmenu_y;
