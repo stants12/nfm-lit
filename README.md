@@ -16,9 +16,9 @@ However, much more work needs doing. There are still hardcoded values all over t
 Ideally, all of these subsystems should be decoupled from each other in order to facilitate a much smoother hacking experience.
 
 Special thanks to:
- - cravxx (Kaffienated) for the initial decompilation and tidy-up of NFM2.
+ - cravxx (Kaffeinated) for the initial decompilation and tidy-up of NFM2.
  - G6 for providing some helpful hacks to improve stage select visuals.
- - stants12 (m0squ1t0/oteek) for further building upon and improving the original decompilation.
+ - stants12 (oteek) for further building upon and improving the original decompilation.
  - FlameCharge (Jacherr) for fixing UI to work properly at 720p resolutions.
  - Everyone else who offered improvements, fixes, and anything else!
 

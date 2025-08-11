@@ -3142,7 +3142,11 @@ public class xtGraphics extends Panel implements Runnable {
             if (checkpoints.stage == unlocked) {
                 if (checkpoints.stage != GameFacts.numberOfStages) {
                     rd.drawImage(congrd, Utility.centeredImageX(congrd), 30, null);
-                    drawcs(80, "Stage " + checkpoints.stage + " Completed!", 170, 170, 170, 3);
+                    if (checkpoints.stage != -1) {
+                        drawcs(80, "Stage " + checkpoints.stage + " Completed!", 170, 170, 170, 3);
+                    } else {
+                        drawcs(80, "Stage Completed!", 170, 170, 170, 3);
+                    }
                 } else {
                     rd.drawImage(congrd, Utility.centeredImageX(congrd) + (int) (Medium.random() * 10F), 30, null);
                 }
@@ -3331,7 +3335,11 @@ public class xtGraphics extends Panel implements Runnable {
             } else {
                 pin = 30;
                 rd.drawImage(congrd, Utility.centeredImageX(congrd), 87, null);
-                drawcs(137, "Stage " + checkpoints.stage + " Completed!", 170, 170, 170, 3);
+                if (checkpoints.stage != -1) {
+                    drawcs(137, "Stage " + checkpoints.stage + " Completed!", 170, 170, 170, 3);
+                } else {
+                    drawcs(137, "Stage Completed!", 170, 170, 170, 3);
+                }
                 drawcs(154, "" + checkpoints.name + "", 128, 128, 128, 3);
             }
         } else {
@@ -3389,8 +3397,10 @@ public class xtGraphics extends Panel implements Runnable {
             // cd.names[nplayers + ((i - 1) / 2)] + ", therefore: " + (((i - 1) / 2) -
             // (nplayers + ((i - 1) / 2))) + " car difference");
 
-            if (i == -1)
-                i = GameFacts.numberOfCars + 2;
+            if (i == -1 || unlocked == GameFacts.numberOfStages) {
+                i = GameFacts.numberOfStages;
+                // double boss cars can appear if game is unlocked and player is playing on regular stages cba to account for this rn
+            }
 
             // create a list of car ids, each item completely unique
             ArrayList<Integer> list = new ArrayList<>();
@@ -3591,7 +3601,11 @@ public class xtGraphics extends Panel implements Runnable {
         drawcs(GameFacts.screenHeight - 5, "You can also use Keyboard Arrows and Enter to navigate.", 82, 90, 0, 3);
         if (control.handb || control.enter) {
             sm.play("tick");
-            asay = "Stage " + checkpoints.stage + ":  " + checkpoints.name + " ";
+            if (checkpoints.stage != -1) {
+                asay = "Stage " + checkpoints.stage + ":  " + checkpoints.name;
+            } else {
+                asay = "Custom Stage:  " + checkpoints.name;
+            }
             dudo = 150;
             Medium.trk = false;
             Medium.focus_point = 500;
@@ -5101,7 +5115,7 @@ public class xtGraphics extends Panel implements Runnable {
                 lastload = -11;
                 intertrack.setPaused(true);
                 intertrack.unload();
-                loadIntertrack("red_dream_nfmmix");
+                loadIntertrack("stages");
                 Medium.crs = false;
                 fase = Phase.NPLAYERSCHECK;
             }

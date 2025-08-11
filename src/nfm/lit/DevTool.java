@@ -381,18 +381,17 @@ public class DevTool {
     
     private void populateCommandDescriptions() {
         commandDescriptions.put("nplayers", "Sets the number of players. Usage: nplayers <1-51>");
-        commandDescriptions.put("fix", "Fixes the specified car. Usage: fix <n>");
+        commandDescriptions.put("fix", "Fixes a specified car. Usage: fix <n>");
+        commandDescriptions.put("spectate", "Spectates a specified car. Usage: spectate <n>");
         commandDescriptions.put("god", "Toggles god mode.");
         commandDescriptions.put("unlocked", "Sets the unlocked value in xtGraphics. Usage: unlocked <n>");
-        commandDescriptions.put("fase", "Sets the phase in xtGraphics. Usage: fase <n>");
-        commandDescriptions.put("spawn_ai", "Spawns an AI car (unimplemented).");
+        commandDescriptions.put("fase", "Sets the game state (phase). Usage: fase <n>");
         commandDescriptions.put("nfm", "Sets the NFM mode. Usage: nfm <n>");
-        commandDescriptions.put("loadstage", "Loads a stage from the specified path. Usage: loadstage <directory>");
-        commandDescriptions.put("loadstage2", "Loads a stage from the specified path mid-game. Usage: loadstage2 <directory>");
+        commandDescriptions.put("map", "Loads a stage from the specified path. Usage: map <path-to-.txt>");
         commandDescriptions.put("stagesubdir", "Sets the stage subdirectory. Usage: stagesubdir <subdir>");
         commandDescriptions.put("status", "Displays the current game state.");
         commandDescriptions.put("clear", "Clears the console.");
-        commandDescriptions.put("connect", "Connects to a server. Usage: connect <ip:port>");
+        commandDescriptions.put("connect", "Connects to a test server. Usage: connect <ip:port>");
         commandDescriptions.put("help", "Displays help information. Usage: help <command>");
     }
 }
