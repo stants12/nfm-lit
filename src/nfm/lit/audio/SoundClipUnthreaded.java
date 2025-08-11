@@ -36,7 +36,7 @@ public class SoundClipUnthreaded implements SoundClip {
                     try {
                         clip.open(sound);
                     } catch (Exception e) {
-                        HLogger.error(e);
+                        HLogger.error("Error opening sound clip: " + e.getMessage());
                     }
                     clip.loop(0);
                 } else {
@@ -46,7 +46,7 @@ public class SoundClipUnthreaded implements SoundClip {
                 lfrpo = -1;
                 cntcheck = 5;
             } catch (Exception var3) {
-                HLogger.error(var3);
+                HLogger.error("Error in sound clip play: " + var3.getMessage());
             }
         }
     }
@@ -59,7 +59,7 @@ public class SoundClipUnthreaded implements SoundClip {
                     try {
                         clip.open(sound);
                     } catch (Exception e) {
-                        HLogger.error(e);
+                        HLogger.error("Error opening sound clip for loop: " + e.getMessage());
                     }
                 }
 
@@ -67,7 +67,7 @@ public class SoundClipUnthreaded implements SoundClip {
                 lfrpo = -2;
                 cntcheck = 0;
             } catch (Exception var3) {
-                HLogger.error(var3);
+                HLogger.error("Error in sound clip loop: " + var3.getMessage());
             }
         }
     }
@@ -79,7 +79,7 @@ public class SoundClipUnthreaded implements SoundClip {
                 clip.stop();
                 lfrpo = -1;
             } catch (Exception e) {
-                HLogger.error(e);
+                HLogger.error("Error stopping sound clip: " + e.getMessage());
             }
         }
     }

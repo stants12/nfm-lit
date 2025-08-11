@@ -16,7 +16,7 @@ public class SoundClipThreaded implements Runnable, SoundClip {
             this.clipBytes = byteInput;
             loaded = true;
         } catch (Exception e) {
-            HLogger.error(e);
+            HLogger.error("Error loading sound clip: " + e.getMessage());
             loaded = false;
         }
     }
@@ -57,7 +57,7 @@ public class SoundClipThreaded implements Runnable, SoundClip {
                 audioInputStream.close();
 
             } catch (LineUnavailableException | IOException | UnsupportedAudioFileException e) {
-                HLogger.error(e);
+                HLogger.error("Error playing sound clip: " + e.getMessage());
             }
         }
         isPlaying = false;

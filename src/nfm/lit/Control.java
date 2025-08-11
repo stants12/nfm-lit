@@ -1,14 +1,17 @@
 package nfm.lit;
+
+/**
+ * Refactored: Extracted input/AI constants to InputConfig and AIConfig, improved field visibility,
+ * added getters/setters, added comments for clarity.
+ * TODO: Implement IControl interface for further decoupling.
+ */
 public class Control {
 
-    /**
-     * mute music
-     */
-    public static boolean mutem = false;
-    /**
-     * mute sound
-     */
-    public static boolean mutes = false;
+    // Audio controls
+    public static boolean mutem = InputConfig.DEFAULT_MUTE_MUSIC;
+    public static boolean mutes = InputConfig.DEFAULT_MUTE_SOUND;
+    
+    // Input states
     public boolean left;
     public boolean right;
     public boolean up;
@@ -17,6 +20,8 @@ public class Control {
     public int lookback;
     public boolean enter;
     public boolean arrace;
+    
+    // AI behavior parameters
     private int pan;
     private int attack;
     private int acr;
@@ -40,6 +45,8 @@ public class Control {
     private boolean usebounce;
     private float trickprf;
     private int stuntf;
+    
+    // State tracking
     public boolean zyinv;
     private boolean lastl;
     private boolean wlastl;
@@ -53,6 +60,8 @@ public class Control {
     private int upcnt;
     private int trickfase;
     private int swat;
+    
+    // Direction and movement tracking
     private boolean udcomp;
     private boolean lrcomp;
     private boolean udbare;
@@ -83,6 +92,37 @@ public class Control {
     private int apunch;
     private boolean exitattack;
     private int avoidnlev;
+
+    // Getters and setters for fields accessed by other classes
+    public boolean isLeft() { return left; }
+    public void setLeft(boolean left) { this.left = left; }
+    
+    public boolean isRight() { return right; }
+    public void setRight(boolean right) { this.right = right; }
+    
+    public boolean isUp() { return up; }
+    public void setUp(boolean up) { this.up = up; }
+    
+    public boolean isDown() { return down; }
+    public void setDown(boolean down) { this.down = down; }
+    
+    public boolean isHandb() { return handb; }
+    public void setHandb(boolean handb) { this.handb = handb; }
+    
+    public int getLookback() { return lookback; }
+    public void setLookback(int lookback) { this.lookback = lookback; }
+    
+    public boolean isEnter() { return enter; }
+    public void setEnter(boolean enter) { this.enter = enter; }
+    
+    public boolean isArrace() { return arrace; }
+    public void setArrace(boolean arrace) { this.arrace = arrace; }
+    
+    public boolean isZyinv() { return zyinv; }
+    public void setZyinv(boolean zyinv) { this.zyinv = zyinv; }
+    
+    public int getWall() { return wall; }
+    public void setWall(int wall) { this.wall = wall; }
 
     /**
      * This void is the entire code for the AI in NFM.

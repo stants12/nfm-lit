@@ -2,17 +2,23 @@ package nfm.lit;
 import java.awt.*;
 
 /**
+ * Refactored: Extracted car/AI constants to AIConfig and CarConfig, improved field visibility,
+ * added getters/setters, added comments for clarity.
+ * TODO: Implement ICar interface for further decoupling.
  * Madness is where the stats, collisions, locations of the cars, and more, are handled.
  *
  * @author Kaffeinated, Omar Waly
  */
 class Madness {
 
+    // Core components
     public Stat stat;
     private final Record rpd;
     private final xtGraphics xt;
     private final boolean[] dominate;
     private final boolean[] caught;
+    
+    // Position and movement
     public int pzy;
     public int pxy;
     public float speed;
@@ -20,6 +26,8 @@ class Madness {
     public final float[] scy;
     public final float[] scz;
     public final float[] scx;
+    
+    // Touch and collision states
     public boolean mtouch;
     public boolean wtouch;
     private int cntouch;
@@ -32,10 +40,14 @@ class Madness {
     public int skid;
     private boolean pushed;
     public boolean gtouch;
+    
+    // Direction states
     private boolean pl;
     private boolean pr;
     private boolean pd;
     private boolean pu;
+    
+    // Physics and competition
     public int loop;
     public float ucomp;
     public float dcomp;
@@ -48,10 +60,14 @@ class Madness {
     public int trcnt;
     public int capcnt;
     private int srfcnt;
+    
+    // Tab states
     public boolean rtab;
     public boolean ftab;
     public boolean btab;
     public boolean surfer;
+    
+    // Power and effects
     public float powerup;
     private int xtpower;
     private float tilt;
@@ -61,6 +77,8 @@ class Madness {
     public int cntdest;
     public boolean dest;
     public boolean newcar;
+    
+    // Race progress
     public int pcleared;
     public int clear;
     public int nlaps;
@@ -76,15 +94,147 @@ class Madness {
     public int im;
     public int mxz;
     public int cxz;
-    /* variable for screen shake */
+    
+    // Screen shake variable
     public int shakedam;
 
     /**
-     * universal rate that speed decreases when it exceeds swits[0][2], that is, top speed
+     * Universal rate that speed decreases when it exceeds swits[0][2], that is, top speed
      *
      * @author Kaffeinated
      */
-    private static final float speeddec = 2.0F;
+    private static final float speeddec = AIConfig.DEFAULT_SPEED_DEC;
+
+    // Getters and setters for fields accessed by other classes
+    public Stat getStat() { return stat; }
+    public void setStat(Stat stat) { this.stat = stat; }
+    
+    public int getPzy() { return pzy; }
+    public void setPzy(int pzy) { this.pzy = pzy; }
+    
+    public int getPxy() { return pxy; }
+    public void setPxy(int pxy) { this.pxy = pxy; }
+    
+    public float getSpeed() { return speed; }
+    public void setSpeed(float speed) { this.speed = speed; }
+    
+    public float[] getScy() { return scy; }
+    public float[] getScz() { return scz; }
+    public float[] getScx() { return scx; }
+    
+    public boolean isMtouch() { return mtouch; }
+    public void setMtouch(boolean mtouch) { this.mtouch = mtouch; }
+    
+    public boolean isWtouch() { return wtouch; }
+    public void setWtouch(boolean wtouch) { this.wtouch = wtouch; }
+    
+    public boolean isCapsized() { return capsized; }
+    public void setCapsized(boolean capsized) { this.capsized = capsized; }
+    
+    public int getSkid() { return skid; }
+    public void setSkid(int skid) { this.skid = skid; }
+    
+    public boolean isGtouch() { return gtouch; }
+    public void setGtouch(boolean gtouch) { this.gtouch = gtouch; }
+    
+    public int getLoop() { return loop; }
+    public void setLoop(int loop) { this.loop = loop; }
+    
+    public float getUcomp() { return ucomp; }
+    public void setUcomp(float ucomp) { this.ucomp = ucomp; }
+    
+    public float getDcomp() { return dcomp; }
+    public void setDcomp(float dcomp) { this.dcomp = dcomp; }
+    
+    public float getLcomp() { return lcomp; }
+    public void setLcomp(float lcomp) { this.lcomp = lcomp; }
+    
+    public float getRcomp() { return rcomp; }
+    public void setRcomp(float rcomp) { this.rcomp = rcomp; }
+    
+    public int getTravxy() { return travxy; }
+    public void setTravxy(int travxy) { this.travxy = travxy; }
+    
+    public int getTravzy() { return travzy; }
+    public void setTravzy(int travzy) { this.travzy = travzy; }
+    
+    public int getTravxz() { return travxz; }
+    public void setTravxz(int travxz) { this.travxz = travxz; }
+    
+    public int getTrcnt() { return trcnt; }
+    public void setTrcnt(int trcnt) { this.trcnt = trcnt; }
+    
+    public int getCapcnt() { return capcnt; }
+    public void setCapcnt(int capcnt) { this.capcnt = capcnt; }
+    
+    public boolean isRtab() { return rtab; }
+    public void setRtab(boolean rtab) { this.rtab = rtab; }
+    
+    public boolean isFtab() { return ftab; }
+    public void setFtab(boolean ftab) { this.ftab = ftab; }
+    
+    public boolean isBtab() { return btab; }
+    public void setBtab(boolean btab) { this.btab = btab; }
+    
+    public boolean isSurfer() { return surfer; }
+    public void setSurfer(boolean surfer) { this.surfer = surfer; }
+    
+    public float getPowerup() { return powerup; }
+    public void setPowerup(float powerup) { this.powerup = powerup; }
+    
+    public int getSquash() { return squash; }
+    public void setSquash(int squash) { this.squash = squash; }
+    
+    public int getHitmag() { return hitmag; }
+    public void setHitmag(int hitmag) { this.hitmag = hitmag; }
+    
+    public int getCntdest() { return cntdest; }
+    public void setCntdest(int cntdest) { this.cntdest = cntdest; }
+    
+    public boolean isDest() { return dest; }
+    public void setDest(boolean dest) { this.dest = dest; }
+    
+    public boolean isNewcar() { return newcar; }
+    public void setNewcar(boolean newcar) { this.newcar = newcar; }
+    
+    public int getPcleared() { return pcleared; }
+    public void setPcleared(int pcleared) { this.pcleared = pcleared; }
+    
+    public int getClear() { return clear; }
+    public void setClear(int clear) { this.clear = clear; }
+    
+    public int getNlaps() { return nlaps; }
+    public void setNlaps(int nlaps) { this.nlaps = nlaps; }
+    
+    public float getPower() { return power; }
+    public void setPower(float power) { this.power = power; }
+    
+    public int getMissedcp() { return missedcp; }
+    public void setMissedcp(int missedcp) { this.missedcp = missedcp; }
+    
+    public int getLastcolido() { return lastcolido; }
+    public void setLastcolido(int lastcolido) { this.lastcolido = lastcolido; }
+    
+    public int getPoint() { return point; }
+    public void setPoint(int point) { this.point = point; }
+    
+    public boolean isNofocus() { return nofocus; }
+    public void setNofocus(boolean nofocus) { this.nofocus = nofocus; }
+    
+    public int getCn() { return cn; }
+    public void setCn(int cn) { this.cn = cn; }
+    
+    public int getIm() { return im; }
+    public void setIm(int im) { this.im = im; }
+    
+    public int getMxz() { return mxz; }
+    public void setMxz(int mxz) { this.mxz = mxz; }
+    
+    public int getCxz() { return cxz; }
+    public void setCxz(int cxz) { this.cxz = cxz; }
+    
+    public int getShakedam() { return shakedam; }
+    public void setShakedam(int shakedam) { this.shakedam = shakedam; }
 
     private void regy(int i, float f, ContO conto) {
         f *= stat.dammult;

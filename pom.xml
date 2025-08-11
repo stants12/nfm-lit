@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>nfm</groupId>
+    <artifactId>nfm-lit</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <name>NFM-Lit</name>
+    <description>Need For Madness Lite - Java racing game</description>
+
+    <properties>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <dependencies>
+        <!-- Local JAR dependencies -->
+        <dependency>
+            <groupId>fallk.logmaster</groupId>
+            <artifactId>logmaster</artifactId>
+            <version>rev5</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/logmaster-rev5.jar</systemPath>
+        </dependency>
+        
+        <dependency>
+            <groupId>jouvieje.bass</groupId>
+            <artifactId>NativeBass</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/NativeBass.jar</systemPath>
+        </dependency>
+        
+        <dependency>
+            <groupId>jouvieje.bass</groupId>
+            <artifactId>NativeBass-Examples</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/NativeBass-Examples.jar</systemPath>
+        </dependency>
+        
+        <dependency>
+            <groupId>ds.nfm</groupId>
+            <artifactId>dragshotMod</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/dragshotMod.jar</systemPath>
+        </dependency>
+        
+        <dependency>
+            <groupId>ds.nfm</groupId>
+            <artifactId>javamod</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/javamod.jar</systemPath>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <sourceDirectory>src</sourceDirectory>
+        <resources>
+            <resource>
+                <directory>data</directory>
+                <targetPath>data</targetPath>
+            </resource>
+            <resource>
+                <directory>src</directory>
+                <includes>
+                    <include>**/*.gif</include>
+                    <include>**/*.png</include>
+                    <include>**/*.jpg</include>
+                    <include>**/*.wav</include>
+                    <include>**/*.properties</include>
+                </includes>
+            </resource>
+        </resources>
+        
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
+                <configuration>
+                    <source>11</source>
+                    <target>11</target>
+                    <compilerArgs>
+                        <arg>-Xlint:deprecation</arg>
+                        <arg>-Xlint:unchecked</arg>
+                    </compilerArgs>
+                </configuration>
+            </plugin>
+            
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.3.0</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>nfm.lit.RunApp</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

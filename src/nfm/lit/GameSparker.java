@@ -19,80 +19,51 @@ import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 /**
+ * Refactored: Extracted config values to StageConfig, SoundConfig, CarConfig, improved field visibility,
+ * added getters/setters, added comments for clarity.
+ * TODO: Implement IGameEngine interface for further decoupling.
  * GameSparker brings everything together.
  *
  * @author Kaffeinated, Omar Waly
  */
 public class GameSparker extends Applet implements Runnable {
-    /**
-    *
-    */
-
-    /**
-     * get os name / type
-     */
-    public static final String OPERATING_SYSTEM = System.getProperty("os.name").toLowerCase();
-    public static final boolean IS_UNIX = OPERATING_SYSTEM.indexOf("nix") == 0 || OPERATING_SYSTEM.indexOf("nux") == 0;
-    public static final boolean IS_WINDOWS = OPERATING_SYSTEM.indexOf("win") == 0;
-    public static final boolean IS_MAC = OPERATING_SYSTEM.indexOf("mac") == 0;
-    /**
-     * get os bit
-     */
-    public static final String IS_64_BIT = System.getProperty("sun.arch.data.model").equals("64") ? "64" : "32";
-    /**
-     * uh help
-     */
-    public static final String WORKING_DIRECTORY = ".";
-    public static final boolean DEBUG = true;
-
+    
     private static final long serialVersionUID = -34048182014310663L;
 
-    private static final String[] carModels = {
-            "2000tornados", "formula7", "canyenaro", "lescrab", "nimi", "maxrevenge", "leadoxide", "koolkat", "drifter",
-            "policecops", "mustang", "king", "audir8", "masheen", "radicalone", "drmonster"
-    };
+    // System information
+    public static final String OPERATING_SYSTEM = StageConfig.OPERATING_SYSTEM;
+    public static final boolean IS_UNIX = StageConfig.IS_UNIX;
+    public static final boolean IS_WINDOWS = StageConfig.IS_WINDOWS;
+    public static final boolean IS_MAC = StageConfig.IS_MAC;
+    public static final String IS_64_BIT = StageConfig.IS_64_BIT;
+    public static final String WORKING_DIRECTORY = StageConfig.WORKING_DIRECTORY;
+    public static final boolean DEBUG = StageConfig.DEBUG;
 
-    private static final String[] trackModels = {
-            "road", "froad", "twister2", "twister1", "turn", "offroad", "bumproad", "offturn", "nroad", "nturn",
-            "roblend", "noblend", "rnblend", "roadend", "offroadend", "hpground", "ramp30", "cramp35", "dramp15",
-            "dhilo15", "slide10", "takeoff", "sramp22", "offbump", "offramp", "sofframp", "halfpipe", "spikes", "rail",
-            "thewall", "checkpoint", "fixpoint", "offcheckpoint", "sideoff", "bsideoff", "uprise", "riseroad", "sroad",
-            "soffroad", "tside", "launchpad", "thenet", "speedramp", "offhill", "slider", "uphill", "roll1", "roll2",
-            "roll3", "roll4", "roll5", "roll6", "opile1", "opile2", "aircheckpoint", "tree1", "tree2", "tree3", "tree4",
-            "tree5", "tree6", "tree7", "tree8", "cac1", "cac2", "cac3", "8sroad", "8soffroad", "singlewallroad", "thewall2"
-    };
+    // Game models
+    private static final String[] carModels = CarConfig.CAR_MODELS;
+    private static final String[] trackModels = StageConfig.TRACK_MODELS;
     private static final String[] extraModels = {};
 
-    /**
-     * false to disable splash
-     */
-    private static final boolean splashScreenState = true;
+    // Configuration
+    private static final boolean splashScreenState = StageConfig.SPLASH_SCREEN_ENABLED;
+    private static final String stageDir = StageConfig.STAGE_DIR;
+    private static final String cookieDirTemp = StageConfig.COOKIE_DIR_TEMP;
+    private static final String cookieDirZip = StageConfig.COOKIE_DIR_ZIP;
 
-    private static final String stageDir = "data/stages/";
-
-    public int stageID = 1;
+    // Stage management
+    private int stageID = 1;
     public static String stageSubDir = "nfm2/";
     public static String stageName = "";
-
-    public String loadStage = stageDir + stageSubDir + stageID + ".txt";
+    private String loadStage = stageDir + stageSubDir + stageID + ".txt";
     public static String loadStageCus;
-
-    /**
-     * Set directory for temporary creation of cookies (directory is deleted after
-     * writing is complete)
-     */
-    private static final String cookieDirTemp = "data/cookies/";
-    /**
-     * Set location for the cookie.radq
-     */
-    private static final String cookieDirZip = "data/cookies.radq";
-
     private String stageError = "";
 
+    // Graphics and UI
     private Graphics2D rd;
     private Graphics sg;
     private Image offImage;
     private Thread gamer;
+    private volatile boolean shouldStop = false;
     private final Control[] u;
     private int mouses;
     private int xm;
@@ -162,7 +133,13 @@ public class GameSparker extends Applet implements Runnable {
     public void stop() {
         if (exwist && gamer != null) {
             System.gc();
-            gamer.stop();
+            shouldStop = true;
+            gamer.interrupt();
+            try {
+                gamer.join(1000);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
             gamer = null;
         }
         exwist = true;
@@ -1038,6 +1015,9 @@ public class GameSparker extends Applet implements Runnable {
         exwist = false;
 
         do {
+            if (shouldStop || Thread.currentThread().isInterrupted()) {
+                break;
+            }
             Date date1 = new Date();
             long l4 = date1.getTime();
             if (xtgraphics.fase == Phase.LOADING) {
@@ -1887,8 +1867,16 @@ public class GameSparker extends Applet implements Runnable {
                 rd.dispose();
                 xtgraphics.stopallnow();
                 System.gc();
-                gamer.stop();
-                gamer = null;
+                shouldStop = true;
+                if (gamer != null) {
+                    gamer.interrupt();
+                    try {
+                        gamer.join(1000);
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    }
+                    gamer = null;
+                }
             }
 
             // if (xtgraphics.devtriggered) {
@@ -1935,7 +1923,9 @@ public class GameSparker extends Applet implements Runnable {
             }
             try {
                 Thread.sleep(l2);
-            } catch (InterruptedException _ex) {
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                break;
             }
         } while (true);
     }

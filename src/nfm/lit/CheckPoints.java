@@ -1,52 +1,92 @@
 package nfm.lit;
 
+/**
+ * Refactored: Extracted stage constants to StageConfig, improved field visibility,
+ * added getters/setters, added comments for clarity.
+ * TODO: Implement IStage interface for further decoupling.
+ */
 class CheckPoints {
 
-    public final int[] x = new int[1400];
-    public final int[] z = new int[1400];
-    public final int[] y = new int[1400];
-    public final int[] typ = new int[1400];
+    // Checkpoint coordinates
+    public final int[] x = new int[StageConfig.MAX_CHECKPOINTS];
+    public final int[] z = new int[StageConfig.MAX_CHECKPOINTS];
+    public final int[] y = new int[StageConfig.MAX_CHECKPOINTS];
+    public final int[] typ = new int[StageConfig.MAX_CHECKPOINTS];
+    
+    // Counters
     public int pcs = 0;
     public int nsp = 0;
     public int n = 0;
-    public final int[] fx = new int[5];
-    public final int[] fz = new int[5];
-    public final int[] fy = new int[5];
-    public final boolean[] roted = new boolean[5];
-    public final boolean[] special = new boolean[5];
+    
+    // Special points
+    public final int[] fx = new int[StageConfig.MAX_SPECIAL_POINTS];
+    public final int[] fz = new int[StageConfig.MAX_SPECIAL_POINTS];
+    public final int[] fy = new int[StageConfig.MAX_SPECIAL_POINTS];
+    public final boolean[] roted = new boolean[StageConfig.MAX_SPECIAL_POINTS];
+    public final boolean[] special = new boolean[StageConfig.MAX_SPECIAL_POINTS];
+    
+    // Track information
     static boolean customTrack = false;
     static String trackname = "";
     static String trackformat = "";
     public int fn = 0;
     public int stage = 1;
     public int nlaps = 0;
-    /**
-     * stage name<br>
-     * <b>hogan rewish</b> if none is found
-     */
-    public String name = "hogan rewish";
-    public final int[] pos = {
-           50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50,
-           50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50,
-           50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50
-    };
-    /**cum
-     * connected to number of cars
-     */
-    public final int[] clear = new int[51];
-    /**
-     * connected to number of cars
-     */
-    public final int[] dested = new int[51];
+    
+    // Stage name - defaults to "hogan rewish" if none found
+    public String name = StageConfig.DEFAULT_STAGE_NAME;
+    
+    // Car positions (initialized to default position)
+    public final int[] pos = new int[StageConfig.MAX_CARS];
+    {
+        for (int i = 0; i < pos.length; i++) {
+            pos[i] = StageConfig.DEFAULT_POSITION;
+        }
+    }
+    
+    // Car states
+    public final int[] clear = new int[StageConfig.MAX_CARS];
+    public final int[] dested = new int[StageConfig.MAX_CARS];
     public int wasted = 0;
     public boolean haltall = false;
     public int pcleared = 0;
-    public final int[] opx = new int[51];
-    public final int[] opz = new int[51];
-    public final int[] onscreen = new int[51];
-    public final int[] omxz = new int[51];
+    public final int[] opx = new int[StageConfig.MAX_CARS];
+    public final int[] opz = new int[StageConfig.MAX_CARS];
+    public final int[] onscreen = new int[StageConfig.MAX_CARS];
+    public final int[] omxz = new int[StageConfig.MAX_CARS];
     public int catchfin = 0;
     private int postwo = 0;
+
+    // Getters and setters for fields accessed by other classes
+    public int[] getX() { return x; }
+    public int[] getZ() { return z; }
+    public int[] getY() { return y; }
+    public int[] getTyp() { return typ; }
+    
+    public int getN() { return n; }
+    public void setN(int n) { this.n = n; }
+    
+    public int getNsp() { return nsp; }
+    public void setNsp(int nsp) { this.nsp = nsp; }
+    
+    public int getFn() { return fn; }
+    public void setFn(int fn) { this.fn = fn; }
+    
+    public boolean isHaltall() { return haltall; }
+    public void setHaltall(boolean haltall) { this.haltall = haltall; }
+    
+    public int getStage() { return stage; }
+    public void setStage(int stage) { this.stage = stage; }
+    
+    public int getNlaps() { return nlaps; }
+    public void setNlaps(int nlaps) { this.nlaps = nlaps; }
+    
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+    
+    public int[] getPos() { return pos; }
+    public int[] getClear() { return clear; }
+    public int[] getDested() { return dested; }
 
     public void checkstat(Madness amadness[], ContO aconto[], Record record, int ncars) {
         if (!haltall) {

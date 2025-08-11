@@ -4,7 +4,6 @@ package nfm.lit.audio;
 // Credits to DragShot
 // for his shit
 
-import ds.nfm.Module;
 import ds.nfm.ModuleLoader;
 import ds.nfm.ModuleSlayer;
 
@@ -60,20 +59,20 @@ public class RadicalMod implements RadicalMusic {
         i_0 = (int) (i_0 / 8000F * 2.0F * i_3);
         i = (int) (i * 0.8F);
         try {
-            Module module;
+            ds.nfm.Module dsModule;
             if (!bool_2) {
-                module = ModuleLoader.loadMod(string);
+                dsModule = ModuleLoader.loadMod(string);
             } else {
                 string = string.replace(' ', '_');
                 final URL url = new URL("http://multiplayer.needformadness.com/tracks/music/" + string + ".zip");
-                module = ModuleLoader.loadMod(url);
+                dsModule = ModuleLoader.loadMod(url);
             }
-            if (module.isLoaded()) {
-                name = module.getName();
+            if (dsModule.isLoaded()) {
+                name = dsModule.getName();
                 if (name.trim().equals("")) {
                     name = "Untitled";
                 }
-                final ModuleSlayer moduleslayer = ModuleLoader.prepareSlayer(module, i_0, i, i_1);
+                final ModuleSlayer moduleslayer = ModuleLoader.prepareSlayer(dsModule, i_0, i, i_1);
                 final byte is[] = moduleslayer.turnbytesNorm(bool);
                 if (bool) {
                     rvol = moduleslayer.olav;
@@ -141,13 +140,13 @@ public class RadicalMod implements RadicalMusic {
             }
             final int i_7 = 125;
             try {
-                final Module module = ModuleLoader.loadMod(imod);
-                if (module.isLoaded()) {
-                    name = module.getName();
+                final ds.nfm.Module dsModule = ModuleLoader.loadMod(imod);
+                if (dsModule.isLoaded()) {
+                    name = dsModule.getName();
                     if (name.trim().equals("")) {
                         name = "Untitled";
                     }
-                    final ModuleSlayer moduleslayer = ModuleLoader.prepareSlayer(module, i, i_6, i_7);
+                    final ModuleSlayer moduleslayer = ModuleLoader.prepareSlayer(dsModule, i, i_6, i_7);
                     final byte is[] = moduleslayer.turnbytesNorm(bool);
                     if (bool) {
                         rvol = moduleslayer.olav;
@@ -182,13 +181,13 @@ public class RadicalMod implements RadicalMusic {
             }
             final int i_11 = 125;
             try {
-                final Module module = ModuleLoader.loadMod(pmod);
-                if (module.isLoaded()) {
-                    name = module.getName();
+                final ds.nfm.Module dsModule = ModuleLoader.loadMod(pmod);
+                if (dsModule.isLoaded()) {
+                    name = dsModule.getName();
                     if (name.trim().equals("")) {
                         name = "Untitled";
                     }
-                    final ModuleSlayer moduleslayer = ModuleLoader.prepareSlayer(module, i, i_10, i_11);
+                    final ModuleSlayer moduleslayer = ModuleLoader.prepareSlayer(dsModule, i, i_10, i_11);
                     final byte is[] = moduleslayer.turnbytesNorm(bool);
                     if (bool) {
                         rvol = moduleslayer.olav;

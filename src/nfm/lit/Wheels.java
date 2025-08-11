@@ -1,28 +1,49 @@
 package nfm.lit;
+
+/**
+ * Refactored: Extracted wheel/car constants to CarConfig, improved field visibility, 
+ * added getters/setters, added comments for clarity.
+ * TODO: Implement IWheel interface for further decoupling.
+ */
 class Wheels {
 
     public int ground;
-
     private int mast;
-    private final int[] rc = {
-            120, 120, 120
-    };
+    private final int[] rc = CarConfig.DEFAULT_WHEEL_COLOR;
     private float size;
     private float depth;
 
     public Wheels() {
-        size = 2.0F;
-        depth = 3F;
-        ground = 0;
-        mast = 0;
+        size = CarConfig.DEFAULT_WHEEL_SIZE;
+        depth = CarConfig.DEFAULT_WHEEL_DEPTH;
+        ground = CarConfig.DEFAULT_GROUND;
+        mast = CarConfig.DEFAULT_MAST;
+    }
+
+    // Getters
+    public int getGround() {
+        return ground;
+    }
+
+    public float getSize() {
+        return size;
+    }
+
+    public float getDepth() {
+        return depth;
+    }
+
+    // Setters
+    public void setGround(int ground) {
+        this.ground = ground;
     }
 
     public void setrims(int i, int j, int k, int l, int i1) {
         rc[0] = i;
         rc[1] = j;
         rc[2] = k;
-        size = l / 10F;
-        depth = i1 / 10F;
+    size = l / 10F;
+    depth = i1 / 10F;
     }
 
     public void make(Trackers trackers, Plane aplane[], int i, int j, int k, int l, int i1, int j1,
@@ -30,9 +51,9 @@ class Wheels {
         int ai[] = new int[16];
         int ai1[] = new int[16];
         int ai2[] = new int[16];
-        int ai3[] = {
-                45, 45, 45
-        };
+    int ai3[] = {
+        45, 45, 45 // TODO: Move to CarConfig if used elsewhere
+    };
         int i2 = 0;
         float f = j1 / 10F;
         float f1 = k1 / 10F;

@@ -1838,9 +1838,16 @@ public class xtGraphics extends Panel implements Runnable {
     public void stoploading() {
         loading();
         app.repaint();
-        runner.stop();
-        runner = null;
-        runtyp = 0;
+        if (runner != null) {
+            runtyp = 0;  // Signal the run() method to exit
+            runner.interrupt();
+            try {
+                runner.join(1000); // Wait up to 1 second for thread to finish
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+            runner = null;
+        }
     }
 
     public void nofocus() {
@@ -3346,7 +3353,7 @@ public class xtGraphics extends Panel implements Runnable {
             if (checkpoints.stage == unlocked && winner && unlocked != GameFacts.numberOfStages) {
                 checkpoints.stage++;
                 unlocked++;
-                HLogger.info(unlocked);
+                HLogger.info("Unlocked stage: " + unlocked);
             }
             fase = Phase.SAVEGAME;
             flipo = 0;
@@ -5341,7 +5348,7 @@ public class xtGraphics extends Panel implements Runnable {
 
     @Override
     public void run() {
-        while (runtyp != 0) {
+        while (runtyp != 0 && !Thread.currentThread().isInterrupted()) {
             if (runtyp >= 1 && runtyp <= 17) {
                 hipnoload(runtyp, false);
             }
@@ -5351,7 +5358,9 @@ public class xtGraphics extends Panel implements Runnable {
             app.repaint();
             try {
                 Thread.sleep(20L);
-            } catch (InterruptedException _ex) {
+            } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
+                break;
             }
         }
     }
