@@ -252,15 +252,35 @@ public class xtGraphics extends Panel implements Runnable {
 
     /* TODO: define each page's constants in their own files */
     /* main menu */
-    private int main_menu_height_origin = (int) (GameFacts.screenHeight * 0.2);
+    
 
-    private int main_menu_button_height = 22;
-    private int main_menu_op_0_y = 246 + main_menu_height_origin;
-    private int main_menu_op_0_width = 110;
-    private int main_menu_op_1_y = 275 + main_menu_height_origin;
-    private int main_menu_op_1_width = 196;
-    private int main_menu_op_2_y = 306 + main_menu_height_origin;
-    private int main_menu_op_2_width = 85;
+    private int main_menu_height_origin = (int) (GameFacts.screenHeight * 0.4);
+
+    private int main_menu_button_height = 32;
+    
+    private int main_menu_op_0_y = 100 + main_menu_height_origin;
+    private int main_menu_op_0_width = 230;
+
+    private int main_menu_op_1_y = 140 + main_menu_height_origin;
+    private int main_menu_op_1_width = 230;
+
+    private int main_menu_op_2_y = 180 + main_menu_height_origin;
+    private int main_menu_op_2_width = 230;
+
+    private int main_menu_op_3_y = 220 + main_menu_height_origin;
+    private int main_menu_op_3_width = 230;
+
+    // private int main_menu_op_0_x = Utility.centeredWidthX(main_menu_op_0_width);
+    // private int main_menu_op_1_x = Utility.centeredWidthX(main_menu_op_1_width);
+    // private int main_menu_op_2_x = Utility.centeredWidthX(main_menu_op_2_width);
+
+    private int main_menu_op_0_x = 100;
+    private int main_menu_op_1_x = 100;
+    private int main_menu_op_2_x = 100;
+    private int main_menu_op_3_x = 100;
+
+    private int main_menu_arcwidth = 10;
+    private int main_menu_archeight = 20;
 
     private int insano_mainmenu_x;
     private int insano_mainmenu_y;
@@ -797,33 +817,37 @@ public class xtGraphics extends Panel implements Runnable {
 
     public void menusettings(Control control) {
 
-        app.repaint();
+        //rd.setColor(new Color(100, 100, 100));
+        //rd.fillRect(0, 0, GameFacts.screenWidth, GameFacts.screenHeight);
 
-        if (flipo == 0) {
-            bgmy[0] = 0;
-            bgmy[1] = GameFacts.screenHeight;
-            app.setCursor(new Cursor(0));
-        }
+        int menuItems = 3;
 
-        rd.setColor(new Color(100, 100, 100));
-        rd.fillRect(0, 0, GameFacts.screenWidth, GameFacts.screenHeight);
+        int y_nplayers = 90;
+        int y_menustage = 110;
+
+        rd.setColor(new Color(20, 20, 20, 100));
+        rd.fillRoundRect(Utility.centeredWidthX(145), 20, 145, 27, 23, 30);
+
+        rd.setFont(new Font("SansSerif", 1, 16));
+        drawcs(37, "SETTINGS", 255, 255, 255, 3);
 
         rd.setFont(new Font("SansSerif", 1, 13));
         FontHandler.fMetrics = rd.getFontMetrics();
 
-        drawcs(20, "Number of Players: " + GameFacts.numberOfPlayers, 255, 255, 255, 3);
-        drawcs(40, "Back", 255, 255, 255, 3);
+        drawcs(y_nplayers, "Number of Players: " + GameFacts.numberOfPlayers, 255, 255, 255, 3);
+        drawcs(y_menustage, "Menu Stage: " + GameSparker.menuStage, 255, 255, 255, 3);
+        drawcs(GameFacts.screenHeight - 20, "Back", 255, 255, 255, 3);
 
         if (control.up) {
             opselect--;
             if (opselect == -1) {
-                opselect = 1;
+                opselect = menuItems - 1;
             }
             control.up = false;
         }
         if (control.down) {
             opselect++;
-            if (opselect == 2) {
+            if (opselect == menuItems) {
                 opselect = 0;
             }
             control.down = false;
@@ -832,16 +856,31 @@ public class xtGraphics extends Panel implements Runnable {
             rd.setFont(new Font("SansSerif", 1, 13));
             FontHandler.fMetrics = rd.getFontMetrics();
             if (aflk) {     // this is aids
-                drawcs(20, "Number of Players: " + GameFacts.numberOfPlayers, 255, 0, 0, 3);
+                drawcs(y_nplayers, "Number of Players: " + GameFacts.numberOfPlayers, 255, 0, 0, 3);
                 rd.setColor(new Color(200, 255, 0));
                 aflk = false;
             } else {
-                drawcs(20, "Number of Players: " + GameFacts.numberOfPlayers, 0, 0, 0, 3);
+                drawcs(y_nplayers, "Number of Players: " + GameFacts.numberOfPlayers, 0, 0, 0, 3);
                 rd.setColor(new Color(255, 128, 0));
                 aflk = true;
             }
         }
+
         if (opselect == 1) {
+            rd.setFont(new Font("SansSerif", 1, 13));
+            FontHandler.fMetrics = rd.getFontMetrics();
+            if (aflk) {     // this is aids
+                drawcs(y_menustage, "Menu Stage: " + GameSparker.menuStage, 255, 0, 0, 3);
+                rd.setColor(new Color(200, 255, 0));
+                aflk = false;
+            } else {
+                drawcs(y_menustage, "Menu Stage: " + GameSparker.menuStage, 0, 0, 0, 3);
+                rd.setColor(new Color(255, 128, 0));
+                aflk = true;
+            }
+        }
+
+        if (opselect == 2) {
             if (shaded) {
                 rd.setColor(new Color(140, 70, 0));
                 rd.fillRect(234, 275, 196, 22);
@@ -850,17 +889,18 @@ public class xtGraphics extends Panel implements Runnable {
             rd.setFont(new Font("SansSerif", 1, 13));
             FontHandler.fMetrics = rd.getFontMetrics();
             if (aflk) {
-                drawcs(40, "Back", 255, 0, 0, 3);
+                drawcs(GameFacts.screenHeight - 20, "Back", 255, 0, 0, 3);
                 aflk = false;
             } else {
-                drawcs(40, "Back", 0, 0, 0, 3);
+                drawcs(GameFacts.screenHeight - 20, "Back", 0, 0, 0, 3);
                 aflk = true;
             }
         }
 
         if (control.enter || control.handb) {
-            if (opselect == 1) {
-                fase = oldfase;
+            if (opselect == 2) {
+                GameSparker.menuState = Phase.MAINMENU;
+                opselect = 3;
             }
             control.enter = false;
             control.handb = false;
@@ -872,6 +912,13 @@ public class xtGraphics extends Panel implements Runnable {
                     GameFacts.numberOfPlayers = 51;
                 }
             }
+            if (opselect == 1) {
+                GameSparker.menuStage--;
+                if (GameSparker.menuStage == 0) {
+                    GameSparker.menuStage = 17;
+                }
+                fase = Phase.RELOADSTAGEMENU;
+            }
             control.left = false;
         }
         if (control.right) {
@@ -880,6 +927,13 @@ public class xtGraphics extends Panel implements Runnable {
                 if (GameFacts.numberOfPlayers == 52) {
                     GameFacts.numberOfPlayers = 1;
                 }
+            }
+            if (opselect == 1) {
+                GameSparker.menuStage++;
+                if (GameSparker.menuStage == 18) {
+                    GameSparker.menuStage = 1;
+                }
+                fase = Phase.RELOADSTAGEMENU;
             }
             control.right = false;
         }
@@ -919,14 +973,14 @@ public class xtGraphics extends Panel implements Runnable {
             flipo = 15;
             dudo = 100;
         }
-        int i = 0;
-        do {
-            rd.drawImage(bgmain, 0, bgmy[i], null);
-            bgmy[i] -= 2;
-            if (bgmy[i] <= -GameFacts.screenHeight) {
-                bgmy[i] = GameFacts.screenHeight;
-            }
-        } while (++i < 2);
+        //int i = 0;
+        // do {
+        //     rd.drawImage(bgmain, 0, bgmy[i], null);
+        //     bgmy[i] -= 2;
+        //     if (bgmy[i] <= -GameFacts.screenHeight) {
+        //         bgmy[i] = GameFacts.screenHeight;
+        //     }
+        // } while (++i < 2);
         aflk = !aflk;
         int hint_all_width = dude[duds].getWidth(null) + oflaot.getWidth(null);
         int start_x = Utility.centeredWidthX(hint_all_width);
@@ -1109,6 +1163,8 @@ public class xtGraphics extends Panel implements Runnable {
         if (flipo == 1) {// first papge
             rd.setFont(new Font("SansSerif", 1, 13));
             FontHandler.fMetrics = rd.getFontMetrics();
+
+            
             drawcs(20, "Main Game Controls", 0, 0, 0, 3);
 
             String arrkey_txt = "Drive your car using the Arrow Keys:";
@@ -1163,7 +1219,8 @@ public class xtGraphics extends Panel implements Runnable {
             }
             if (control.enter && flipo == 15) {
                 flipo = 0;
-                fase = oldfase;
+                //fase = oldfase;
+                GameSparker.menuState = Phase.MAINMENU;
                 rd.setFont(new Font("SansSerif", 1, 11));
                 FontHandler.fMetrics = rd.getFontMetrics();
             }
@@ -2389,7 +2446,7 @@ public class xtGraphics extends Panel implements Runnable {
                     strack.setPaused(true);
                     strack.unload();
                 }
-                fase = Phase.MAINMENU;
+                fase = Phase.LOADSTAGEMENU;
                 opselect = 0;
             }
             control.enter = false;
@@ -2796,8 +2853,7 @@ public class xtGraphics extends Panel implements Runnable {
                         if (debugmode) {
                             rd.setColor(new Color(0, 0, 0));
                             rd.drawString("pcleared: " + madness[spectate].pcleared, 20, 80);
-                            rd.drawString("checkpoints.clear[" + spectate + "]: " + checkpoints.clear[spectate], 20,
-                                    95);
+                            rd.drawString("checkpoints.clear[" + spectate + "]: " + checkpoints.clear[spectate], 20,95);
                             rd.drawString("X: " + conto[spectate].x, 20, 400);
                             rd.drawString("Y: " + conto[spectate].y, 20, 420);
                             rd.drawString("Z: " + conto[spectate].z, 20, 440);
@@ -3302,20 +3358,21 @@ public class xtGraphics extends Panel implements Runnable {
                     rd.setColor(new Color(0, 0, 0));
                     rd.fillRect(0, 205, GameFacts.screenWidth, 62);
                     rd.drawImage(radicalplay, radpx + (int) (8D * Math.random() - 4D), 205, null);
-                    if (radpx != 147) {
-                        radpx += 40;
+
+                    if (radpx != Utility.centeredImageX(radicalplay) - 1) {
+                        radpx += GameFacts.screenWidth / 20;
                         if (radpx > GameFacts.screenWidth) {
                             radpx = -453;
                         }
                     }
                     if (flipo == 40) {
-                        radpx = 148;
+                        radpx = Utility.centeredImageX(radicalplay);
                     }
                     flipo++;
                     if (flipo == 70) {
                         flipo = 0;
                     }
-                    if (radpx == 147) {
+                    if (radpx == Utility.centeredImageX(radicalplay) - 1) {
                         rd.setFont(new Font("SansSerif", 1, 11));
                         FontHandler.fMetrics = rd.getFontMetrics();
                         if (aflk) {
@@ -3461,6 +3518,7 @@ public class xtGraphics extends Panel implements Runnable {
      * Draws a centered string.
      */
     public void drawcs(int yPos, String s, int red, int green, int blue, int i1) {
+        FontHandler.fMetrics = rd.getFontMetrics(rd.getFont()); // Always use current font
         if (i1 != 3 && i1 != 4) {
             red = (int) (red + red * (Medium.snap[0] / 100F));
             if (red > 255) {
@@ -3560,7 +3618,7 @@ public class xtGraphics extends Panel implements Runnable {
     }
 
     public void stageselect(CheckPoints checkpoints, Control control) {
-        intertrack.play();
+        //intertrack.play();
 
         // rd.setFont(new Font("Adventure", 1, 30));
         // drawcs(40, "S E L E C T S T A G E", 255, 128, 0, 3);
@@ -4043,10 +4101,249 @@ public class xtGraphics extends Panel implements Runnable {
         loadedt = false;
     }
 
-    public void maini(Control control, CheckPoints checkpoints, Madness madness[], ContO conto[], ContO conto1[]) {
-        // might redo the entire menu its horrible
+    // public void maini(Control control, CheckPoints checkpoints, Madness madness[], ContO conto[], ContO conto1[]) {
+    //     // might redo the entire menu its horrible
+
+    //     int menuItems = 4;
+
+    //     if (GameSparker.DEBUG) {
+    //         if (!devtriggered) {
+    //             HLogger.info("Developer Console triggered");
+
+    //             DevTool console = new DevTool(checkpoints, madness, conto, conto1, this);
+    //             console.showConsole();
+    //             devtriggered = true;
+    //         }
+    //     }
+
+    //     if (flipo == 0) {
+    //         bgmy[0] = 0;
+    //         bgmy[1] = GameFacts.screenHeight;
+    //         app.setCursor(new Cursor(0));
+    //     }
+
+    //     /* handle the moving background in main menu */
+    //     int i = 0;
+    //     do {
+    //         rd.drawImage(bgmain, 0, bgmy[i], null);
+    //         bgmy[i] -= 20;
+    //         if (bgmy[i] <= -GameFacts.screenHeight) {
+    //             bgmy[i] = GameFacts.screenHeight;
+    //         }
+    //     } while (++i < 2);
+
+    //     /* handle the light red/ping background behind "need for madness!?" text */
+    //     int logomadbg_xpos = Utility.centeredImageX(logomadbg);
+    //     if (flipo > flkat) {
+    //         rd.drawImage(logomadbg, logomadbg_xpos + (int) (4D - Math.random() * 8D),
+    //                 143 + main_menu_height_origin + (int) (4D - Math.random() * 8D), null);
+    //     } else {
+    //         rd.drawImage(logomadbg, logomadbg_xpos, 143 + main_menu_height_origin, null);
+    //     }
+
+    //     /* handle initial insano position */
+    //     rd.drawImage(dude[0], insano_mainmenu_x, insano_mainmenu_y, null);
+
+    //     /* handle cars surrounding "need for madness!? text" */
+    //     rd.drawImage(logocars, Utility.centeredImageX(logocars), 28 + main_menu_height_origin, null);
+
+    //     if (flipo > flkat) {
+    //         rd.drawImage(logomadnes, Utility.centeredImageX(logomadnes) + (int) (4D - Math.random() * 8D),
+    //                 148 + main_menu_height_origin + (int) (4D - Math.random() * 8D), null);
+    //     } else {
+    //         rd.drawImage(logomadnes, Utility.centeredImageX(logomadnes), 148 + main_menu_height_origin, null);
+    //     }
+
+    //     flipo++;
+
+    //     if (flipo > flkat + 36) {
+    //         flipo = 1;
+    //         flkat = (int) (60D + 140D * Math.random());
+    //     }
+
+    //     /* handles moving insano around in the menu */
+    //     if (movly <= 10) {
+    //         if (movly == 10 || movly == 8 || movly == 6 || movly == 4 || movly == 2) {
+    //             insano_mainmenu_target_x = (int) (insano_mainmenu_x + 200 - 500D * Math.random());
+    //             insano_mainmenu_target_y = (int) (insano_mainmenu_y + 200 - 500D * Math.random());
+    //             if (movly == 2) {
+    //                 insano_mainmenu_target_x = insano_mainmenu_x_original;
+    //                 insano_mainmenu_target_y = insano_mainmenu_y_original;
+    //             }
+    //             movly--;
+    //         }
+    //         insano_mainmenu_x += (insano_mainmenu_target_x - insano_mainmenu_x) / 15;
+    //         insano_mainmenu_y += (insano_mainmenu_target_y - insano_mainmenu_y) / 15;
+    //         if (movly != 1) {
+    //             if (Utility.pys(insano_mainmenu_x, insano_mainmenu_target_x, insano_mainmenu_y,
+    //                     insano_mainmenu_target_y) < 20F) {
+    //                 movly--;
+    //             }
+    //         } else {
+    //             if (insano_mainmenu_x > insano_mainmenu_target_x) {
+    //                 insano_mainmenu_x--;
+    //             } else {
+    //                 insano_mainmenu_x++;
+    //             }
+    //             if (insano_mainmenu_y > insano_mainmenu_target_y) {
+    //                 insano_mainmenu_y--;
+    //             } else {
+    //                 insano_mainmenu_y++;
+    //             }
+    //             if (Utility.pys(insano_mainmenu_x, insano_mainmenu_target_x, insano_mainmenu_y,
+    //                     insano_mainmenu_target_y) < 2.0F) {
+    //                 movly--;
+    //             }
+    //         }
+    //         if (movly == 0) {
+    //             insano_mainmenu_x = insano_mainmenu_x_original;
+    //             insano_mainmenu_y = insano_mainmenu_y_original;
+    //             movly = (int) (100D + 100D * Math.random());
+    //         }
+    //     } else if (flipo >= movly) {
+    //         movly = 10;
+    //     }
+
+    //     rd.drawImage(opback, Utility.centeredImageX(opback), 212 + main_menu_height_origin, null);
+    //     rd.drawImage(nfmcoms, Utility.centeredImageX(nfmcoms), 195 + main_menu_height_origin, null);
+    //     rd.drawImage(byrd, Utility.centeredImageX(byrd), 383 + main_menu_height_origin, null);
+
+    //     if (control.up) {
+    //         opselect--;
+    //         if (opselect == -1) {
+    //             opselect = menuItems - 1;
+    //         }
+    //         control.up = false;
+    //     }
+    //     if (control.down) {
+    //         opselect++;
+    //         if (opselect == menuItems + 1) {
+    //             opselect = 0;
+    //         }
+    //         control.down = false;
+    //     }
+    //     if (opselect == 0) {
+    //         if (shaded) {
+    //             rd.setColor(new Color(140, 70, 0));
+    //             rd.fillRect(Utility.centeredWidthX(main_menu_op_0_width), main_menu_op_0_y, main_menu_op_0_width,
+    //                     main_menu_button_height);
+    //             aflk = false;
+    //         }
+    //         if (aflk) {
+    //             rd.setColor(new Color(200, 255, 0));
+    //             aflk = false;
+    //         } else {
+    //             rd.setColor(new Color(255, 128, 0));
+    //             aflk = true;
+    //         }
+    //         rd.drawRoundRect(Utility.centeredWidthX(main_menu_op_0_width), main_menu_op_0_y, main_menu_op_0_width,
+    //                 main_menu_button_height, 7, 20);
+    //     } else {
+    //         rd.setColor(new Color(0, 0, 0));
+    //         rd.drawRoundRect(Utility.centeredWidthX(main_menu_op_0_width), main_menu_op_0_y, main_menu_op_0_width,
+    //                 main_menu_button_height, 7, 20);
+    //     }
+    //     if (opselect == 1) {
+    //         if (shaded) {
+    //             rd.setColor(new Color(140, 70, 0));
+    //             rd.fillRect(Utility.centeredWidthX(main_menu_op_1_width), main_menu_op_1_y, main_menu_op_1_width,
+    //                     main_menu_button_height);
+    //             aflk = false;
+    //         }
+    //         if (aflk) {
+    //             rd.setColor(new Color(200, 128, 0));
+    //             aflk = false;
+    //         } else {
+    //             rd.setColor(new Color(255, 128, 0));
+    //             aflk = true;
+    //         }
+    //         rd.drawRoundRect(Utility.centeredWidthX(main_menu_op_1_width), main_menu_op_1_y, main_menu_op_1_width,
+    //                 main_menu_button_height, 7, 20);
+    //     } else {
+    //         rd.setColor(new Color(0, 0, 0));
+    //         rd.drawRoundRect(Utility.centeredWidthX(main_menu_op_1_width), main_menu_op_1_y, main_menu_op_1_width,
+    //                 main_menu_button_height, 7, 20);
+    //     }
+    //     if (opselect == 2) {
+    //         if (shaded) {
+    //             rd.setColor(new Color(140, 70, 0));
+    //             rd.fillRect(Utility.centeredWidthX(main_menu_op_2_width), main_menu_op_2_y, main_menu_op_2_width,
+    //                     main_menu_button_height);
+    //             aflk = false;
+    //         }
+    //         if (aflk) {
+    //             rd.setColor(new Color(200, 0, 0));
+    //             aflk = false;
+    //         } else {
+    //             rd.setColor(new Color(255, 128, 0));
+    //             aflk = true;
+    //         }
+    //         rd.drawRoundRect(Utility.centeredWidthX(main_menu_op_2_width), main_menu_op_2_y, main_menu_op_2_width,
+    //                 main_menu_button_height, 7, 20);
+    //     } else {
+    //         rd.setColor(new Color(0, 0, 0));
+    //         rd.drawRoundRect(Utility.centeredWidthX(main_menu_op_2_width), main_menu_op_2_y, main_menu_op_2_width,
+    //                 main_menu_button_height, 7, 20);
+    //     }
+    //     rd.drawImage(opti, Utility.centeredImageX(opti), 250 + main_menu_height_origin, null);
+    //     if (control.enter || control.handb) {
+    //         if (opselect == 0) {
+    //             if (unlocked == 1 && oldfase == Phase.INGAME) {
+    //                 oldfase = Phase.CARSELECTTRIGGER;
+    //                 fase = Phase.INSTRUCTIONS;
+    //             } else {
+    //                 fase = Phase.CARSELECTTRIGGER;
+    //             }
+    //         }
+    //         if (opselect == 1) {
+    //             oldfase = Phase.MAINMENU;
+    //             fase = Phase.INSTRUCTIONS;
+    //         }
+    //         if (opselect == 2) {
+    //             fase = Phase.CREDITS;
+    //         }
+    //         flipo = 0;
+    //         control.enter = false;
+    //         control.handb = false;
+    //     }
+    //     if (shaded) {
+    //         app.repaint();
+    //         try {
+    //             Thread.sleep(100L);
+    //         } catch (InterruptedException _ex) {
+    //         }
+    //     }
+    // }
+
+    private void drawMenuButton(Graphics2D rd, int x, int y, int width, int height, int arcWidth, int arcHeight,
+                            boolean selected, boolean shaded,
+                            Color fillColor, Color borderColor, Color selectedColor,
+                            String text, Font font) {
+
+        
+
+        // Fill background
+        rd.setColor(selected ? new Color(190, 50, 0, 100) : new Color(100, 20, 0, 100));
+        rd.fillRoundRect(x, y, width, height, arcWidth, arcHeight);
+
+        // Draw border
+        rd.setColor(selected ? selectedColor : borderColor);
+        rd.drawRoundRect(x, y, width, height, arcWidth, arcHeight);
+
+        // Draw centered text
+        rd.setFont(font);
+        FontMetrics metrics = rd.getFontMetrics(font);
+        int textX = x + 12; // 12px padding from the left edge
+        int textY = y + (height + metrics.getAscent() - metrics.getDescent()) / 2;
+        rd.setColor(new Color(255, 128, 0));
+        rd.drawString(text, textX, textY);
+    }
+
+    public void newmaini(Control control, CheckPoints checkpoints, Madness madness[], ContO conto[], ContO conto1[]) {
 
         int menuItems = 4;
+
+        intertrack.play();
 
         if (GameSparker.DEBUG) {
             if (!devtriggered) {
@@ -4064,36 +4361,23 @@ public class xtGraphics extends Panel implements Runnable {
             app.setCursor(new Cursor(0));
         }
 
-        /* handle the moving background in main menu */
-        int i = 0;
-        do {
-            rd.drawImage(bgmain, 0, bgmy[i], null);
-            bgmy[i] -= 20;
-            if (bgmy[i] <= -GameFacts.screenHeight) {
-                bgmy[i] = GameFacts.screenHeight;
-            }
-        } while (++i < 2);
 
         /* handle the light red/ping background behind "need for madness!?" text */
-        int logomadbg_xpos = Utility.centeredImageX(logomadbg);
-        if (flipo > flkat) {
-            rd.drawImage(logomadbg, logomadbg_xpos + (int) (4D - Math.random() * 8D),
-                    143 + main_menu_height_origin + (int) (4D - Math.random() * 8D), null);
-        } else {
-            rd.drawImage(logomadbg, logomadbg_xpos, 143 + main_menu_height_origin, null);
-        }
-
-        /* handle initial insano position */
-        rd.drawImage(dude[0], insano_mainmenu_x, insano_mainmenu_y, null);
-
-        /* handle cars surrounding "need for madness!? text" */
-        rd.drawImage(logocars, Utility.centeredImageX(logocars), 28 + main_menu_height_origin, null);
 
         if (flipo > flkat) {
-            rd.drawImage(logomadnes, Utility.centeredImageX(logomadnes) + (int) (4D - Math.random() * 8D),
-                    148 + main_menu_height_origin + (int) (4D - Math.random() * 8D), null);
+            rd.setFont(new Font("Adventure", 1, 50));
+            FontHandler.fMetrics = rd.getFontMetrics();
+            rd.setColor(new Color(232, 45, 8));
+            rd.drawString("Need  For  MADNESS ?", 100 + (int) (4D - Math.random() * 8D), 
+                30 + main_menu_height_origin + (int) (4D - Math.random() * 8D));
+            // rd.drawImage(logomadnes, 100 + (int) (4D - Math.random() * 8D),
+            //         50 + main_menu_height_origin + (int) (4D - Math.random() * 8D), null);
         } else {
-            rd.drawImage(logomadnes, Utility.centeredImageX(logomadnes), 148 + main_menu_height_origin, null);
+            rd.setFont(new Font("Adventure", 1, 50));
+            FontHandler.fMetrics = rd.getFontMetrics();
+            rd.setColor(new Color(232, 45, 8));
+            rd.drawString("Need  For  MADNESS ?", 100, 
+                30 + main_menu_height_origin);
         }
 
         flipo++;
@@ -4103,52 +4387,7 @@ public class xtGraphics extends Panel implements Runnable {
             flkat = (int) (60D + 140D * Math.random());
         }
 
-        /* handles moving insano around in the menu */
-        if (movly <= 10) {
-            if (movly == 10 || movly == 8 || movly == 6 || movly == 4 || movly == 2) {
-                insano_mainmenu_target_x = (int) (insano_mainmenu_x + 200 - 500D * Math.random());
-                insano_mainmenu_target_y = (int) (insano_mainmenu_y + 200 - 500D * Math.random());
-                if (movly == 2) {
-                    insano_mainmenu_target_x = insano_mainmenu_x_original;
-                    insano_mainmenu_target_y = insano_mainmenu_y_original;
-                }
-                movly--;
-            }
-            insano_mainmenu_x += (insano_mainmenu_target_x - insano_mainmenu_x) / 15;
-            insano_mainmenu_y += (insano_mainmenu_target_y - insano_mainmenu_y) / 15;
-            if (movly != 1) {
-                if (Utility.pys(insano_mainmenu_x, insano_mainmenu_target_x, insano_mainmenu_y,
-                        insano_mainmenu_target_y) < 20F) {
-                    movly--;
-                }
-            } else {
-                if (insano_mainmenu_x > insano_mainmenu_target_x) {
-                    insano_mainmenu_x--;
-                } else {
-                    insano_mainmenu_x++;
-                }
-                if (insano_mainmenu_y > insano_mainmenu_target_y) {
-                    insano_mainmenu_y--;
-                } else {
-                    insano_mainmenu_y++;
-                }
-                if (Utility.pys(insano_mainmenu_x, insano_mainmenu_target_x, insano_mainmenu_y,
-                        insano_mainmenu_target_y) < 2.0F) {
-                    movly--;
-                }
-            }
-            if (movly == 0) {
-                insano_mainmenu_x = insano_mainmenu_x_original;
-                insano_mainmenu_y = insano_mainmenu_y_original;
-                movly = (int) (100D + 100D * Math.random());
-            }
-        } else if (flipo >= movly) {
-            movly = 10;
-        }
-
-        rd.drawImage(opback, Utility.centeredImageX(opback), 212 + main_menu_height_origin, null);
-        rd.drawImage(nfmcoms, Utility.centeredImageX(nfmcoms), 195 + main_menu_height_origin, null);
-        rd.drawImage(byrd, Utility.centeredImageX(byrd), 383 + main_menu_height_origin, null);
+        //rd.drawImage(opback, Utility.centeredImageX(opback), 212 + main_menu_height_origin, null);
 
         if (control.up) {
             opselect--;
@@ -4159,95 +4398,54 @@ public class xtGraphics extends Panel implements Runnable {
         }
         if (control.down) {
             opselect++;
-            if (opselect == menuItems + 1) {
+            if (opselect == menuItems) {
                 opselect = 0;
             }
             control.down = false;
         }
-        if (opselect == 0) {
-            if (shaded) {
-                rd.setColor(new Color(140, 70, 0));
-                rd.fillRect(Utility.centeredWidthX(main_menu_op_0_width), main_menu_op_0_y, main_menu_op_0_width,
-                        main_menu_button_height);
-                aflk = false;
-            }
-            if (aflk) {
-                rd.setColor(new Color(200, 255, 0));
-                aflk = false;
-            } else {
-                rd.setColor(new Color(255, 128, 0));
-                aflk = true;
-            }
-            rd.drawRoundRect(Utility.centeredWidthX(main_menu_op_0_width), main_menu_op_0_y, main_menu_op_0_width,
-                    main_menu_button_height, 7, 20);
-        } else {
-            rd.setColor(new Color(0, 0, 0));
-            rd.drawRoundRect(Utility.centeredWidthX(main_menu_op_0_width), main_menu_op_0_y, main_menu_op_0_width,
-                    main_menu_button_height, 7, 20);
-        }
-        if (opselect == 1) {
-            if (shaded) {
-                rd.setColor(new Color(140, 70, 0));
-                rd.fillRect(Utility.centeredWidthX(main_menu_op_1_width), main_menu_op_1_y, main_menu_op_1_width,
-                        main_menu_button_height);
-                aflk = false;
-            }
-            if (aflk) {
-                rd.setColor(new Color(200, 128, 0));
-                aflk = false;
-            } else {
-                rd.setColor(new Color(255, 128, 0));
-                aflk = true;
-            }
-            rd.drawRoundRect(Utility.centeredWidthX(main_menu_op_1_width), main_menu_op_1_y, main_menu_op_1_width,
-                    main_menu_button_height, 7, 20);
-        } else {
-            rd.setColor(new Color(0, 0, 0));
-            rd.drawRoundRect(Utility.centeredWidthX(main_menu_op_1_width), main_menu_op_1_y, main_menu_op_1_width,
-                    main_menu_button_height, 7, 20);
-        }
-        if (opselect == 2) {
-            if (shaded) {
-                rd.setColor(new Color(140, 70, 0));
-                rd.fillRect(Utility.centeredWidthX(main_menu_op_2_width), main_menu_op_2_y, main_menu_op_2_width,
-                        main_menu_button_height);
-                aflk = false;
-            }
-            if (aflk) {
-                rd.setColor(new Color(200, 0, 0));
-                aflk = false;
-            } else {
-                rd.setColor(new Color(255, 128, 0));
-                aflk = true;
-            }
-            rd.drawRoundRect(Utility.centeredWidthX(main_menu_op_2_width), main_menu_op_2_y, main_menu_op_2_width,
-                    main_menu_button_height, 7, 20);
-        } else {
-            rd.setColor(new Color(0, 0, 0));
-            rd.drawRoundRect(Utility.centeredWidthX(main_menu_op_2_width), main_menu_op_2_y, main_menu_op_2_width,
-                    main_menu_button_height, 7, 20);
-        }
-        rd.drawImage(opti, Utility.centeredImageX(opti), 250 + main_menu_height_origin, null);
+
+        drawMenuButton(rd, main_menu_op_0_x, main_menu_op_0_y, main_menu_op_0_width, main_menu_button_height,
+            main_menu_arcwidth, main_menu_archeight, opselect == 0, shaded,
+            new Color(140, 70, 0), new Color(255, 128, 0), new Color(255, 255, 0),
+            "PLAY", new Font("Adventure", Font.BOLD, 20));
+
+        drawMenuButton(rd, main_menu_op_1_x, main_menu_op_1_y, main_menu_op_1_width, main_menu_button_height,
+            main_menu_arcwidth, main_menu_archeight, opselect == 1, shaded,
+            new Color(140, 70, 0), new Color(255, 128, 0), new Color(255, 255, 0),
+            "GAME INSTRUCTIONS", new Font("Adventure", Font.BOLD, 20));
+
+        drawMenuButton(rd, main_menu_op_2_x, main_menu_op_2_y, main_menu_op_2_width, main_menu_button_height,
+            main_menu_arcwidth, main_menu_archeight, opselect == 2, shaded,
+            new Color(140, 70, 0), new Color(255, 128, 0), new Color(255, 255, 0),
+            "SETTINGS", new Font("Adventure", Font.BOLD, 20));
+
+        drawMenuButton(rd, main_menu_op_3_x, main_menu_op_3_y, main_menu_op_3_width, main_menu_button_height,
+            main_menu_arcwidth, main_menu_archeight, opselect == 3, shaded,
+            new Color(140, 70, 0), new Color(255, 128, 0), new Color(255, 255, 0),
+            "CREDITS", new Font("Adventure", Font.BOLD, 20));
+
+
+        //rd.drawImage(opti, Utility.centeredImageX(opti), 250 + main_menu_height_origin, null);
+
+
         if (control.enter || control.handb) {
             if (opselect == 0) {
-                if (unlocked == 1 && oldfase == Phase.INGAME) {
-                    oldfase = Phase.CARSELECTTRIGGER;
-                    fase = Phase.INSTRUCTIONS;
-                } else {
+                // if (unlocked == 1 && oldfase == Phase.INGAME) {
+                //     oldfase = Phase.CARSELECTTRIGGER;
+                //     GameSparker.menuState = Phase.INSTRUCTIONS;
+                // } else {
                     fase = Phase.CARSELECTTRIGGER;
-                }
+                //}
             }
             if (opselect == 1) {
-                oldfase = Phase.MAINMENU;
-                fase = Phase.INSTRUCTIONS;
+                GameSparker.menuState = Phase.INSTRUCTIONS;
             }
             if (opselect == 2) {
-                fase = Phase.CREDITS;
+                GameSparker.menuState = Phase.CUSTOMSETTINGS;
+                opselect = 0;
             }
             if (opselect == 3) {
-                oldfase = Phase.MAINMENU;
-                opselect = 0;
-                fase = Phase.CUSTOMSETTINGS;
+                fase = Phase.CREDITS;
             }
             flipo = 0;
             control.enter = false;
@@ -4859,11 +5057,11 @@ public class xtGraphics extends Panel implements Runnable {
         flatrstart = 0;
         Medium.lightson = false;
         /// aaaaaaaa
-        (new Thread() {
-            public void run() {
-                loadIntertrack("cars");
-            }
-        }).start();
+        // (new Thread() {
+        //     public void run() {
+        //         loadIntertrack("dancefevr");
+        //     }
+        // }).start();
         pnext = 0;
         pback = 0;
     }
@@ -4899,7 +5097,7 @@ public class xtGraphics extends Panel implements Runnable {
             carsbginflex();
             flatrstart = 6;
         }
-        intertrack.play();
+        //intertrack.play();
         rd.drawImage(selectcar, Utility.centeredImageX(selectcar), 12, null);
         Medium.crs = true;
         Medium.x = -GameFacts.screenWidth/2;
@@ -5113,9 +5311,9 @@ public class xtGraphics extends Panel implements Runnable {
             sm.play("tick");
             if (flipo == 0 && (sc[0] - 7) * 2 < unlocked) {
                 lastload = -11;
-                intertrack.setPaused(true);
-                intertrack.unload();
-                loadIntertrack("stages");
+                // intertrack.setPaused(true);
+                // intertrack.unload();
+                // loadIntertrack("stages");
                 Medium.crs = false;
                 fase = Phase.NPLAYERSCHECK;
             }
@@ -5307,7 +5505,7 @@ public class xtGraphics extends Panel implements Runnable {
                 lym = j;
             }
         }
-        if (fase == Phase.INSTRUCTIONS) {
+        if (GameSparker.menuState == Phase.INSTRUCTIONS) {
             if (flipo >= 1 && flipo <= 13) {
                 if (k == 1 && over(next[0], i, j, instructions_next_button_x, instructions_next_back_button_y)) {
                     pnext = 1;

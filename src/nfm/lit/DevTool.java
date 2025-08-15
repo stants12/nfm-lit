@@ -19,7 +19,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Developer console for Need For Madness
+ * Source Engine style Developer console for Need For Madness
  *
  * @author oteek
  */

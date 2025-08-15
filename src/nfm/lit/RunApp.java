@@ -46,7 +46,7 @@ class RunApp extends Panel {
     }
 
     private static void startup() {
-        frame = new Frame("Need For Madness: LIT");// Change this to the name of your preference
+        frame = new Frame("Need For Madness: LIT (experimental)");// Change this to the name of your preference
         frame.setBackground(new Color(0, 0, 0));
         frame.setIgnoreRepaint(true);
         frame.setIconImages(getIcons());

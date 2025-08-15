@@ -1698,6 +1698,145 @@ public class Medium {
         }
     }
 
+    /**
+ * Scenic camera mode for main menu.
+ * Changes camera position every 5 seconds.
+ */
+    public static void scenicCamera(ContO conto, CheckPoints checkpoints, long timeMillis, int sceneDurationMillis) {
+        int scene = (int)((timeMillis / sceneDurationMillis) % 4); // 4 scenes, change every x seconds
+
+        switch (scene) {
+            case 0:
+                // low angle shot: camera starts close and low, slowly pulls back and up
+                double hProgress = (timeMillis % sceneDurationMillis) / (double)sceneDurationMillis; // 0.0 to 1.0 over 5 seconds
+                x = conto.x + (int)(300 * hProgress); // slowly move right
+                y = conto.y - (int)(600 + 1200 * hProgress); // start low, move up
+                z = conto.z - (int)(800 * (1.0 - hProgress)); // start close, move back
+                xz = 0;
+                zy = (int)(10 + 20 * hProgress); // tilt up as camera rises
+                break;
+            case 1:
+                // showcase the start pos from above, moving forward a bit
+                long sceneTime = timeMillis % sceneDurationMillis; // Time within this scene (0-4999 ms)
+                double sceneDuration = (double)sceneDurationMillis; // seconds per scene
+                double maxDistance = 4000.0;   // Maximum distance to move forward in this scene
+                double progress = sceneTime / sceneDuration; // 0.0 to 1.0
+                double forwardOffset = progress * maxDistance;
+
+                double dx = checkpoints.x[1] - checkpoints.x[0];
+                double dz = checkpoints.z[1] - checkpoints.z[0];
+                double len = Math.sqrt(dx * dx + dz * dz);
+                double dirX = dx / len;
+                double dirZ = dz / len;
+                x = checkpoints.x[0] + (int)(forwardOffset * dirX) - 700;
+                z = checkpoints.z[0] + (int)(forwardOffset * dirZ) - 4000;
+                y = conto.y - 3800;
+                xz = 0;
+                zy = 45;
+                break;
+            case 2:
+                // cinematic sweep: camera starts far, approaches, then orbits the object
+                double sweepProgress = (timeMillis % sceneDurationMillis) / (double)sceneDurationMillis;
+                // start far away, move closer
+                int startX = conto.x + 4000;
+                int startZ = conto.z - 4000;
+                int endX = conto.x + 600;
+                int endZ = conto.z - 600;
+                x = (int)(startX + (endX - startX) * sweepProgress);
+                z = (int)(startZ + (endZ - startZ) * sweepProgress);
+                y = conto.y - 2000 + (int)(700 * sweepProgress); // move up slightly
+                // orbit as it approaches
+                    int orbitAngle = (int)(360 * sweepProgress);
+                    x += (int)(300 * Math.cos(Math.toRadians(orbitAngle)));
+                    z += (int)(300 * Math.sin(Math.toRadians(orbitAngle)));
+                    int targetXz = (int)(Math.atan2(z - conto.z, x - conto.x) / 0.017453292519943295D);
+                // normalize angle difference to [-180, 180]
+                    int diff = targetXz - xz;
+                    if (diff > 180) diff -= 360;
+                    if (diff < -180) diff += 360;
+                    xz += diff / 10; // Smoothly interpolate rotation
+                    zy = 30 + (int)(10 * sweepProgress); // tilt up slightly
+                break;
+            case 3:
+                // track Flyover: camera follows the racing line
+                double flyoverTime = (checkpoints.n - 1) * (sceneDurationMillis * 0.24); // adjust for speed
+                double flyoverProgress = (timeMillis % (long)flyoverTime) / flyoverTime * (checkpoints.n - 1); // 0.0 to n-1
+                int seg = (int) flyoverProgress;
+                double segFrac = flyoverProgress - seg;
+                int nextSeg = (seg + 1) % checkpoints.n;
+
+                // interpolation
+                double camX = checkpoints.x[seg] + (checkpoints.x[nextSeg] - checkpoints.x[seg]) * segFrac;
+                double camZ = checkpoints.z[seg] + (checkpoints.z[nextSeg] - checkpoints.z[seg]) * segFrac;
+                double camY = conto.y - 2200 + 120 * Math.sin(segFrac * Math.PI * 0.15); // high above, gentle wave
+
+                x = (int) camX;
+                z = (int) camZ;
+                y = (int) camY;
+
+                // camera looks forward along the track direction
+                int targetXz1 = (int)(Math.atan2(checkpoints.x[nextSeg] - checkpoints.x[seg], checkpoints.z[nextSeg] - checkpoints.z[seg]) / 0.017453292519943295D);
+
+                // normalize angle difference to [-180, 180]
+                int angleDiff = targetXz1 - xz;
+                if (angleDiff > 180) angleDiff -= 360;
+                if (angleDiff < -180) angleDiff += 360;
+
+                xz += angleDiff / 10; // smoothly interpolate rotation, adjust divisor for speed
+                zy = 25 + (int)(1 * Math.sin(segFrac * Math.PI)); // banking effect
+                break;
+        }
+        // Optionally, add smooth transitions between scenes
+    }
+
+    public static void menucam(ContO conto) {
+        // Static variable to track arrival progress
+        // (You can move this to class level if needed)
+        final double ARRIVAL_DURATION = 3000.0; // ms to reach target
+        if (GameSparker.menuStartTime == 0L) GameSparker.menuStartTime = System.currentTimeMillis();
+        long elapsed = System.currentTimeMillis() - GameSparker.menuStartTime;
+        double progress = Math.min(elapsed / ARRIVAL_DURATION, 1.0);
+
+        // Start position: far behind, high up, and to the left of the car
+        int startX = conto.x - 5200;
+        int startY = conto.y - 3000;
+        int startZ = conto.z - 6000;
+
+        // End position: in front of car, slightly above, offset to the left
+        int endX = conto.x - 1100;
+        int endY = conto.y - 650;
+        int endZ = conto.z + 100;
+
+        if (progress < 1.0) {
+            // Interpolate position until arrival
+            x = (int)(startX + (endX - startX) * progress);
+            y = (int)(startY + (endY - startY) * progress);
+            z = (int)(startZ + (endZ - startZ) * progress);
+
+            // Camera rotation: look at the car from current position
+            int dx = conto.x - x;
+            int dz = conto.z - z;
+            xz = (int)(Math.atan2(dx, dz) / 0.017453292519943295D);
+
+            zy = (int)(15 + (30 - 15) * progress);
+        } else {
+            // Orbit around the car after arrival
+            double orbitSpeed = 0.15; // rotations per second
+            double angle = ((System.currentTimeMillis() - GameSparker.menuStartTime - ARRIVAL_DURATION) * orbitSpeed / 1000.0) % (2 * Math.PI);
+            int orbitRadius = 350;
+
+            x = endX + (int)(orbitRadius * Math.cos(angle));
+            y = endY;
+            z = endZ + (int)(orbitRadius * Math.sin(angle));
+
+            int dx = conto.x - x;
+            int dz = conto.z - z;
+            xz = (int)(Math.atan2(dx, dz) / 0.017453292519943295D);
+
+            zy = 25;
+        }
+    }
+
     public static void watch(ContO conto, int i) {
         if (flex != 0) {
             flex = 0;

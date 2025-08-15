@@ -8,6 +8,8 @@ import java.awt.geom.Rectangle2D;
 import java.io.*;
 import java.net.Socket;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Objects;
@@ -102,6 +104,10 @@ public class GameSparker extends Applet implements Runnable {
     private int nob;
     private int notb;
     private int view;
+
+    public static Phase menuState = Phase.MAINMENU;
+    public static long menuStartTime = -1;
+    public static int menuStage = 8;
 
     /* variables for screen shake */
 
@@ -966,6 +972,25 @@ public class GameSparker extends Applet implements Runnable {
         }
     }
 
+    /**
+     * Draws ContO objects using painter's algorithm (farther objects first).
+     * Objects with dist == 0 are drawn immediately.
+     */
+    public static void renderObjects(Graphics2D rd, ContO[] objects, int start, int end) {
+        List<ContO> toSort = new ArrayList<>();
+        for (int i = start; i < end; i++) {
+            if (objects[i].dist != 0) {
+                toSort.add(objects[i]);
+            } else {
+                objects[i].d(rd);
+            }
+        }
+        toSort.sort((a, b) -> Integer.compare(b.dist, a.dist));
+        for (ContO obj : toSort) {
+            obj.d(rd);
+        }
+    }
+
     @Override
     public void run() {
         rd.setColor(new Color(0, 0, 0));
@@ -1065,7 +1090,8 @@ public class GameSparker extends Applet implements Runnable {
                     i2++;
                 } else {
                     i2 = 0;
-                    xtgraphics.fase = Phase.MAINMENU;
+                    //xtgraphics.fase = Phase.MAINMENU;
+                    xtgraphics.fase = Phase.LOADSTAGEMENU;
                     mouses = 0;
                     u[0].falseo();
                 }
@@ -1153,13 +1179,50 @@ public class GameSparker extends Applet implements Runnable {
             //         xtgraphics.fase = Phase.LOADING;
             //     }
             // }
+            // if (xtgraphics.fase == Phase.OLDMAINMENU) {
+            //     xtgraphics.maini(u[0], checkpoints, amadness, aconto, aconto1);
+            //     xtgraphics.ctachm(xm, ym, mouses, u[0]);
+            //     if (mouses == 2)
+            //         mouses = 0;
+            //     if (mouses == 1)
+            //         mouses = 2;
+            // }
             if (xtgraphics.fase == Phase.MAINMENU) {
-                xtgraphics.maini(u[0], checkpoints, amadness, aconto, aconto1);
-                xtgraphics.ctachm(xm, ym, mouses, u[0]);
-                if (mouses == 2)
-                    mouses = 0;
-                if (mouses == 1)
-                    mouses = 2;
+                rd.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+
+                if (GameSparker.menuStartTime == -1) {
+                    GameSparker.menuStartTime = System.currentTimeMillis();
+                }
+
+                Medium.d(rd);
+                renderObjects(rd, aconto1, 0, nob);
+
+                Medium.scenicCamera(aconto1[0], checkpoints, System.currentTimeMillis() - GameSparker.menuStartTime, 4000);
+
+                //Medium.menucam(aconto1[0]);
+                //Medium.around(aconto1[0], false);
+
+                if (menuState == Phase.MAINMENU) {
+                    xtgraphics.newmaini(u[0], checkpoints, amadness, aconto, aconto1);
+                    xtgraphics.ctachm(xm, ym, mouses, u[0]);
+                    if (mouses == 2)
+                        mouses = 0;
+                    if (mouses == 1)
+                        mouses = 2;
+                }
+
+                if (menuState == Phase.CUSTOMSETTINGS) {
+                    xtgraphics.menusettings(u[0]);
+                }
+
+                if (menuState == Phase.INSTRUCTIONS) {
+                    xtgraphics.inst(u[0]);
+                    xtgraphics.ctachm(xm, ym, mouses, u[0]);
+                    if (mouses == 2)
+                        mouses = 0;
+                    if (mouses == 1)
+                        mouses = 2;
+                }
             }
             if (xtgraphics.fase == Phase.INSTRUCTIONS) {
                 xtgraphics.inst(u[0]);
@@ -1171,11 +1234,6 @@ public class GameSparker extends Applet implements Runnable {
             }
             if (xtgraphics.fase == Phase.CUSTOMSETTINGS) { // settings menu
                 xtgraphics.menusettings(u[0]);
-                xtgraphics.ctachm(xm, ym, mouses, u[0]);
-                if (mouses == 2)
-                    mouses = 0;
-                if (mouses == 1)
-                    mouses = 2;
             }
             if (xtgraphics.fase == Phase.POSTGAMEHANDOVER) {
                 xtgraphics.fase = Phase.POSTGAME;
@@ -1260,6 +1318,27 @@ public class GameSparker extends Applet implements Runnable {
                 repaint();
                 loadstage(aconto1, aconto, trackers, checkpoints, xtgraphics, amadness, record, true);
                 xtgraphics.loadmusic(checkpoints.stage, i1);
+            }
+            if (xtgraphics.fase == Phase.LOADSTAGEMENU) { // for main menu stage loading
+                repaint();
+                GameSparker.loadStageCus = "nfm2/" + menuStage;
+
+                (new Thread() {
+                    public void run() {
+                        xtgraphics.loadIntertrack("stages");
+                    }
+                }).start();
+
+                GameSparker.menuStartTime = -1;
+                loadstage(aconto1, aconto, trackers, checkpoints, xtgraphics, amadness, record, true);
+                xtgraphics.fase = Phase.MAINMENU;
+            }
+            if (xtgraphics.fase == Phase.RELOADSTAGEMENU) { // for main menu stage reloading
+                repaint();
+                //GameSparker.menuStartTime = -1;
+                GameSparker.loadStageCus = "nfm2/" + menuStage;
+                loadstage(aconto1, aconto, trackers, checkpoints, xtgraphics, amadness, record, true);
+                xtgraphics.fase = Phase.MAINMENU;
             }
             if (xtgraphics.fase == Phase.STAGESELECT) {
                 rd.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
