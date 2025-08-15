@@ -5103,6 +5103,11 @@ public class xtGraphics extends Panel implements Runnable {
         File zip = new File("data/music/interface/" + track + ".zip");
         File zipo = new File("data/music/interface/" + track + ".zipo");
 
+        File mod = new File("data/music/interface/" + track + ".mod");
+        File it = new File("data/music/interface/" + track + ".it");
+        File s3m = new File("data/music/interface/" + track + ".s3m");
+        File xm = new File("data/music/interface/" + track + ".xm");
+
         try {
             if (mp3.exists()) {
                 intertrack = TrackZipLoader.loadMusic("data/music/interface/" + track + ".mp3");
@@ -5112,6 +5117,14 @@ public class xtGraphics extends Panel implements Runnable {
                 intertrack = TrackZipLoader.loadMusic("data/music/interface/" + track + ".mid");
             } else if (wav.exists()) {
                 intertrack = TrackZipLoader.loadMusic("data/music/interface/" + track + ".wav");
+            } else if (mod.exists()) {
+                intertrack = TrackZipLoader.loadMusic("data/music/interface/" + track + ".mod");
+            } else if (it.exists()) {
+                intertrack = TrackZipLoader.loadMusic("data/music/interface/" + track + ".it");
+            } else if (s3m.exists()) {
+                intertrack = TrackZipLoader.loadMusic("data/music/interface/" + track + ".s3m");
+            } else if (xm.exists()) {
+                intertrack = TrackZipLoader.loadMusic("data/music/interface/" + track + ".xm");
             } else if (zip.exists()) {
                 intertrack = TrackZipLoader.loadZip("data/music/interface/" + track + ".zip", false);
             } else if (radq.exists()) {

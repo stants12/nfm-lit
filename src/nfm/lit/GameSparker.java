@@ -455,6 +455,7 @@ public class GameSparker extends Applet implements Runnable {
         if (musicDir.exists() && musicDir.isDirectory()) {
             String[] files = musicDir.list((dir, name) -> 
                 name.toLowerCase().endsWith(".mp3") || 
+                name.toLowerCase().endsWith(".mod") || 
                 name.toLowerCase().endsWith(".zip") || 
                 name.toLowerCase().endsWith(".zipo") || 
                 name.toLowerCase().endsWith(".radq") || 

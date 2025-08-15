@@ -1812,7 +1812,7 @@ public class Medium {
 
         // End position: in front of car, slightly above, offset to the left
         int endX = conto.x - 1500;
-        int endY = conto.y - 650;
+        int endY = conto.y - 400;
         int endZ = conto.z + 100;
 
         if (progress < 1.0) {
@@ -1832,9 +1832,14 @@ public class Medium {
             double angle = ((System.currentTimeMillis() - GameSparker.menuStartTime - ARRIVAL_DURATION) * orbitSpeed / 1000.0) % (2 * Math.PI);
             int orbitRadius = 350;
 
-            int orbitX = endX + (int)(orbitRadius * Math.cos(angle));
-            int orbitY = endY;
-            int orbitZ = endZ + (int)(orbitRadius * Math.sin(angle));
+            // Tweak: Offset the orbit center further right so car stays on right side of screen
+            int orbitCenterX = endX + 400; // shift right (increase for more right bias)
+            int orbitCenterY = endY;
+            int orbitCenterZ = endZ + 400;
+
+            int orbitX = orbitCenterX + (int)(orbitRadius * Math.cos(angle));
+            int orbitY = orbitCenterY;
+            int orbitZ = orbitCenterZ + (int)(orbitRadius * Math.sin(angle));
 
             // Smooth transition for TRANSITION_DURATION after arrival
             double orbitProgress = Math.min((elapsed - ARRIVAL_DURATION) / TRANSITION_DURATION, 1.0);
@@ -1849,7 +1854,7 @@ public class Medium {
                 float arrivalXz = (float)(Math.atan2(conto.x - endX, conto.z - endZ) / 0.017453292519943295D);
                 xz = (float)(arrivalXz + (targetXz - arrivalXz) * orbitProgress);
 
-                zy = (float)(30 + (25 - 30) * orbitProgress);
+                zy = (float)(30 + (20 - 30) * orbitProgress);
             } else {
                 x = orbitX;
                 y = orbitY;
@@ -1859,7 +1864,7 @@ public class Medium {
                 int dz = conto.z - z;
                 xz = (float)(Math.atan2(dx, dz) / 0.017453292519943295D);
 
-                zy = 25;
+                zy = 20;
             }
         }
     }

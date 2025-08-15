@@ -110,7 +110,12 @@ public final class TrackZipLoader {
     {
     	final File f = new File(file);
     	
-    	if(file.endsWith(".ogg") || file.endsWith(".mp3") || file.endsWith(".wav"))
+    	if(file.endsWith(".ogg") || file.endsWith(".mp3") || file.endsWith(".wav")
+            || file.endsWith(".mod")
+            || file.endsWith(".xm")
+            || file.endsWith(".it")
+            || file.endsWith(".s3m")
+            )
     	{
     		if(f.exists())
     		{
