@@ -254,6 +254,28 @@ public class Utility {
         }
     }
 
+    public static void rot(float[] af, float[] af1, int i, int j, float k, int l) {
+        if (k > 0 || k < 0) {
+            for (int i1 = 0; i1 < l; i1++) {
+                float f = af[i1];
+                float f1 = af1[i1];
+                af[i1] = i + ((f - i) * RadicalMath.cos(k) - (f1 - j) * RadicalMath.sin(k));
+                af1[i1] = j + ((f - i) * RadicalMath.sin(k) + (f1 - j) * RadicalMath.cos(k));
+            }
+        }
+    }
+
+    public static void rot(int[] ai, int[] ai1, int i, int j, float k, int l) {
+        if (k > 0 || k < 0) {
+            for (int i1 = 0; i1 < l; i1++) {
+                int j1 = ai[i1];
+                int k1 = ai1[i1];
+                ai[i1] = i + (int) ((j1 - i) * RadicalMath.cos(k) - (k1 - j) * RadicalMath.sin(k));
+                ai1[i1] = j + (int) ((j1 - i) * RadicalMath.sin(k) + (k1 - j) * RadicalMath.cos(k));
+            }
+        }
+    }
+
     public static int[] rotSingle(int poly1, int poly2, final int center1, final int center2, final int angle,
             final float sin_ang, final float cos_ang) {
         if (angle != 0) {
@@ -262,6 +284,19 @@ public class Utility {
             poly1 = center1 + (int) ((j1 - center1) * cos_ang - (k1 - center2) * sin_ang);
             poly2 = center2 + (int) ((j1 - center1) * sin_ang + (k1 - center2) * cos_ang);
         }
+        return new int[] {
+                poly1, poly2
+        };
+    }
+
+    public static int[] rotSingle(int poly1, int poly2, final int center1, final int center2, final float angle, final float sin_ang, final float cos_ang) {
+        if (angle != 0) {
+            final int j1 = poly1;
+            final int k1 = poly2;
+            poly1 = center1 + (int) ((j1 - center1) * cos_ang - (k1 - center2) * sin_ang);
+            poly2 = center2 + (int) ((j1 - center1) * sin_ang + (k1 - center2) * cos_ang);
+        }
+        
         return new int[] {
                 poly1, poly2
         };

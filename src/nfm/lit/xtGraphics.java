@@ -4380,6 +4380,30 @@ public class xtGraphics extends Panel implements Runnable {
         rd.drawString(text, textX, textY);
     }
 
+    /**
+     * Draws a fade from black over the screen.
+     * @param rd Graphics2D context
+     * @param durationSeconds Duration of fade in seconds
+     * @param elapsedMillis Milliseconds elapsed since fade started
+     * @param width Screen width
+     * @param height Screen height
+     * @return true if fade is still active, false if finished
+     */
+    public static boolean drawFadeIn(Graphics2D rd, float durationSeconds, long elapsedMillis, int width, int height) {
+        float durationMillis = durationSeconds * 1000f;
+        float progress = Math.min(elapsedMillis / durationMillis, 1.0f);
+        int alpha = (int)(255 * (1.0f - progress));
+        if (alpha > 0) {
+            rd.setColor(new Color(0, 0, 0, alpha));
+            rd.fillRect(0, 0, width, height);
+            return true;
+        }
+        return false;
+    }
+
+    public static long mainMenuFadeStart = -1;
+    private final float MAIN_MENU_FADE_SECONDS = 1.5f; // duration in seconds
+
     public void newmaini(Control control, CheckPoints checkpoints, Madness madness[], ContO conto[], ContO conto1[]) {
 
         int menuItems = 4;
@@ -4499,6 +4523,13 @@ public class xtGraphics extends Panel implements Runnable {
             } catch (InterruptedException _ex) {
             }
         }
+
+        // Fade-in logic
+        if (mainMenuFadeStart == -1) {
+            mainMenuFadeStart = System.currentTimeMillis();
+        }
+        long elapsed = System.currentTimeMillis() - mainMenuFadeStart;
+        boolean fading = drawFadeIn(rd, MAIN_MENU_FADE_SECONDS, elapsed, GameFacts.screenWidth, GameFacts.screenHeight);
     }
 
     public void blendude(Image image) {

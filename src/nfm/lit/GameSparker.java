@@ -1259,6 +1259,7 @@ public class GameSparker extends Applet implements Runnable {
 
                 if (GameSparker.menuStartTime == -1) {
                     GameSparker.menuStartTime = System.currentTimeMillis();
+                    xtGraphics.mainMenuFadeStart = -1;
                 }
 
                 Medium.d(rd);
@@ -1314,7 +1315,7 @@ public class GameSparker extends Applet implements Runnable {
                 savecookie("gameprfact", "" + (int) f);
                 savecookie("usercar", "" + xtgraphics.sc[0]);
 
-                xtgraphics.fase = Phase.MAINMENU;
+                xtgraphics.fase = Phase.LOADMENUMUSIC;
             }
             if (xtgraphics.fase == Phase.POSTGAME) {
                 xtgraphics.finish(checkpoints, aconto, u[0]);

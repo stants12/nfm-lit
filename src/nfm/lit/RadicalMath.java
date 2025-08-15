@@ -26,23 +26,11 @@ class RadicalMath {
         }
     }
 
-    static public float cos(int i) {
-        for (/**/; i >= 360; i -= 360) {
-
-        }
-        for (/**/; i < 0; i += 360) {
-
-        }
-        return tcos[i];
+    static public float cos(float i) {
+        return (float) Math.cos(i * 0.01745329251994329576922);
     }
 
-    static public float sin(int i) {
-        for (/**/; i >= 360; i -= 360) {
-
-        }
-        for (/**/; i < 0; i += 360) {
-
-        }
-        return tsin[i];
+    static public float sin(float i) {
+        return (float) Math.sin(i * 0.01745329251994329576922);
     }
 }

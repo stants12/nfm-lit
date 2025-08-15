@@ -71,8 +71,8 @@ public class Medium {
     public static int cx = GameFacts.screenWidth / 2;
     public static int cy = GameFacts.screenHeight / 2;
     public static int cz = 50;
-    public static int xz = 0;
-    public static int zy = 0;
+    public static float xz = 0;
+    public static float zy = 0;
     public static int x = 0;
     public static int y = 0;
     public static int z = 0;
@@ -83,8 +83,8 @@ public class Medium {
     public static int spz[] = new int[7];
     public static int sprad[] = new int[7];
     private static boolean td = false;
-    private static int bcxz = 0;
-    public static int vxz = 180;
+    private static float bcxz = 0;
+    public static float vxz = 180;
     public static int adv = 500;
     public static boolean vert = false;
     private static int trns = 1;
@@ -1759,7 +1759,7 @@ public class Medium {
                     z += (int)(300 * Math.sin(Math.toRadians(orbitAngle)));
                     int targetXz = (int)(Math.atan2(z - conto.z, x - conto.x) / 0.017453292519943295D);
                 // normalize angle difference to [-180, 180]
-                    int diff = targetXz - xz;
+                    float diff = targetXz - xz;
                     if (diff > 180) diff -= 360;
                     if (diff < -180) diff += 360;
                     xz += diff / 10; // Smoothly interpolate rotation
@@ -1786,7 +1786,7 @@ public class Medium {
                 int targetXz1 = (int)(Math.atan2(checkpoints.x[nextSeg] - checkpoints.x[seg], checkpoints.z[nextSeg] - checkpoints.z[seg]) / 0.017453292519943295D);
 
                 // normalize angle difference to [-180, 180]
-                int angleDiff = targetXz1 - xz;
+                float angleDiff = targetXz1 - xz;
                 if (angleDiff > 180) angleDiff -= 360;
                 if (angleDiff < -180) angleDiff += 360;
 
@@ -1798,7 +1798,7 @@ public class Medium {
     }
 
     public static void menucam(ContO conto) {
-        final double ARRIVAL_DURATION = 3000.0; // ms to reach target
+        final double ARRIVAL_DURATION = 4000.0; // ms to reach target
         final double TRANSITION_DURATION = 500.0; // ms for smooth transition to orbit
 
         if (GameSparker.menuStartTime == 0L) GameSparker.menuStartTime = System.currentTimeMillis();
@@ -1823,9 +1823,9 @@ public class Medium {
 
             int dx = conto.x - x;
             int dz = conto.z - z;
-            xz = (int)(Math.atan2(dx, dz) / 0.017453292519943295D);
+            xz = (float)(Math.atan2(dx, dz) / 0.017453292519943295D);
 
-            zy = (int)(15 + (30 - 15) * progress);
+            zy = (float)(15 + (30 - 15) * progress);
         } else {
             // Orbit around the car after arrival
             double orbitSpeed = 0.15; // rotations per second
@@ -1845,11 +1845,11 @@ public class Medium {
 
                 int dx = conto.x - x;
                 int dz = conto.z - z;
-                int targetXz = (int)(Math.atan2(dx, dz) / 0.017453292519943295D);
-                int arrivalXz = (int)(Math.atan2(conto.x - endX, conto.z - endZ) / 0.017453292519943295D);
-                xz = (int)(arrivalXz + (targetXz - arrivalXz) * orbitProgress);
+                float targetXz = (float)(Math.atan2(dx, dz) / 0.017453292519943295D);
+                float arrivalXz = (float)(Math.atan2(conto.x - endX, conto.z - endZ) / 0.017453292519943295D);
+                xz = (float)(arrivalXz + (targetXz - arrivalXz) * orbitProgress);
 
-                zy = (int)(30 + (25 - 30) * orbitProgress);
+                zy = (float)(30 + (25 - 30) * orbitProgress);
             } else {
                 x = orbitX;
                 y = orbitY;
@@ -1857,7 +1857,7 @@ public class Medium {
 
                 int dx = conto.x - x;
                 int dz = conto.z - z;
-                xz = (int)(Math.atan2(dx, dz) / 0.017453292519943295D);
+                xz = (float)(Math.atan2(dx, dz) / 0.017453292519943295D);
 
                 zy = 25;
             }
@@ -1880,20 +1880,20 @@ public class Medium {
         if (conto.x - x - cx > 0) {
             c = '\264';
         }
-        int j = -(int) (90 + c
+        float j = -(float) (90 + c
                 + Math.atan((double) (conto.z - z) / (double) (conto.x - x - cx)) / 0.017453292519943295D);
         c = '\0';
         if (conto.y - y - cy < 0) {
             c = '\uFF4C';
         }
-        int k = (int) Math.sqrt((conto.z - z) * (conto.z - z) + (conto.x - x - cx) * (conto.x - x - cx));
-        int l = (int) (90 + c - Math.atan((double) k / (double) (conto.y - y - cy)) / 0.017453292519943295D);
-        xz += (j - xz) / trns;
+        float k = (float) Math.sqrt((conto.z - z) * (conto.z - z) + (conto.x - x - cx) * (conto.x - x - cx));
+        float l = (float) (90 + c - Math.atan((double) k / (double) (conto.y - y - cy)) / 0.017453292519943295D);
+        xz += (float) (j - xz) / trns;
         if (trns != 1) {
             trns--;
         }
-        zy += (l - zy) / 5;
-        if ((int) Math.sqrt((conto.z - z) * (conto.z - z) + (conto.x - x - cx) * (conto.x - x - cx)
+        zy += (float) (l - zy) / 5;
+        if ((float) Math.sqrt((conto.z - z) * (conto.z - z) + (conto.x - x - cx) * (conto.x - x - cx)
                 + (conto.y - y - cy) * (conto.y - y - cy)) > 6000) {
             td = true;
         }
@@ -2020,14 +2020,14 @@ public class Medium {
         cpflik = !cpflik;
     }
 
-    public static void follow(ContO conto, int i, int j) {
+    public static void follow(ContO conto, float cxz, int lookback) {
         zy = 10;
-        int k = 2 + Math.abs(bcxz) / 4;
+        float k = 2 + Math.abs(bcxz) / 4;
         if (k > 20) {
             k = 20;
         }
-        if (j != 0) {
-            if (j == 1) {
+        if (lookback != 0) {
+            if (lookback == 1) {
                 if (bcxz < 180) {
                     bcxz += k;
                 }
@@ -2035,7 +2035,7 @@ public class Medium {
                     bcxz = 180;
                 }
             }
-            if (j == -1) {
+            if (lookback == -1) {
                 if (bcxz > -180) {
                     bcxz -= k;
                 }
@@ -2052,10 +2052,10 @@ public class Medium {
         } else if (bcxz != 0) {
             bcxz = 0;
         }
-        i += bcxz;
-        xz = -i;
-        x = (conto.x - cx) + (int) ((-(conto.z - 800 - conto.z)) * RadicalMath.sin(i));
-        z = (conto.z - cz) + (int) ((conto.z - 800 - conto.z) * RadicalMath.cos(i));
+        cxz += bcxz;
+        xz = -cxz;
+        x = (conto.x - cx) + (int) ((800) * RadicalMath.sin(cxz));
+        z = (conto.z - cz) + (int) ((-800) * RadicalMath.cos(cxz));
         y = conto.y - 250 - cy;
         if (trns != 1) {
             trns = 1;
@@ -2122,13 +2122,12 @@ public class Medium {
         }
         for (vxz += 2; vxz > 360; vxz -= 360) {
         }
-        int j1 = -vxz + 90;
-        char c = '\0';
+        float j1 = -vxz + 90;
+        int c = 0;
         if (conto.x - x - cx > 0) {
-            c = '\264';
+            c = 180;
         }
-        int k1 = -(int) (90 + c
-                + Math.atan((double) (conto.z - z) / (double) (conto.x - x - cx)) / 0.017453292519943295D);
+        float k1 = -(float) (90 + c + Math.atan((double) (conto.z - z) / (double) (conto.x - x - cx)) / 0.017453292519943295D);
         int l1 = y;
         c = '\0';
         if (l1 > 0) {
@@ -2137,11 +2136,10 @@ public class Medium {
         if (conto.y - l1 - cy < 0) {
             c = '\uFF4C';
         }
-        int i2 = (int) Math.sqrt(((conto.z - z) + cz) * ((conto.z - z) + cz) + (conto.x - x - cx) * (conto.x - x - cx));
-        int j2 = 25;
-        if (i2 != 0) {
-            j2 = (int) (90 + c
-                    - Math.atan((double) i2 / (double) (conto.y - l1 - cy)) / 0.017453292519943295D);
+        float i2 = (float) Math.sqrt(((conto.z - z) + cz) * ((conto.z - z) + cz) + (conto.x - x - cx) * (conto.x - x - cx));
+        float j2 = 25;
+        if (i2 > 0 || i2 < 0) {
+            j2 = (float) (90 + c - Math.atan((double) i2 / (double) (conto.y - l1 - cy)) / 0.017453292519943295D);
         }
         for (; j1 < 0; j1 += 360) {
         }
