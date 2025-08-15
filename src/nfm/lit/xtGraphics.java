@@ -4335,7 +4335,7 @@ public class xtGraphics extends Panel implements Runnable {
         FontMetrics metrics = rd.getFontMetrics(font);
         int textX = x + 12; // 12px padding from the left edge
         int textY = y + (height + metrics.getAscent() - metrics.getDescent()) / 2;
-        rd.setColor(new Color(255, 128, 0));
+        rd.setColor(selected ? selectedColor : borderColor);
         rd.drawString(text, textX, textY);
     }
 
@@ -4732,7 +4732,7 @@ public class xtGraphics extends Panel implements Runnable {
                 }
 
                 if (name.equals("carfixed.wav")) {
-                    sm.add("carfixed", new SoundClipThreaded(sound));
+                    sm.add("carfixed", new SoundClipUnthreaded(sound));
                 }
 
                 if (name.equals("three.wav")) {
@@ -4760,7 +4760,7 @@ public class xtGraphics extends Panel implements Runnable {
                 }
 
                 if (name.equals("tick.wav")) {
-                    sm.add("tick", new SoundClipThreaded(sound));
+                    sm.add("tick", new SoundClipUnthreaded(sound));
                 }
 
                 if (name.equals("tliu.wav")) {
@@ -5468,19 +5468,24 @@ public class xtGraphics extends Panel implements Runnable {
         }
         if (fase == Phase.MAINMENU) {
             if (k == 1) {
-                if (overon(Utility.centeredWidthX(main_menu_op_0_width), main_menu_op_0_y, main_menu_op_0_width,
+                if (overon(main_menu_op_0_x, main_menu_op_0_y, main_menu_op_0_width,
                         main_menu_button_height, i, j)) {
                     opselect = 0;
                     shaded = true;
                 }
-                if (overon(Utility.centeredWidthX(main_menu_op_1_width), main_menu_op_1_y, main_menu_op_1_width,
+                if (overon(main_menu_op_1_x, main_menu_op_1_y, main_menu_op_1_width,
                         main_menu_button_height, i, j)) {
                     opselect = 1;
                     shaded = true;
                 }
-                if (overon(Utility.centeredWidthX(main_menu_op_2_width), main_menu_op_2_y, main_menu_op_2_width,
+                if (overon(main_menu_op_2_x, main_menu_op_2_y, main_menu_op_2_width,
                         main_menu_button_height, i, j)) {
                     opselect = 2;
+                    shaded = true;
+                }
+                if (overon(main_menu_op_3_x, main_menu_op_3_y, main_menu_op_3_width,
+                        main_menu_button_height, i, j)) {
+                    opselect = 3;
                     shaded = true;
                 }
             }
@@ -5489,17 +5494,21 @@ public class xtGraphics extends Panel implements Runnable {
                 shaded = false;
             }
             if (k == 0 && (i != lxm || j != lym)) {
-                if (overon(Utility.centeredWidthX(main_menu_op_0_width), main_menu_op_0_y, main_menu_op_0_width,
+                if (overon(main_menu_op_0_x, main_menu_op_0_y, main_menu_op_0_width,
                         main_menu_button_height, i, j)) {
                     opselect = 0;
                 }
-                if (overon(Utility.centeredWidthX(main_menu_op_1_width), main_menu_op_1_y, main_menu_op_1_width,
+                if (overon(main_menu_op_1_x, main_menu_op_1_y, main_menu_op_1_width,
                         main_menu_button_height, i, j)) {
                     opselect = 1;
                 }
-                if (overon(Utility.centeredWidthX(main_menu_op_2_width), main_menu_op_2_y, main_menu_op_2_width,
+                if (overon(main_menu_op_2_x, main_menu_op_2_y, main_menu_op_2_width,
                         main_menu_button_height, i, j)) {
                     opselect = 2;
+                }
+                if (overon(main_menu_op_3_x, main_menu_op_3_y, main_menu_op_3_width,
+                        main_menu_button_height, i, j)) {
+                    opselect = 3;
                 }
                 lxm = i;
                 lym = j;

@@ -16,6 +16,8 @@ public class Medium {
     private static int[][] mty = null;
     private static int[][] mtz = null;
     private static int[][][] mtc = null;
+    private static xtGraphics xtgraphics;
+
     public static int mgen = (int) (Math.random() * 100000D);
     public static int focus_point = 400;
     public static int ground = 250;
@@ -140,6 +142,10 @@ public class Medium {
     public static int detailtype = 2;
 
     public static boolean noclouds = false;
+
+    public static void setxtGraphics(xtGraphics xtg) {
+        xtgraphics = xtg;
+    }
 
     public static float random() {
         if (cntrn == 0) {
@@ -1437,7 +1443,9 @@ public class Medium {
                 drawstars(graphics2d);
             }
             drawmountains(graphics2d);
-            drawclouds(graphics2d);
+
+            if (xtgraphics.fase != Phase.STAGESELECT)
+                drawclouds(graphics2d);
         }
         groundpolys(graphics2d);
         if (noelec != 0) {
@@ -2165,6 +2173,7 @@ public class Medium {
         int j = (conto.x * (20 - i) + conto1.x * i) / 20;
         int k = (conto.y * (20 - i) + conto1.y * i) / 20;
         int l = (conto.z * (20 - i) + conto1.z * i) / 20;
+
         if (!vert) {
             adv += 2;
         } else {
@@ -2176,6 +2185,7 @@ public class Medium {
         if (adv < 500) {
             vert = false;
         }
+
         int i1 = 500 + adv;
         if (i1 < 1000) {
             i1 = 1000;
@@ -2196,7 +2206,7 @@ public class Medium {
             c = '\uFF4C';
         }
         int k1 = (int) Math.sqrt(((l - z) + cz) * ((l - z) + cz) + (j - x - cx) * (j - x - cx));
-        int l1 = (int) (90 + c - Math.atan((double) k1 / (double) (k - j1 - cy)) / 0.017453292519943295D);
+        int l1 = (int) (90 + c - Math.atan((double) k1 / (double) (conto.y - j1 - cy)) / 0.017453292519943295D);
         xz = -vxz + 90;
         zy += (l1 - zy) / 10;
         if (trns != 5) {

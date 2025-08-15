@@ -1047,6 +1047,7 @@ public class GameSparker extends Applet implements Runnable {
         }
 
         xtgraphics.stoploading();
+        Medium.setxtGraphics(xtgraphics);
         System.gc();
         Date date = new Date();
         int i = 15;
@@ -1345,40 +1346,7 @@ public class GameSparker extends Applet implements Runnable {
                 xtgraphics.trackbg(true);
                 Medium.d(rd);
                 Medium.aroundTrack(checkpoints);
-                int i3 = 0;
-                int ai[] = new int[200];
-                for (int k5 = GameFacts.numberOfPlayers; k5 < notb; k5++)
-                    if (aconto1[k5].dist != 0) {
-                        ai[i3] = k5;
-                        i3++;
-                    } else {
-                        aconto1[k5].d(rd);
-                    }
-
-                int ai5[] = new int[i3];
-                for (int j7 = 0; j7 < i3; j7++)
-                    ai5[j7] = 0;
-
-                for (int k7 = 0; k7 < i3; k7++) {
-                    for (int i11 = k7 + 1; i11 < i3; i11++)
-                        if (aconto1[ai[k7]].dist != aconto1[ai[i11]].dist) {
-                            if (aconto1[ai[k7]].dist < aconto1[ai[i11]].dist)
-                                ai5[k7]++;
-                            else
-                                ai5[i11]++;
-                        } else if (i11 > k7)
-                            ai5[k7]++;
-                        else
-                            ai5[i11]++;
-
-                }
-
-                for (int l7 = 0; l7 < i3; l7++) {
-                    for (int j11 = 0; j11 < i3; j11++)
-                        if (ai5[j11] == l7)
-                            aconto1[ai[j11]].d(rd);
-
-                }
+                renderObjects(rd, aconto1, GameFacts.numberOfPlayers, notb);
 
                 rd.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 xtgraphics.ctachm(xm, ym, mouses, u[0]);
@@ -1390,40 +1358,7 @@ public class GameSparker extends Applet implements Runnable {
             }
             if (xtgraphics.fase == Phase.DRAWENVIRONMENT) {
                 Medium.d(rd);
-                int j3 = 0;
-                int ai1[] = new int[200];
-                for (int i6 = 0; i6 < nob; i6++)
-                    if (aconto1[i6].dist != 0) {
-                        ai1[j3] = i6;
-                        j3++;
-                    } else {
-                        aconto1[i6].d(rd);
-                    }
-
-                int ai6[] = new int[j3];
-                for (int i8 = 0; i8 < j3; i8++)
-                    ai6[i8] = 0;
-
-                for (int j8 = 0; j8 < j3; j8++) {
-                    for (int k11 = j8 + 1; k11 < j3; k11++)
-                        if (aconto1[ai1[j8]].dist != aconto1[ai1[k11]].dist) {
-                            if (aconto1[ai1[j8]].dist < aconto1[ai1[k11]].dist)
-                                ai6[j8]++;
-                            else
-                                ai6[k11]++;
-                        } else if (k11 > j8)
-                            ai6[j8]++;
-                        else
-                            ai6[k11]++;
-
-                }
-
-                for (int k8 = 0; k8 < j3; k8++) {
-                    for (int l11 = 0; l11 < j3; l11++)
-                        if (ai6[l11] == k8)
-                            aconto1[ai1[l11]].d(rd);
-
-                }
+                renderObjects(rd, aconto1, 0, nob);
 
                 Medium.follow(aconto1[0], 0, 0);
                 xtgraphics.hipnoload(checkpoints.stage, false);
@@ -1453,38 +1388,7 @@ public class GameSparker extends Applet implements Runnable {
                     }
                 } while (++k3 < GameFacts.numberOfPlayers);
                 Medium.d(rd);
-                k3 = 0;
-                int ai2[] = new int[200];
-                for (int k6 = 0; k6 < nob; k6++)
-                    if (aconto1[k6].dist != 0) {
-                        ai2[k3] = k6;
-                        k3++;
-                    } else {
-                        aconto1[k6].d(rd);
-                    }
-
-                int ai7[] = new int[k3];
-                int ai10[] = new int[k3];
-                for (int i12 = 0; i12 < k3; i12++)
-                    ai7[i12] = 0;
-
-                for (int j12 = 0; j12 < k3; j12++) {
-                    for (int i14 = j12 + 1; i14 < k3; i14++)
-                        if (aconto1[ai2[j12]].dist != aconto1[ai2[i14]].dist) {
-                            if (aconto1[ai2[j12]].dist < aconto1[ai2[i14]].dist)
-                                ai7[j12]++;
-                            else
-                                ai7[i14]++;
-                        } else if (i14 > j12)
-                            ai7[j12]++;
-                        else
-                            ai7[i14]++;
-
-                    ai10[ai7[j12]] = j12;
-                }
-
-                for (int k12 = 0; k12 < k3; k12++)
-                    aconto1[ai2[ai10[k12]]].d(rd);
+                renderObjects(rd, aconto1, 0, nob);
 
                 if (xtgraphics.starcnt == 0) {
                     int l12 = 0;
@@ -1578,40 +1482,7 @@ public class GameSparker extends Applet implements Runnable {
                     } while (++i4 < GameFacts.numberOfPlayers);
                 }
                 Medium.d(rd);
-                int j4 = 0;
-                int ai3[] = new int[100];
-                for (int l6 = 0; l6 < nob; l6++)
-                    if (aconto1[l6].dist != 0) {
-                        ai3[j4] = l6;
-                        j4++;
-                    } else {
-                        aconto1[l6].d(rd);
-                    }
-
-                int ai8[] = new int[j4];
-                for (int i9 = 0; i9 < j4; i9++)
-                    ai8[i9] = 0;
-
-                for (int j9 = 0; j9 < j4; j9++) {
-                    for (int i13 = j9 + 1; i13 < j4; i13++)
-                        if (aconto1[ai3[j9]].dist != aconto1[ai3[i13]].dist) {
-                            if (aconto1[ai3[j9]].dist < aconto1[ai3[i13]].dist)
-                                ai8[j9]++;
-                            else
-                                ai8[i13]++;
-                        } else if (i13 > j9)
-                            ai8[j9]++;
-                        else
-                            ai8[i13]++;
-
-                }
-
-                for (int k9 = 0; k9 < j4; k9++) {
-                    for (int j13 = 0; j13 < j4; j13++)
-                        if (ai8[j13] == k9)
-                            aconto1[ai3[j13]].d(rd);
-
-                }
+                renderObjects(rd, aconto1, 0, nob);
 
                 if (u[0].enter || u[0].handb || mouses == 1) {
                     k1 = 299;
@@ -1680,40 +1551,7 @@ public class GameSparker extends Applet implements Runnable {
                     while (++k4 < GameFacts.numberOfPlayers);
                 }
                 Medium.d(rd);
-                int i5 = 0;
-                int ai4[] = new int[100];
-                for (int i7 = 0; i7 < nob; i7++)
-                    if (aconto1[i7].dist != 0) {
-                        ai4[i5] = i7;
-                        i5++;
-                    } else {
-                        aconto1[i7].d(rd);
-                    }
-
-                int ai9[] = new int[i5];
-                for (int i10 = 0; i10 < i5; i10++)
-                    ai9[i10] = 0;
-
-                for (int j10 = 0; j10 < i5; j10++) {
-                    for (int k13 = j10 + 1; k13 < i5; k13++)
-                        if (aconto1[ai4[j10]].dist != aconto1[ai4[k13]].dist) {
-                            if (aconto1[ai4[j10]].dist < aconto1[ai4[k13]].dist)
-                                ai9[j10]++;
-                            else
-                                ai9[k13]++;
-                        } else if (k13 > j10)
-                            ai9[j10]++;
-                        else
-                            ai9[k13]++;
-
-                }
-
-                for (int k10 = 0; k10 < i5; k10++) {
-                    for (int l13 = 0; l13 < i5; l13++)
-                        if (ai9[l13] == k10)
-                            aconto1[ai4[l13]].d(rd);
-
-                }
+                renderObjects(rd, aconto1, 0, nob);
 
                 int l10 = 0;
                 do {
