@@ -256,7 +256,7 @@ public class xtGraphics extends Panel implements Runnable {
 
     private int main_menu_height_origin = (int) (GameFacts.screenHeight * 0.4);
 
-    private int main_menu_button_height = 32;
+    private int main_menu_button_height = 25;
     
     private int main_menu_op_0_y = 100 + main_menu_height_origin;
     private int main_menu_op_0_width = 230;
