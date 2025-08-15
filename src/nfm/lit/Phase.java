@@ -135,7 +135,9 @@ public enum Phase {
     LOADSTAGE2(9004),
     OLDMAINMENU(101),
     LOADSTAGEMENU(9005),
-    RELOADSTAGEMENU(9006);
+    RELOADSTAGEMENU(9006),
+    LOADMENUMUSIC(9010),
+    RELOADMENUMUSIC(9011);
 
     public final int value;
     

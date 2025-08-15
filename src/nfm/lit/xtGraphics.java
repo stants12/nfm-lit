@@ -20,6 +20,8 @@ import java.util.Collections;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import java.util.List;
+
 
 // Original resolution: 670x400
 
@@ -820,10 +822,11 @@ public class xtGraphics extends Panel implements Runnable {
         //rd.setColor(new Color(100, 100, 100));
         //rd.fillRect(0, 0, GameFacts.screenWidth, GameFacts.screenHeight);
 
-        int menuItems = 3;
+        int menuItems = 4;
 
         int y_nplayers = 90;
         int y_menustage = 110;
+        int y_menumusic = 130;
 
         rd.setColor(new Color(20, 20, 20, 100));
         rd.fillRoundRect(Utility.centeredWidthX(145), 20, 145, 27, 23, 30);
@@ -836,6 +839,7 @@ public class xtGraphics extends Panel implements Runnable {
 
         drawcs(y_nplayers, "Number of Players: " + GameFacts.numberOfPlayers, 255, 255, 255, 3);
         drawcs(y_menustage, "Menu Stage: " + GameSparker.menuStage, 255, 255, 255, 3);
+        drawcs(y_menumusic, "Menu Music: " + GameSparker.menuMusic, 255, 255, 255, 3);
         drawcs(GameFacts.screenHeight - 20, "Back", 255, 255, 255, 3);
 
         if (control.up) {
@@ -852,10 +856,12 @@ public class xtGraphics extends Panel implements Runnable {
             }
             control.down = false;
         }
+
+        // this is entire method is temp i cba rn
         if (opselect == 0) {
             rd.setFont(new Font("SansSerif", 1, 13));
             FontHandler.fMetrics = rd.getFontMetrics();
-            if (aflk) {     // this is aids
+            if (aflk) {     
                 drawcs(y_nplayers, "Number of Players: " + GameFacts.numberOfPlayers, 255, 0, 0, 3);
                 rd.setColor(new Color(200, 255, 0));
                 aflk = false;
@@ -881,6 +887,41 @@ public class xtGraphics extends Panel implements Runnable {
         }
 
         if (opselect == 2) {
+            rd.setFont(new Font("SansSerif", 1, 13));
+            FontHandler.fMetrics = rd.getFontMetrics();
+            if (aflk) {     // this is aids
+                drawcs(y_menumusic, "Menu Music: " + GameSparker.menuMusic, 255, 0, 0, 3);
+                rd.setColor(new Color(200, 255, 0));
+                aflk = false;
+            } else {
+                drawcs(y_menumusic, "Menu Music: " + GameSparker.menuMusic, 0, 0, 0, 3);
+                rd.setColor(new Color(255, 128, 0));
+                aflk = true;
+            }
+
+
+            List<String> menuMusicFiles = GameSparker.getMenuMusicFiles();
+            if (!menuMusicFiles.isEmpty()) {
+                // Find current index
+                int idx = menuMusicFiles.indexOf(GameSparker.menuMusic);
+                // Cycle left
+                if (control.left) {
+                    idx = (idx - 1 + menuMusicFiles.size()) % menuMusicFiles.size();
+                    GameSparker.menuMusic = menuMusicFiles.get(idx);
+                    fase = Phase.RELOADMENUMUSIC;
+                    control.left = false;
+                }
+                // Cycle right
+                if (control.right) {
+                    idx = (idx + 1) % menuMusicFiles.size();
+                    GameSparker.menuMusic = menuMusicFiles.get(idx);
+                    fase = Phase.RELOADMENUMUSIC;
+                    control.right = false;
+                }
+            }
+        }
+
+        if (opselect == 3) {
             if (shaded) {
                 rd.setColor(new Color(140, 70, 0));
                 rd.fillRect(234, 275, 196, 22);
@@ -898,7 +939,7 @@ public class xtGraphics extends Panel implements Runnable {
         }
 
         if (control.enter || control.handb) {
-            if (opselect == 2) {
+            if (opselect == 3) {
                 GameSparker.menuState = Phase.MAINMENU;
                 opselect = 3;
             }
@@ -2446,7 +2487,7 @@ public class xtGraphics extends Panel implements Runnable {
                     strack.setPaused(true);
                     strack.unload();
                 }
-                fase = Phase.LOADSTAGEMENU;
+                fase = Phase.LOADMENUMUSIC;
                 opselect = 0;
             }
             control.enter = false;
@@ -5322,6 +5363,10 @@ public class xtGraphics extends Panel implements Runnable {
         }
     }
 
+    /**
+     * This handles coordinates when trying to hover over/click buttons with a mouse.
+     * @author Omar Wally
+     */
     public void ctachm(int i, int j, int k, Control control) {
         if (fase == Phase.STAGESELECT) {
             if (k == 1) {

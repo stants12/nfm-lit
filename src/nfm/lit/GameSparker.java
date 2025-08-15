@@ -107,7 +107,10 @@ public class GameSparker extends Applet implements Runnable {
 
     public static Phase menuState = Phase.MAINMENU;
     public static long menuStartTime = -1;
-    public static int menuStage = 8;
+    public static int menuStage = 10;
+
+    public static String menuMusic = "stages";
+
 
     /* variables for screen shake */
 
@@ -440,6 +443,36 @@ public class GameSparker extends Applet implements Runnable {
             e.printStackTrace();
         }
         System.gc();
+    }
+
+    /**
+     * Gets all music file names in data/music/interface/
+     * @author oteek
+     */
+    public static List<String> getMenuMusicFiles() {
+        List<String> filesList = new ArrayList<>();
+        File musicDir = new File("data/music/interface");
+        if (musicDir.exists() && musicDir.isDirectory()) {
+            String[] files = musicDir.list((dir, name) -> 
+                name.toLowerCase().endsWith(".mp3") || 
+                name.toLowerCase().endsWith(".zip") || 
+                name.toLowerCase().endsWith(".zipo") || 
+                name.toLowerCase().endsWith(".radq") || 
+                name.toLowerCase().endsWith(".wav") || 
+                name.toLowerCase().endsWith(".ogg")
+            );
+            if (files != null) {
+                for (String file : files) {
+                    int dot = file.lastIndexOf('.');
+                    if (dot > 0) {
+                        filesList.add(file.substring(0, dot));
+                    } else {
+                        filesList.add(file);
+                    }
+                }
+            }
+        }
+        return filesList;
     }
 
     @Override
@@ -991,6 +1024,39 @@ public class GameSparker extends Applet implements Runnable {
         }
     }
 
+    /**
+     * Creates a new ContO object.
+     */
+    public void createObject(ContO aconto[], ContO aconto1[], String modelname, int x, int z, int rot, int y) {
+        int id = getModel(modelname);
+        int yVal = Medium.ground - aconto1[id].grat;
+    
+        if (y != -1) {
+            yVal = y;
+        }
+
+        aconto[nob] = new ContO(
+            aconto1[id],
+            x,
+            yVal,
+            z,
+            rot
+        );
+        nob++;
+    }
+
+    public void createUserCar(xtGraphics xtgraphics, ContO aconto[], ContO aconto1[], int x, int z, int rot, int y) {
+        aconto[nob] = new ContO(
+            aconto1[xtgraphics.sc[0]],
+            x,
+            250 - aconto1[xtgraphics.sc[0]].grat,
+            z,
+            rot
+        );
+        nob++;
+    }
+    
+
     @Override
     public void run() {
         rd.setColor(new Color(0, 0, 0));
@@ -1092,7 +1158,7 @@ public class GameSparker extends Applet implements Runnable {
                 } else {
                     i2 = 0;
                     //xtgraphics.fase = Phase.MAINMENU;
-                    xtgraphics.fase = Phase.LOADSTAGEMENU;
+                    xtgraphics.fase = Phase.LOADMENUMUSIC;
                     mouses = 0;
                     u[0].falseo();
                 }
@@ -1196,11 +1262,12 @@ public class GameSparker extends Applet implements Runnable {
                 }
 
                 Medium.d(rd);
-                renderObjects(rd, aconto1, 0, nob);
 
-                Medium.scenicCamera(aconto1[0], checkpoints, System.currentTimeMillis() - GameSparker.menuStartTime, 4000);
+                renderObjects(rd, aconto1, GameFacts.numberOfPlayers, nob);
 
-                //Medium.menucam(aconto1[0]);
+                //Medium.scenicCamera(aconto1[0], checkpoints, System.currentTimeMillis() - GameSparker.menuStartTime, 4000);
+
+                Medium.menucam(aconto1[0]);
                 //Medium.around(aconto1[0], false);
 
                 if (menuState == Phase.MAINMENU) {
@@ -1320,18 +1387,29 @@ public class GameSparker extends Applet implements Runnable {
                 loadstage(aconto1, aconto, trackers, checkpoints, xtgraphics, amadness, record, true);
                 xtgraphics.loadmusic(checkpoints.stage, i1);
             }
+            if (xtgraphics.fase == Phase.LOADMENUMUSIC) {
+                (new Thread() {
+                    public void run() {
+                        xtgraphics.loadIntertrack(GameSparker.menuMusic);
+                    }
+                }).start();
+                xtgraphics.fase = Phase.LOADSTAGEMENU;
+            }
+            if (xtgraphics.fase == Phase.RELOADMENUMUSIC) {
+                xtGraphics.intertrack.setPaused(true);
+                xtGraphics.intertrack.unload();
+                xtgraphics.loadIntertrack(GameSparker.menuMusic);
+                xtgraphics.fase = Phase.MAINMENU;
+                xtGraphics.intertrack.setPaused(false);
+            }
             if (xtgraphics.fase == Phase.LOADSTAGEMENU) { // for main menu stage loading
                 repaint();
                 GameSparker.loadStageCus = "nfm2/" + menuStage;
 
-                (new Thread() {
-                    public void run() {
-                        xtgraphics.loadIntertrack("stages");
-                    }
-                }).start();
-
                 GameSparker.menuStartTime = -1;
                 loadstage(aconto1, aconto, trackers, checkpoints, xtgraphics, amadness, record, true);
+                createUserCar(xtgraphics, aconto1, aconto, 0, -760, 0, 0);
+
                 xtgraphics.fase = Phase.MAINMENU;
             }
             if (xtgraphics.fase == Phase.RELOADSTAGEMENU) { // for main menu stage reloading
@@ -1339,6 +1417,8 @@ public class GameSparker extends Applet implements Runnable {
                 //GameSparker.menuStartTime = -1;
                 GameSparker.loadStageCus = "nfm2/" + menuStage;
                 loadstage(aconto1, aconto, trackers, checkpoints, xtgraphics, amadness, record, true);
+                createUserCar(xtgraphics, aconto1, aconto, 0, -760, 0, 0);
+
                 xtgraphics.fase = Phase.MAINMENU;
             }
             if (xtgraphics.fase == Phase.STAGESELECT) {

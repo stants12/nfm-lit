@@ -1798,9 +1798,9 @@ public class Medium {
     }
 
     public static void menucam(ContO conto) {
-        // Static variable to track arrival progress
-        // (You can move this to class level if needed)
         final double ARRIVAL_DURATION = 3000.0; // ms to reach target
+        final double TRANSITION_DURATION = 500.0; // ms for smooth transition to orbit
+
         if (GameSparker.menuStartTime == 0L) GameSparker.menuStartTime = System.currentTimeMillis();
         long elapsed = System.currentTimeMillis() - GameSparker.menuStartTime;
         double progress = Math.min(elapsed / ARRIVAL_DURATION, 1.0);
@@ -1811,7 +1811,7 @@ public class Medium {
         int startZ = conto.z - 6000;
 
         // End position: in front of car, slightly above, offset to the left
-        int endX = conto.x - 1100;
+        int endX = conto.x - 1500;
         int endY = conto.y - 650;
         int endZ = conto.z + 100;
 
@@ -1821,7 +1821,6 @@ public class Medium {
             y = (int)(startY + (endY - startY) * progress);
             z = (int)(startZ + (endZ - startZ) * progress);
 
-            // Camera rotation: look at the car from current position
             int dx = conto.x - x;
             int dz = conto.z - z;
             xz = (int)(Math.atan2(dx, dz) / 0.017453292519943295D);
@@ -1833,15 +1832,35 @@ public class Medium {
             double angle = ((System.currentTimeMillis() - GameSparker.menuStartTime - ARRIVAL_DURATION) * orbitSpeed / 1000.0) % (2 * Math.PI);
             int orbitRadius = 350;
 
-            x = endX + (int)(orbitRadius * Math.cos(angle));
-            y = endY;
-            z = endZ + (int)(orbitRadius * Math.sin(angle));
+            int orbitX = endX + (int)(orbitRadius * Math.cos(angle));
+            int orbitY = endY;
+            int orbitZ = endZ + (int)(orbitRadius * Math.sin(angle));
 
-            int dx = conto.x - x;
-            int dz = conto.z - z;
-            xz = (int)(Math.atan2(dx, dz) / 0.017453292519943295D);
+            // Smooth transition for TRANSITION_DURATION after arrival
+            double orbitProgress = Math.min((elapsed - ARRIVAL_DURATION) / TRANSITION_DURATION, 1.0);
+            if (orbitProgress < 1.0) {
+                x = (int)(endX + (orbitX - endX) * orbitProgress);
+                y = (int)(endY + (orbitY - endY) * orbitProgress);
+                z = (int)(endZ + (orbitZ - endZ) * orbitProgress);
 
-            zy = 25;
+                int dx = conto.x - x;
+                int dz = conto.z - z;
+                int targetXz = (int)(Math.atan2(dx, dz) / 0.017453292519943295D);
+                int arrivalXz = (int)(Math.atan2(conto.x - endX, conto.z - endZ) / 0.017453292519943295D);
+                xz = (int)(arrivalXz + (targetXz - arrivalXz) * orbitProgress);
+
+                zy = (int)(30 + (25 - 30) * orbitProgress);
+            } else {
+                x = orbitX;
+                y = orbitY;
+                z = orbitZ;
+
+                int dx = conto.x - x;
+                int dz = conto.z - z;
+                xz = (int)(Math.atan2(dx, dz) / 0.017453292519943295D);
+
+                zy = 25;
+            }
         }
     }
 
