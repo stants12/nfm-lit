@@ -20,6 +20,8 @@ import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
+import nfm.lit.SettingsManager; // Make sure this import is present
+
 /**
  * GameSparker brings everything together.
  *
@@ -128,6 +130,8 @@ public class GameSparker extends Applet implements Runnable {
     public int nobfix = carModels.length - noboffset;
 
     public boolean reverseYRot = false;
+
+    private SettingsManager settingsManager = new SettingsManager();
 
     /**
      * <a href=
@@ -1056,6 +1060,12 @@ public class GameSparker extends Applet implements Runnable {
         );
         nob++;
     }
+
+    public void loadsettings() {
+        settingsManager.load();
+        GameSparker.menuStage = settingsManager.getMenuStage();
+        GameSparker.menuMusic = settingsManager.getMenuMusic();
+    }
     
 
     @Override
@@ -1112,6 +1122,8 @@ public class GameSparker extends Applet implements Runnable {
             f = l;
             i1 = 1;
         }
+
+        loadsettings();
 
         xtgraphics.stoploading();
         Medium.setxtGraphics(xtgraphics);

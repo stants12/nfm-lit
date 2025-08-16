@@ -817,6 +817,14 @@ public class xtGraphics extends Panel implements Runnable {
         fase = Phase.AWAITLOADDISMISSAL;
     }
 
+    private SettingsManager settingsManager = new SettingsManager();
+
+    public void savesettings() {
+        settingsManager.setMenuStage(GameSparker.menuStage);
+        settingsManager.setMenuMusic(GameSparker.menuMusic);
+        settingsManager.save();
+    }
+
     public void menusettings(Control control) {
 
         //rd.setColor(new Color(100, 100, 100));
@@ -942,6 +950,7 @@ public class xtGraphics extends Panel implements Runnable {
             if (opselect == 3) {
                 GameSparker.menuState = Phase.MAINMENU;
                 opselect = 2;
+                savesettings();
             }
             control.enter = false;
             control.handb = false;
