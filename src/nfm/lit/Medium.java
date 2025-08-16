@@ -1799,7 +1799,7 @@ public class Medium {
 
     public static void menucam(ContO conto) {
         final double ARRIVAL_DURATION = 4000.0; // ms to reach target
-        final double TRANSITION_DURATION = 500.0; // ms for smooth transition to orbit
+        final double TRANSITION_DURATION = 2000.0; // ms for smooth transition to orbit
 
         if (GameSparker.menuStartTime == 0L) GameSparker.menuStartTime = System.currentTimeMillis();
         long elapsed = System.currentTimeMillis() - GameSparker.menuStartTime;
@@ -1843,18 +1843,19 @@ public class Medium {
 
             // Smooth transition for TRANSITION_DURATION after arrival
             double orbitProgress = Math.min((elapsed - ARRIVAL_DURATION) / TRANSITION_DURATION, 1.0);
+            double eased = 1 - Math.pow(1 - orbitProgress, 4);
             if (orbitProgress < 1.0) {
-                x = (int)(endX + (orbitX - endX) * orbitProgress);
-                y = (int)(endY + (orbitY - endY) * orbitProgress);
-                z = (int)(endZ + (orbitZ - endZ) * orbitProgress);
+                x = (int)(endX + (orbitX - endX) * eased);
+                y = (int)(endY + (orbitY - endY) * eased);
+                z = (int)(endZ + (orbitZ - endZ) * eased);
 
                 int dx = conto.x - x;
                 int dz = conto.z - z;
                 float targetXz = (float)(Math.atan2(dx, dz) / 0.017453292519943295D);
                 float arrivalXz = (float)(Math.atan2(conto.x - endX, conto.z - endZ) / 0.017453292519943295D);
-                xz = (float)(arrivalXz + (targetXz - arrivalXz) * orbitProgress);
+                xz = (float)(arrivalXz + (targetXz - arrivalXz) * eased);
 
-                zy = (float)(30 + (20 - 30) * orbitProgress);
+                zy = (float)(30 + (20 - 30) * eased);
             } else {
                 x = orbitX;
                 y = orbitY;
