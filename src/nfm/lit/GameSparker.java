@@ -1403,6 +1403,7 @@ public class GameSparker extends Applet implements Runnable {
                 xtgraphics.loadIntertrack(GameSparker.menuMusic);
                 xtgraphics.fase = Phase.MAINMENU;
                 xtGraphics.intertrack.setPaused(false);
+                xtGraphics.intertrack.play();
             }
             if (xtgraphics.fase == Phase.LOADSTAGEMENU) { // for main menu stage loading
                 repaint();
@@ -1411,6 +1412,8 @@ public class GameSparker extends Applet implements Runnable {
                 GameSparker.menuStartTime = -1;
                 loadstage(aconto1, aconto, trackers, checkpoints, xtgraphics, amadness, record, true);
                 createUserCar(xtgraphics, aconto1, aconto, 0, -760, 0, 0);
+
+                xtGraphics.intertrack.play();
 
                 xtgraphics.fase = Phase.MAINMENU;
             }
@@ -1886,8 +1889,13 @@ public class GameSparker extends Applet implements Runnable {
                 rd.dispose();
                 xtgraphics.stopallnow();
                 System.gc();
-                gamer.stop();
-                gamer = null;
+                if (gamer != null) {
+                    try {
+                        gamer.join(100);
+                    } catch (InterruptedException e) {
+                    }
+                    gamer = null;
+                }
             }
 
             // if (xtgraphics.devtriggered) {

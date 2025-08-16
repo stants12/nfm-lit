@@ -1,6 +1,7 @@
 package nfm.lit;
 
 import fallk.logmaster.HLogger;
+
 import nfm.lit.audio.RadicalMod;
 import nfm.lit.audio.RadicalMusic;
 import nfm.lit.audio.SoundClipThreaded;
@@ -21,7 +22,6 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.List;
-
 
 // Original resolution: 670x400
 
@@ -824,7 +824,7 @@ public class xtGraphics extends Panel implements Runnable {
 
         int menuItems = 4;
 
-        int y_nplayers = 90;
+        //int y_nplayers = 90;
         int y_menustage = 110;
         int y_menumusic = 130;
 
@@ -837,14 +837,14 @@ public class xtGraphics extends Panel implements Runnable {
         rd.setFont(new Font("SansSerif", 1, 13));
         FontHandler.fMetrics = rd.getFontMetrics();
 
-        drawcs(y_nplayers, "Number of Players: " + GameFacts.numberOfPlayers, 255, 255, 255, 3);
+        //drawcs(y_nplayers, "Number of Players: " + GameFacts.numberOfPlayers, 255, 255, 255, 3);
         drawcs(y_menustage, "Menu Stage: " + GameSparker.menuStage, 255, 255, 255, 3);
         drawcs(y_menumusic, "Menu Music: " + GameSparker.menuMusic, 255, 255, 255, 3);
         drawcs(GameFacts.screenHeight - 20, "Back", 255, 255, 255, 3);
 
         if (control.up) {
             opselect--;
-            if (opselect == -1) {
+            if (opselect == 0) {
                 opselect = menuItems - 1;
             }
             control.up = false;
@@ -852,25 +852,25 @@ public class xtGraphics extends Panel implements Runnable {
         if (control.down) {
             opselect++;
             if (opselect == menuItems) {
-                opselect = 0;
+                opselect = 1;
             }
             control.down = false;
         }
 
         // this is entire method is temp i cba rn
-        if (opselect == 0) {
-            rd.setFont(new Font("SansSerif", 1, 13));
-            FontHandler.fMetrics = rd.getFontMetrics();
-            if (aflk) {     
-                drawcs(y_nplayers, "Number of Players: " + GameFacts.numberOfPlayers, 255, 0, 0, 3);
-                rd.setColor(new Color(200, 255, 0));
-                aflk = false;
-            } else {
-                drawcs(y_nplayers, "Number of Players: " + GameFacts.numberOfPlayers, 0, 0, 0, 3);
-                rd.setColor(new Color(255, 128, 0));
-                aflk = true;
-            }
-        }
+        // if (opselect == 0) {
+        //     rd.setFont(new Font("SansSerif", 1, 13));
+        //     FontHandler.fMetrics = rd.getFontMetrics();
+        //     if (aflk) {     
+        //         drawcs(y_nplayers, "Number of Players: " + GameFacts.numberOfPlayers, 255, 0, 0, 3);
+        //         rd.setColor(new Color(200, 255, 0));
+        //         aflk = false;
+        //     } else {
+        //         drawcs(y_nplayers, "Number of Players: " + GameFacts.numberOfPlayers, 0, 0, 0, 3);
+        //         rd.setColor(new Color(255, 128, 0));
+        //         aflk = true;
+        //     }
+        // }
 
         if (opselect == 1) {
             rd.setFont(new Font("SansSerif", 1, 13));
@@ -941,18 +941,18 @@ public class xtGraphics extends Panel implements Runnable {
         if (control.enter || control.handb) {
             if (opselect == 3) {
                 GameSparker.menuState = Phase.MAINMENU;
-                opselect = 3;
+                opselect = 2;
             }
             control.enter = false;
             control.handb = false;
         }
         if (control.left) {
-            if (opselect == 0) {
-                GameFacts.numberOfPlayers--;
-                if (GameFacts.numberOfPlayers == 0) {
-                    GameFacts.numberOfPlayers = 51;
-                }
-            }
+            // if (opselect == 0) {
+            //     GameFacts.numberOfPlayers--;
+            //     if (GameFacts.numberOfPlayers == 0) {
+            //         GameFacts.numberOfPlayers = 51;
+            //     }
+            // }
             if (opselect == 1) {
                 GameSparker.menuStage--;
                 if (GameSparker.menuStage == 0) {
@@ -963,12 +963,12 @@ public class xtGraphics extends Panel implements Runnable {
             control.left = false;
         }
         if (control.right) {
-            if (opselect == 0) {
-                GameFacts.numberOfPlayers++;
-                if (GameFacts.numberOfPlayers == 52) {
-                    GameFacts.numberOfPlayers = 1;
-                }
-            }
+            // if (opselect == 0) {
+            //     GameFacts.numberOfPlayers++;
+            //     if (GameFacts.numberOfPlayers == 52) {
+            //         GameFacts.numberOfPlayers = 1;
+            //     }
+            // }
             if (opselect == 1) {
                 GameSparker.menuStage++;
                 if (GameSparker.menuStage == 18) {
@@ -1051,7 +1051,7 @@ public class xtGraphics extends Panel implements Runnable {
 
         if (flipo == 3 || flipo == 5) {// 2-3 page
             if (flipo == 3) {
-                rd.drawString("Hello!  This will be changed eventually.", text_x, dudetext_base_y);
+                rd.drawString("Hello!  Welcome to the world of NEED FOR MADNESS !.", text_x, dudetext_base_y);
 
                 //
                 // rd.drawImage(nfm, 519, 30, null);
@@ -1789,6 +1789,19 @@ public class xtGraphics extends Panel implements Runnable {
                 }
             }
         }
+        if (fase == Phase.MAINMENU || fase == Phase.CREDITS || fase == Phase.CARSELECT || fase == Phase.STAGESELECT) {
+            if (mutes != Control.mutes) {
+                mutes = Control.mutes;
+            }
+            if (Control.mutem != mutem) {
+                mutem = Control.mutem;
+                if (mutem) {
+                    intertrack.setPaused(true);
+                } else {
+                    intertrack.setPaused(false);
+                }
+            }
+        }
         if (madness.cntdest != 0 && cntwis < 7) {
             if (madness.dest) {
                 cntwis++;
@@ -1936,12 +1949,26 @@ public class xtGraphics extends Panel implements Runnable {
         }
     }
 
+    // public void stoploading() {
+    //     loading();
+    //     app.repaint();
+    //     runner.stop();
+    //     runner = null;
+    //     runtyp = 0;
+    // }
+
     public void stoploading() {
         loading();
         app.repaint();
-        runner.stop();
-        runner = null;
         runtyp = 0;
+        if (runner != null) {
+            try {
+                runner.join(100); // Wait briefly for thread to finish
+            } catch (InterruptedException e) {
+                // Optionally handle interruption
+            }
+            runner = null;
+        }
     }
 
     public void nofocus() {
@@ -4408,8 +4435,6 @@ public class xtGraphics extends Panel implements Runnable {
 
         int menuItems = 4;
 
-        intertrack.play();
-
         if (GameSparker.DEBUG) {
             if (!devtriggered) {
                 HLogger.info("Developer Console triggered");
@@ -4426,23 +4451,54 @@ public class xtGraphics extends Panel implements Runnable {
             app.setCursor(new Cursor(0));
         }
 
+        String mainText = "Need  For  MADNESS ?";
+        int base_x = 100;
+        int base_y = 30 + main_menu_height_origin;
+        int x;
+        int y;
 
         /* handle the light red/ping background behind "need for madness!?" text */
 
         if (flipo > flkat) {
             rd.setFont(new Font("Adventure", 1, 50));
             FontHandler.fMetrics = rd.getFontMetrics();
+
+            x = base_x + (int) (4D - Math.random() * 8D);
+            y = base_y + (int) (4D - Math.random() * 8D);
+
+
+            rd.setColor(new Color(255, 200, 25));
+            for (int dx = -2; dx <= 2; dx++) {
+                for (int dy = -2; dy <= 2; dy++) {
+                    if (dx != 0 || dy != 0) {
+                        rd.drawString(mainText, x + dx, y + dy);
+                    }
+                }
+            }
+
             rd.setColor(new Color(232, 45, 8));
-            rd.drawString("Need  For  MADNESS ?", 100 + (int) (4D - Math.random() * 8D), 
-                30 + main_menu_height_origin + (int) (4D - Math.random() * 8D));
+            rd.drawString(mainText, x, y);
+
             // rd.drawImage(logomadnes, 100 + (int) (4D - Math.random() * 8D),
             //         50 + main_menu_height_origin + (int) (4D - Math.random() * 8D), null);
         } else {
             rd.setFont(new Font("Adventure", 1, 50));
             FontHandler.fMetrics = rd.getFontMetrics();
+
+            x = base_x;
+            y = base_y;
+
+            rd.setColor(new Color(255, 200, 25));
+            for (int dx = -2; dx <= 2; dx++) {
+                for (int dy = -2; dy <= 2; dy++) {
+                    if (dx != 0 || dy != 0) {
+                        rd.drawString(mainText, x + dx, y + dy);
+                    }
+                }
+            }
+
             rd.setColor(new Color(232, 45, 8));
-            rd.drawString("Need  For  MADNESS ?", 100, 
-                30 + main_menu_height_origin);
+            rd.drawString(mainText, x, y);
         }
 
         flipo++;
@@ -4507,7 +4563,7 @@ public class xtGraphics extends Panel implements Runnable {
             }
             if (opselect == 2) {
                 GameSparker.menuState = Phase.CUSTOMSETTINGS;
-                opselect = 0;
+                opselect = 1;
             }
             if (opselect == 3) {
                 fase = Phase.CREDITS;

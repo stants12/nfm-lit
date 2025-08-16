@@ -1812,7 +1812,7 @@ public class Medium {
 
         // End position: in front of car, slightly above, offset to the left
         int endX = conto.x - 1500;
-        int endY = conto.y - 400;
+        int endY = conto.y - 500;
         int endZ = conto.z + 100;
 
         if (progress < 1.0) {

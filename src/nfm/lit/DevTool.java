@@ -43,7 +43,7 @@ public class DevTool {
         commandDescriptions = new HashMap<>();
         populateCommandDescriptions();
 
-        frame = new JFrame("DevTool");
+        frame = new JFrame("Console");
         textArea = new JTextArea();
         inputField = new JTextField();
 
