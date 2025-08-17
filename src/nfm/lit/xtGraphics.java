@@ -388,7 +388,8 @@ public class xtGraphics extends Panel implements Runnable {
 
     private SettingsManager settingsManager = new SettingsManager();
 
-    private int garageScrollOffset = 0;
+    public int garageScrollOffset = 0;
+    public int cardsPerRow = 5; // visible cards at once
     private int garageSpin = 0;
     public int garageSelectedCardIdx = 0;
 
@@ -4567,7 +4568,8 @@ public class xtGraphics extends Panel implements Runnable {
                 //     oldfase = Phase.CARSELECTTRIGGER;
                 //     GameSparker.menuState = Phase.INSTRUCTIONS;
                 // } else {
-                    fase = Phase.CARSELECTTRIGGER;
+                    //fase = Phase.CARSELECTTRIGGER;
+                    fase = Phase.NPLAYERSCHECK;
                 //}
             }
             if (opselect == 1) {
@@ -4694,7 +4696,6 @@ public class xtGraphics extends Panel implements Runnable {
         int cardWidth = 180;
         int cardHeight = 120;
         int cardGap = 30;
-        int cardsPerRow = 5; // visible cards at once
         garageSpin += 1;
 
         rd.setFont(new Font("Adventure", Font.BOLD, 22));
@@ -4706,10 +4707,12 @@ public class xtGraphics extends Panel implements Runnable {
         int endIdx = Math.min(ownedCarIds.size(), startIdx + cardsPerRow);
 
         if (opselect == 1) {
+            boolean changed = false;
             if (control.right) {
                 if (garageSelectedCardIdx < cardsPerRow - 1 && garageSelectedCardIdx < endIdx - startIdx - 1) {
                     garageSelectedCardIdx++;
                     sm.play("tick");
+                    changed = true;
                 } else if (garageScrollOffset < ownedCarIds.size() - cardsPerRow) {
                     garageScrollOffset++;
                     // Don't reset selectedCardIdx, but clamp if needed
@@ -4718,7 +4721,12 @@ public class xtGraphics extends Panel implements Runnable {
                         garageSelectedCardIdx = maxIdx;
                     }
                     sm.play("tick");
-                    sc[0] = garageSelectedCardIdx;
+                    changed = true;
+                }
+                if (changed) {
+                    sc[0] = ownedCarIds.get(garageScrollOffset + garageSelectedCardIdx);
+                    fase = Phase.RELOADGARAGECAR;
+                    System.out.println("Garage selected car index: " + sc[0]);
                 }
                 control.right = false;
             }
@@ -4726,6 +4734,7 @@ public class xtGraphics extends Panel implements Runnable {
                 if (garageSelectedCardIdx > 0) {
                     garageSelectedCardIdx--;
                     sm.play("tick");
+                    changed = true;
                 } else if (garageScrollOffset > 0) {
                     garageScrollOffset--;
                     // Don't reset selectedCardIdx, but clamp if needed
@@ -4734,7 +4743,12 @@ public class xtGraphics extends Panel implements Runnable {
                         garageSelectedCardIdx = maxIdx;
                     }
                     sm.play("tick");
-                    sc[0] = garageSelectedCardIdx;
+                    changed = true;
+                }
+                if (changed) {
+                    sc[0] = ownedCarIds.get(garageScrollOffset + garageSelectedCardIdx);
+                    fase = Phase.RELOADGARAGECAR;
+                    System.out.println("Garage selected car index: " + sc[0]);
                 }
                 control.left = false;
             }

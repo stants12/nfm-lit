@@ -1910,15 +1910,21 @@ public class Medium {
         double orbitAngle = Math.toRadians(90) + 2 * Math.PI * (orbitElapsed % (long)ORBIT_DURATION) / ORBIT_DURATION;
 
         
-        int targetX = conto.x + (int)(orbitRadius * Math.cos(orbitAngle));
-        int targetZ = conto.z + (int)(orbitRadius * Math.sin(orbitAngle));
-        int targetY = orbitHeight;
+        int orbitOffsetX = 0; // shift right (+X)
+        int orbitOffsetZ = 0; // shift forward (+Z)
+        int garageOrbitCenterX = conto.x + orbitOffsetX;
+        int garageOrbitCenterZ = conto.z + orbitOffsetZ;
+
+        // Use these for the orbit calculation:
+        int garageTargetX = garageOrbitCenterX + (int)(orbitRadius * Math.cos(orbitAngle));
+        int garageTargetZ = garageOrbitCenterZ + (int)(orbitRadius * Math.sin(orbitAngle));
+        int targetY = orbitHeight + conto.grat;
 
         // Interpolate position and angles during transition
         if (garageTransitioning && progress < 1.0) {
-            x = (int)(garageCamStartX + (targetX - garageCamStartX) * eased);
+            x = (int)(garageCamStartX + (garageTargetX - garageCamStartX) * eased);
             y = (int)(garageCamStartY + (targetY - garageCamStartY) * eased);
-            z = (int)(garageCamStartZ + (targetZ - garageCamStartZ) * eased);
+            z = (int)(garageCamStartZ + (garageTargetZ - garageCamStartZ) * eased);
 
             // Smoothly interpolate rotation
             int dx = conto.x - x;
@@ -1928,9 +1934,9 @@ public class Medium {
             zy = (float)(garageCamStartZY + ((22 - garageCamStartZY) * eased));
         } else {
             garageTransitioning = false;
-            x = targetX;
+            x = garageTargetX;
             y = targetY;
-            z = targetZ;
+            z = garageTargetZ;
 
             // Orbit: always look at car
             int dx = conto.x - x;

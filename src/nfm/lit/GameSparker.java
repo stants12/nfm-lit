@@ -135,6 +135,7 @@ public class GameSparker extends Applet implements Runnable {
 
     // temp test
     List<Integer> ownedCarIds = new ArrayList<>();
+    public int usercarNob = 0;
 
     /**
      * <a href=
@@ -926,10 +927,12 @@ public class GameSparker extends Applet implements Runnable {
                     Medium.detailtype = Utility.getint("detail", line, 0);
                 }
             }
-            Medium.newpolys(l_wall, r_wall - l_wall, b_wall, t_wall - b_wall, trackers, notb);
-            Medium.newmountains(l_wall, r_wall, b_wall, t_wall);
-            Medium.newclouds(l_wall, r_wall, b_wall, t_wall);
-            Medium.newstars();
+            if (xtgraphics.fase != Phase.RELOADGARAGECAR) {
+                Medium.newpolys(l_wall, r_wall - l_wall, b_wall, t_wall - b_wall, trackers, notb);
+                Medium.newmountains(l_wall, r_wall, b_wall, t_wall);
+                Medium.newclouds(l_wall, r_wall, b_wall, t_wall);
+                Medium.newstars();
+            }
         } catch (IOException e) {
             String exceptStr = e.toString();
             final int maxChar = 30;
@@ -1062,6 +1065,7 @@ public class GameSparker extends Applet implements Runnable {
             rot
         );
         System.out.println("usercar nob: " + nob);
+        usercarNob = nob;
         nob++;
     }
 
@@ -1073,7 +1077,6 @@ public class GameSparker extends Applet implements Runnable {
         for (int i = 0; i < GameFacts.numberOfCars; i++) {
             ownedCarIds.add(i);
         }
-        
     }
     
 
@@ -1132,9 +1135,23 @@ public class GameSparker extends Applet implements Runnable {
             // garage
             int idx = ownedCarIds.indexOf(xtgraphics.sc[0]);
             if (idx != -1) {
-                xtgraphics.garageSelectedCardIdx = idx;
+                // Clamp idx to valid range
+                if (idx >= ownedCarIds.size()) idx = ownedCarIds.size() - 1;
+
+                // Calculate scroll offset and card index for the current page
+                int cardsPerRow = xtgraphics.cardsPerRow;
+                xtgraphics.garageScrollOffset = (idx / cardsPerRow) * cardsPerRow;
+                xtgraphics.garageSelectedCardIdx = idx % cardsPerRow;
+
+                // Clamp scroll offset so it doesn't go out of bounds
+                int maxScroll = Math.max(ownedCarIds.size() - cardsPerRow, 0);
+                if (xtgraphics.garageScrollOffset > maxScroll) {
+                    xtgraphics.garageScrollOffset = maxScroll;
+                    xtgraphics.garageSelectedCardIdx = idx - maxScroll;
+                }
             } else {
-                xtgraphics.garageSelectedCardIdx = 0; // fallback to first card
+                xtgraphics.garageSelectedCardIdx = 0;
+                xtgraphics.garageScrollOffset = 0;
             }
         l = readcookie("gameprfact");
         if (l != -1) {
@@ -1303,9 +1320,9 @@ public class GameSparker extends Applet implements Runnable {
                 }
 
                 if (menuState != Phase.GARAGE) {
-                    Medium.menucam(aconto1[0]);
+                    Medium.menucam(aconto1[usercarNob]);
                 } else {
-                    Medium.garagecam(aconto1[0]);
+                    Medium.garagecam(aconto1[1]);
                 }
 
                 if (menuState == Phase.MAINMENU) {
@@ -1459,6 +1476,14 @@ public class GameSparker extends Applet implements Runnable {
             if (xtgraphics.fase == Phase.RELOADSTAGEMENU) { // for main menu stage reloading
                 repaint();
                 //GameSparker.menuStartTime = -1;
+                GameSparker.loadStageCus = "nfm2/" + menuStage;
+                loadstage(aconto1, aconto, trackers, checkpoints, xtgraphics, amadness, record, true);
+                createUserCar(xtgraphics, aconto1, aconto, 0, -760, 0, 0);
+
+                xtgraphics.fase = Phase.MAINMENU;
+            }
+            if (xtgraphics.fase == Phase.RELOADGARAGECAR) { // for when garage car reloads
+                repaint();
                 GameSparker.loadStageCus = "nfm2/" + menuStage;
                 loadstage(aconto1, aconto, trackers, checkpoints, xtgraphics, amadness, record, true);
                 createUserCar(xtgraphics, aconto1, aconto, 0, -760, 0, 0);
