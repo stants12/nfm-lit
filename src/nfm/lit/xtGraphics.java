@@ -196,7 +196,7 @@ public class xtGraphics extends Panel implements Runnable {
     public final String[] names = {
             "Tornado Shark", "Formula 7", "Wow Caninaro", "La Vite Crab", "Nimi", "MAX Revenge", "Lead Oxide",
             "Kool Kat", "Drifter X", "Sword of Justice", "High Rider", "EL KING", "Mighty Eight", "M A S H E E N",
-            "Radical One", "DR Monstaa"
+            "Radical One", "DR Monstaa", "dies"
     };
     private int dmcnt;
     private boolean dmflk;
@@ -3519,7 +3519,7 @@ public class xtGraphics extends Panel implements Runnable {
             }
 
             if (sc[0] != maxId) {
-                if (i != -1) {
+                if (i != -1 && i < 17) {
                     sc[GameFacts.numberOfPlayers - 1] = maxId;
                     lastcar--; // boss car won't be randomized if stage isnt custom
                 }

@@ -70,6 +70,34 @@ public class ContO {
 
     private boolean bool16 = false;
 
+    // stats
+
+    public int swits[] = new int[3];
+    public float acelf[] = new float[3];
+    public int handb = 0;
+    public int airs = 0;
+    public int airc = 0;
+    public int turn = 0;
+    public float grip = 0F;
+    public float bounce = 0F;
+    public float simag = 0F;
+    public float moment = 0F;
+    public float comprad = 0F;
+    public int push = 0;
+    public int revpush = 0;
+    public int lift = 0;
+    public int revlift = 0;
+    public int powerloss = 0;
+    public int flipy = 0;
+    public int msquash = 0;
+    public int clrad = 0;
+    public float dammult = 0F;
+    public int maxmag = 0;
+    public float dishandle = 0F;
+    public float outdam = 0F;
+    public int engine = 0;
+    public String name = "[ UNDEFINED ]";
+
     private void pdust(int i, Graphics2D rd, int j) {
         if (j * dov[i] > 0) {
             int k;
@@ -207,7 +235,7 @@ public class ContO {
 
     public ContO(byte abyte0[], Trackers trackers) {
         t = trackers;
-        p = new Plane[270];
+        p = new Plane[570];
         boolean flag = false;
         boolean flag1 = false;
         int i = 0;
@@ -231,32 +259,6 @@ public class ContO {
         float nfmm_scale[] = {
                 1.0F, 1.0F, 1.0F
         };
-
-        int swits[] = new int[3];
-        float acelf[] = new float[3];
-        int handb = 0;
-        int airs = 0;
-        int airc = 0;
-        int turn = 0;
-        float grip = 0F;
-        float bounce = 0F;
-        float simag = 0F;
-        float moment = 0F;
-        float comprad = 0F;
-        int push = 0;
-        int revpush = 0;
-        int lift = 0;
-        int revlift = 0;
-        int powerloss = 0;
-        float flipy = 0F;
-        int msquash = 0;
-        int clrad = 0;
-        float dammult = 0F;
-        int maxmag = 0;
-        float dishandle = 0F;
-        float outdam = 0F;
-        int engine = 0;
-        String name = "[ UNDEFINED ]";
 
         try (BufferedReader bufferedreader = new BufferedReader(
                 new InputStreamReader((new ByteArrayInputStream(abyte0))))) {
@@ -464,6 +466,80 @@ public class ContO {
                     swits[1] = Utility.getint("swits", line, 1);
                     swits[2] = Utility.getint("swits", line, 2);
                 }
+                if (line.startsWith("acelf")) {
+                    acelf[0] = Utility.getfloat("acelf", line, 0);
+                    acelf[1] = Utility.getfloat("acelf", line, 1);
+                    acelf[2] = Utility.getfloat("acelf", line, 2);
+                }
+                if (line.startsWith("handb")) {
+                    handb = Utility.getint("handb", line, 0);
+                }
+                if (line.startsWith("airs")) {
+                    airs = Utility.getint("airs", line, 0);
+                }
+                if (line.startsWith("airc")) {
+                    airc = Utility.getint("airc", line, 0);
+                }
+                if (line.startsWith("turn")) {
+                    turn = Utility.getint("turn", line, 0);
+                }
+                if (line.startsWith("grip")) {
+                    grip = Utility.getfloat("grip", line, 0);
+                }
+                if (line.startsWith("bounce")) {
+                    bounce = Utility.getfloat("bounce", line, 0);
+                }
+                if (line.startsWith("simag")) {
+                    simag = Utility.getfloat("simag", line, 0);
+                }
+                if (line.startsWith("moment")) {
+                    moment = Utility.getfloat("moment", line, 0);
+                }
+                if (line.startsWith("comprad")) {
+                    comprad = Utility.getfloat("comprad", line, 0);
+                }
+                if (line.startsWith("push")) {
+                    push = Utility.getint("push", line, 0);
+                }
+                if (line.startsWith("revpush")) {
+                    revpush = Utility.getint("revpush", line, 0);
+                }
+                if (line.startsWith("lift")) {
+                    lift = Utility.getint("lift", line, 0);
+                }
+                if (line.startsWith("revlift")) {
+                    revlift = Utility.getint("revlift", line, 0);
+                }
+                if (line.startsWith("powerloss")) {
+                    powerloss = Utility.getint("powerloss", line, 0);
+                }
+                if (line.startsWith("flipy")) {
+                    flipy = Utility.getint("flipy", line, 0);
+                }
+                if (line.startsWith("msquash")) {
+                    msquash = Utility.getint("msquash", line, 0);
+                }
+                if (line.startsWith("clrad")) {
+                    clrad = Utility.getint("clrad", line, 0);
+                }
+                if (line.startsWith("dammult")) {
+                    dammult = Utility.getfloat("dammult", line, 0);
+                }
+                if (line.startsWith("maxmag")) {
+                    maxmag = Utility.getint("maxmag", line, 0);
+                }
+                if (line.startsWith("dishandle")) {
+                    dishandle = Utility.getfloat("dishandle", line, 0);
+                }
+                if (line.startsWith("outdam")) {
+                    outdam = Utility.getfloat("outdam", line, 0);
+                }
+                if (line.startsWith("engine")) {
+                    engine = Utility.getint("engine", line, 0);
+                }
+                if (line.startsWith("name")) {
+                    name = Utility.getstring("name", line, 0);
+                }
             }
         } catch (IOException e) {
             HLogger.error("Error loading " + Arrays.toString(abyte0) + ".rad");
@@ -483,6 +559,34 @@ public class ContO {
         grounded = conto.grounded;
         grat = conto.grat;
         p = new Plane[conto.npl];
+
+
+        swits = conto.swits.clone();
+        acelf = conto.acelf.clone();
+        handb = conto.handb;
+        airs = conto.airs;
+        airc = conto.airc;
+        turn = conto.turn;
+        grip = conto.grip;
+        bounce = conto.bounce;
+        simag = conto.simag;
+        moment = conto.moment;
+        comprad = conto.comprad;
+        push = conto.push;
+        revpush = conto.revpush;
+        lift = conto.lift;
+        revlift = conto.revlift;
+        powerloss = conto.powerloss;
+        flipy = conto.flipy;
+        msquash = conto.msquash;
+        clrad = conto.clrad;
+        dammult = conto.dammult;
+        maxmag = conto.maxmag;
+        dishandle = conto.dishandle;
+        outdam = conto.outdam;
+        engine = conto.engine;
+        name = conto.name;
+
         for (int i1 = 0; i1 < npl; i1++) {
             if (conto.p[i1].master != 0) {
                 conto.p[i1].n = 16;

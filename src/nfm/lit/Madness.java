@@ -352,7 +352,7 @@ class Madness {
             af2[i] = conto.z + conto.keyz[i];
             af3[i] = conto1.x + conto1.keyx[i];
             if (capsized)
-                af4[i] = conto1.y + StatList.flipy[madness.cn] + madness.squash;
+                af4[i] = conto1.y + madness.stat.flipy + madness.squash;
             else
                 af4[i] = conto1.y + conto1.grat;
             af5[i] = conto1.z + conto1.keyz[i];
@@ -367,10 +367,10 @@ class Madness {
                 conto1.z) < (conto.maxR * conto.maxR + conto1.maxR * conto1.maxR) * 1.5D) {
             if (!caught[madness.im] && (speed != 0.0F || madness.speed != 0.0F)) {
                 if (Math.abs(power * speed * stat.moment) != Math
-                        .abs(madness.power * madness.speed * StatList.moment[madness.cn])) {
+                        .abs(madness.power * madness.speed * madness.stat.moment)) {
                     dominate[madness.im] = Math.abs(power * speed * stat.moment) > Math
-                            .abs(madness.power * madness.speed * StatList.moment[madness.cn]);
-                } else dominate[madness.im] = stat.moment > StatList.moment[madness.cn];
+                            .abs(madness.power * madness.speed * madness.stat.moment);
+                } else dominate[madness.im] = stat.moment > madness.stat.moment;
                 caught[madness.im] = true;
             }
         } else if (caught[madness.im])
@@ -391,7 +391,7 @@ class Madness {
                 do
                     if (Utility.rpy(af[k], af3[l], af1[k], af4[l], af2[k], af5[l]) < (j + 7000)
                             * (stat.comprad + stat.comprad)) {
-                        if (Math.abs(scx[k] * stat.moment) > Math.abs(madness.scx[l] * StatList.moment[madness.cn])) {
+                        if (Math.abs(scx[k] * stat.moment) > Math.abs(madness.scx[l] * madness.stat.moment)) {
                             float f = madness.scx[l] * stat.revpush;
                             if (f > 300F)
                                 f = 300F;
@@ -412,7 +412,7 @@ class Madness {
                             if (madness.colidim)
                                 madness.colidim = false;
                             scx[k] -= f;
-                            regx(k, -f * StatList.moment[cn], conto);
+                            regx(k, -f * madness.stat.moment, conto);
                             scy[k] -= stat.revlift;
                             if (im == 0)
                                 madness.colidim = true;
@@ -420,7 +420,7 @@ class Madness {
                             if (madness.colidim)
                                 madness.colidim = false;
                         }
-                        if (Math.abs(scz[k] * stat.moment) > Math.abs(madness.scz[l] * StatList.moment[madness.cn])) {
+                        if (Math.abs(scz[k] * stat.moment) > Math.abs(madness.scz[l] * madness.stat.moment)) {
                             float f1 = madness.scz[l] * stat.revpush;
                             if (f1 > 300F)
                                 f1 = 300F;
@@ -441,7 +441,7 @@ class Madness {
                             if (madness.colidim)
                                 madness.colidim = false;
                             scz[k] -= f1;
-                            regz(k, -f1 * StatList.moment[cn], conto);
+                            regz(k, -f1 * madness.stat.moment, conto);
                             scy[k] -= stat.revlift;
                             if (im == 0)
                                 madness.colidim = true;
@@ -461,7 +461,7 @@ class Madness {
         }
     }
 
-    private void distruct(ContO conto) {
+    public void distruct(ContO conto) {
         for (int i = 0; i < conto.npl; i++)
             if (conto.p[i].wz == 0 || conto.p[i].gr == -17 || conto.p[i].gr == -16)
                 conto.p[i].embos = 1;

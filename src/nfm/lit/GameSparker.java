@@ -53,7 +53,7 @@ public class GameSparker extends Applet implements Runnable {
 
     private static final String[] carModels = {
             "2000tornados", "formula7", "canyenaro", "lescrab", "nimi", "maxrevenge", "leadoxide", "koolkat", "drifter",
-            "policecops", "mustang", "king", "audir8", "masheen", "radicalone", "drmonster"
+            "policecops", "mustang", "king", "audir8", "masheen", "radicalone", "drmonster", "dies"
     };
 
     private static final String[] trackModels = {
@@ -1411,7 +1411,7 @@ public class GameSparker extends Applet implements Runnable {
                 savecookie("usercar", "" + xtgraphics.sc[0]);
 
                 for (int x = 0; x < GameFacts.numberOfPlayers; x++) {
-                    amadness[x].stat = new Stat(xtgraphics.sc[x]);
+                    amadness[x].stat = new Stat(xtgraphics.sc[x], aconto1[x]);
                 }
                 xtgraphics.fase = Phase.PREGAMEMUSIC;
             }

@@ -128,6 +128,31 @@ public class Utility {
     }
 
     /**
+     * Gets a float from a string in format:
+     * string(float1,float2,float3...)
+     *
+     * @param string The beginning of the string (e.g: foo(0.5,1.2,3.0) = foo)
+     * @param source The string (single line) to get the value from
+     * @param i      The position of the value (starting from 0)
+     * @return A float containing the value
+     */
+    public static float getfloat(final String string, final String source, final int i) {
+        int var = 0;
+        String part = "";
+        for (int k = string.length() + 1; k < source.length(); k++) {
+            final String strChar = new StringBuilder().append("").append(source.charAt(k)).toString();
+            if ((",").equals(strChar) || (")").equals(strChar)) {
+                var++;
+                k++;
+            }
+            if (var == i) {
+                part = new StringBuilder().append(part).append(source.charAt(k)).toString();
+            }
+        }
+        return Float.valueOf(part);
+    }
+
+    /**
      * Gets a substring, nicely
      *
      * @param string The beginning of the string (e.g: foo(0,0,1) = foo)

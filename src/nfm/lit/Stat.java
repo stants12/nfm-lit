@@ -63,31 +63,31 @@ public class Stat {
      *
      * @param car the car
      */
-    public Stat(final int car) {
-        acelf = StatList.acelf[car].clone();
-        swits = StatList.swits[car].clone();
-        airc = StatList.airc[car];
-        airs = StatList.airs[car];
-        bounce = StatList.bounce[car];
-        clrad = StatList.clrad[car];
-        comprad = StatList.comprad[car];
-        dammult = StatList.dammult[car];
-        flipy = StatList.flipy[car];
-        grip = StatList.grip[car];
-        handb = StatList.handb[car];
-        lift = StatList.lift[car];
-        maxmag = StatList.maxmag[car];
-        moment = StatList.moment[car];
-        msquash = StatList.msquash[car];
-        powerloss = StatList.powerloss[car];
-        push = StatList.push[car];
-        revlift = StatList.revlift[car];
-        revpush = StatList.revpush[car];
-        turn = StatList.turn[car];
-        simag = StatList.simag[car];
-        outdam = StatList.outdam[car];
-        dishandle = StatList.dishandle[car];
-        engine = StatList.engine[car];
+    public Stat(final int car, ContO aconto) {
+        acelf = (car >= 0 && car < StatList.acelf.length && StatList.acelf[car] != null) ? StatList.acelf[car].clone() : aconto.acelf;
+        swits = (car >= 0 && car < StatList.swits.length && StatList.swits[car] != null) ? StatList.swits[car].clone() : aconto.swits;
+        airc = (car >= 0 && car < StatList.airc.length && StatList.airc[car] != 0) ? StatList.airc[car] : aconto.airc;
+        airs = (car >= 0 && car < StatList.airs.length && StatList.airs[car] != 0F) ? StatList.airs[car] : aconto.airs;
+        bounce = (car >= 0 && car < StatList.bounce.length && StatList.bounce[car] != 0F) ? StatList.bounce[car] : aconto.bounce;
+        clrad = (car >= 0 && car < StatList.clrad.length && StatList.clrad[car] != 0) ? StatList.clrad[car] : aconto.clrad;
+        comprad = (car >= 0 && car < StatList.comprad.length && StatList.comprad[car] != 0F) ? StatList.comprad[car] : aconto.comprad;
+        dammult = (car >= 0 && car < StatList.dammult.length && StatList.dammult[car] != 0F) ? StatList.dammult[car] : aconto.dammult;
+        flipy = (car >= 0 && car < StatList.flipy.length && StatList.flipy[car] != 0) ? StatList.flipy[car] : aconto.flipy;
+        grip = (car >= 0 && car < StatList.grip.length && StatList.grip[car] != 0F) ? StatList.grip[car] : aconto.grip;
+        handb = (car >= 0 && car < StatList.handb.length && StatList.handb[car] != 0) ? StatList.handb[car] : aconto.handb;
+        lift = (car >= 0 && car < StatList.lift.length && StatList.lift[car] != 0) ? StatList.lift[car] : aconto.lift;
+        maxmag = (car >= 0 && car < StatList.maxmag.length && StatList.maxmag[car] != 0) ? StatList.maxmag[car] : aconto.maxmag;
+        moment = (car >= 0 && car < StatList.moment.length && StatList.moment[car] != 0F) ? StatList.moment[car] : aconto.moment;
+        msquash = (car >= 0 && car < StatList.msquash.length && StatList.msquash[car] != 0) ? StatList.msquash[car] : aconto.msquash;
+        powerloss = (car >= 0 && car < StatList.powerloss.length && StatList.powerloss[car] != 0) ? StatList.powerloss[car] : aconto.powerloss;
+        push = (car >= 0 && car < StatList.push.length && StatList.push[car] != 0) ? StatList.push[car] : aconto.push;
+        revlift = (car >= 0 && car < StatList.revlift.length && StatList.revlift[car] != 0) ? StatList.revlift[car] : aconto.revlift;
+        revpush = (car >= 0 && car < StatList.revpush.length && StatList.revpush[car] != 0) ? StatList.revpush[car] : aconto.revpush;
+        turn = (car >= 0 && car < StatList.turn.length && StatList.turn[car] != 0) ? StatList.turn[car] : aconto.turn;
+        simag = (car >= 0 && car < StatList.simag.length && StatList.simag[car] != 0F) ? StatList.simag[car] : aconto.simag;
+        outdam = (car >= 0 && car < StatList.outdam.length && StatList.outdam[car] != 0F) ? StatList.outdam[car] : aconto.outdam;
+        dishandle = (car >= 0 && car < StatList.dishandle.length && StatList.dishandle[car] != 0F) ? StatList.dishandle[car] : aconto.dishandle;
+        engine = (car >= 0 && car < StatList.engine.length && StatList.engine[car] != 0) ? StatList.engine[car] : aconto.engine;
     }
 
     public Stat(){

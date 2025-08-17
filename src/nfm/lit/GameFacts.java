@@ -9,7 +9,7 @@ public class GameFacts
 {
      public static final int numberOfStages = 17; //make sure to change xtg loadmusic, xtg hipno, and xtg sndsize
 
-     public static final int numberOfCars = 16;
+     public static final int numberOfCars = 17;
 
      public static int numberOfPlayers = 7;
 
