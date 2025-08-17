@@ -36,7 +36,7 @@ public class DevTool {
 
     private Map<String, String> commandDescriptions; // for help command
 
-    public DevTool(CheckPoints checkpoints, Madness madness[], ContO conto[], ContO conto1[], xtGraphics xt) {
+    public DevTool(GameSparker gamesparker, CheckPoints checkpoints, Madness madness[], ContO conto[], ContO conto1[], xtGraphics xt) {
         commandHistory = new ArrayList<>();
         historyIndex = -1;
 
@@ -54,7 +54,7 @@ public class DevTool {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String command = inputField.getText();
-                executeCommand(command, checkpoints, madness, conto, conto1, xt);
+                executeCommand(command, gamesparker, checkpoints, madness, conto, conto1, xt);
                 if (!command.trim().isEmpty()) {
                     commandHistory.add(command);
                     historyIndex = commandHistory.size();
@@ -100,7 +100,7 @@ public class DevTool {
         textArea.append(s + "\n");
     }
 
-    private void executeCommand(String command, CheckPoints checkpoints, Madness madness[], ContO conto[], ContO conto1[], xtGraphics xt) {
+    private void executeCommand(String command, GameSparker gamesparker, CheckPoints checkpoints, Madness madness[], ContO conto[], ContO conto1[], xtGraphics xt) {
         textArea.append("> " + command + "\n");
 
         String[] parts = command.split(" ");
@@ -153,6 +153,18 @@ public class DevTool {
                     }
                 } else {
                     print("Usage: iconpos <camX> <camY> <carX> <carY> <carZ>");
+                }
+                break;
+            case "give":
+                if (args.length == 1) {
+                    try {
+                        int n = Integer.parseInt(args[0]);
+                        gamesparker.ownedCarIds.add(n);
+                    } catch (NumberFormatException e) {
+                        print("Invalid argument. All parameters must be integers.");
+                    }
+                } else {
+                    print("Usage: give <id>");
                 }
                 break;
             case "fix":

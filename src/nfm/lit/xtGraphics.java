@@ -4439,7 +4439,7 @@ public class xtGraphics extends Panel implements Runnable {
     public static long mainMenuFadeStart = -1;
     private final float MAIN_MENU_FADE_SECONDS = 1.5f; // duration in seconds
 
-    public void newmaini(Control control, CheckPoints checkpoints, Madness madness[], ContO conto[], ContO conto1[]) {
+    public void newmaini(GameSparker gamesparker, Control control, CheckPoints checkpoints, Madness madness[], ContO conto[], ContO conto1[]) {
 
         int menuItems = 5;
 
@@ -4447,7 +4447,7 @@ public class xtGraphics extends Panel implements Runnable {
             if (!devtriggered) {
                 HLogger.info("Developer Console triggered");
 
-                DevTool console = new DevTool(checkpoints, madness, conto, conto1, this);
+                DevTool console = new DevTool(gamesparker, checkpoints, madness, conto, conto1, this);
                 console.showConsole();
                 devtriggered = true;
             }
@@ -4570,6 +4570,7 @@ public class xtGraphics extends Panel implements Runnable {
                 // } else {
                     //fase = Phase.CARSELECTTRIGGER;
                     fase = Phase.NPLAYERSCHECK;
+                    Medium.crs = false;
                 //}
             }
             if (opselect == 1) {
@@ -4702,7 +4703,7 @@ public class xtGraphics extends Panel implements Runnable {
         drawcs(50, "G A R A G E", 255, 128, 0, 3);
 
         // cards are drawn in a horizontal row at the bottom
-        int y = GameFacts.screenHeight - cardHeight - 20;
+        int y = GameFacts.screenHeight - cardHeight - 35;
         int startIdx = garageScrollOffset;
         int endIdx = Math.min(ownedCarIds.size(), startIdx + cardsPerRow);
 
@@ -4758,6 +4759,7 @@ public class xtGraphics extends Panel implements Runnable {
             if (opselect == 0) {
                 GameSparker.menuState = Phase.MAINMENU;
                 Medium.resetGarageCam();
+                Medium.crs = false;
             }
             control.enter = false;
             control.handb = false;
@@ -4788,8 +4790,6 @@ public class xtGraphics extends Panel implements Runnable {
 
             rd.setColor(selected ? new Color(190, 50, 0, 100) : new Color(100, 20, 0, 100));
             rd.fillRoundRect(x, y, cardWidth, cardHeight, 18, 18);
-            rd.setColor(selected ? Color.YELLOW : new Color(255, 128, 0));
-            rd.drawRoundRect(x, y, cardWidth, cardHeight, 18, 18);
 
             // render car preview to image
             BufferedImage carImg = renderCarPreview(carModels[carId], cardWidth, cardHeight, carId);
@@ -4797,10 +4797,13 @@ public class xtGraphics extends Panel implements Runnable {
             // draw car preview image in card
             rd.drawImage(carImg, x, y, null);
 
+            rd.setColor(selected ? Color.YELLOW : new Color(255, 128, 0));
+            rd.drawRoundRect(x, y, cardWidth, cardHeight, 18, 18);
+
             // car name
             rd.setFont(new Font("Adventure", Font.BOLD, 18));
             rd.setColor(selected ? Color.YELLOW : new Color(255, 128, 0));
-            String carName = names[carId];
+            String carName = (carId >= 0 && carId < names.length) ? names[carId] : "[ UNDEFINED ]";
             rd.drawString(carName, x + 10, y + cardHeight - 10);
         }
 
@@ -4808,13 +4811,43 @@ public class xtGraphics extends Panel implements Runnable {
         rd.setFont(new Font("SanSerif", Font.BOLD, 70));
         // draw scroll arrows
         if (garageScrollOffset > 0) {
-            rd.drawString("←", Utility.centeredWidthX(cardsPerRow * cardWidth + (cardsPerRow - 1) * cardGap) - 70, y + cardHeight / 2);
+            rd.drawString("←", Utility.centeredWidthX(cardsPerRow * cardWidth + (cardsPerRow - 1) * cardGap) - 70, y + cardHeight - 40);
         }
         if (endIdx < ownedCarIds.size()) {
-            rd.drawString("→", Utility.centeredWidthX(cardsPerRow * cardWidth + (cardsPerRow - 1) * cardGap) + cardsPerRow * (cardWidth + cardGap) - cardGap + 10, y + cardHeight / 2);
+            rd.drawString("→", Utility.centeredWidthX(cardsPerRow * cardWidth + (cardsPerRow - 1) * cardGap) + cardsPerRow * (cardWidth + cardGap) - cardGap + 10, y + cardHeight - 40);
         }
 
         // TODO: Handle selection (mouse/keyboard), highlight selected card, confirm pick
+
+        // Scrollbar "thumb" indicator for card scrolling
+        int totalCards = ownedCarIds.size();
+        int visibleCards = cardsPerRow;
+        int scrollPos = garageScrollOffset;
+        int barWidth = visibleCards * cardWidth + (visibleCards - 1) * cardGap;
+        int barHeight = 8;
+        int barX = Utility.centeredWidthX(barWidth);
+        int barY = y + cardHeight + 10;
+
+        // Draw scrollbar track
+        rd.setColor(new Color(80, 80, 80, 120));
+        rd.fillRoundRect(barX, barY, barWidth, barHeight, 6, 6);
+
+        // Calculate thumb width and position
+        int thumbMinWidth = 32;
+        int thumbWidth = Math.max(thumbMinWidth, Math.min(barWidth, (int)((double)barWidth * visibleCards / Math.max(totalCards, 1))));
+        int maxScroll = Math.max(totalCards - visibleCards, 1);
+        int thumbX = barX + (int)((double)(barWidth - thumbWidth) * scrollPos / maxScroll);
+
+        // Draw thumb
+        rd.setColor(new Color(255, 128, 0));
+        rd.fillRoundRect(thumbX, barY, thumbWidth, barHeight, 6, 6);
+
+        // Draw card range text
+        rd.setFont(new Font("SansSerif", Font.BOLD, 12));
+        rd.setColor(Color.YELLOW);
+        String rangeText = "Showing " + (scrollPos + 1) + "–" + Math.min(scrollPos + visibleCards, totalCards) + " of " + totalCards;
+        int textWidth = rd.getFontMetrics().stringWidth(rangeText);
+        rd.drawString(rangeText, barX + (barWidth - textWidth) / 2, barY + barHeight + 14);
     }
 
     public void blendude(Image image) {

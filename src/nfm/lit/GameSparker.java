@@ -975,7 +975,12 @@ public class GameSparker extends Applet implements Runnable {
         do
             u[j1].reset(checkpoints, xtgraphics.sc[j1]);
         while (++j1 < GameFacts.numberOfPlayers);
-        xtgraphics.resetstat(checkpoints.stage);
+
+        if (xtgraphics.fase != Phase.RELOADGARAGECAR &&
+            xtgraphics.fase != Phase.LOADSTAGEMENU &&
+            xtgraphics.fase != Phase.RELOADSTAGEMENU)
+            xtgraphics.resetstat(checkpoints.stage);
+
         j1 = 0;
         do {
             if (j1 % 3 == 0) {
@@ -1074,9 +1079,12 @@ public class GameSparker extends Applet implements Runnable {
         GameSparker.menuStage = settingsManager.getMenuStage();
         GameSparker.menuMusic = settingsManager.getMenuMusic();
 
-        for (int i = 0; i < GameFacts.numberOfCars; i++) {
-            ownedCarIds.add(i);
-        }
+        ownedCarIds.add(0);
+        ownedCarIds.add(6);
+        
+        // for (int i = 0; i < GameFacts.numberOfCars; i++) {
+        //     ownedCarIds.add(i);
+        // }
     }
     
 
@@ -1326,7 +1334,7 @@ public class GameSparker extends Applet implements Runnable {
                 }
 
                 if (menuState == Phase.MAINMENU) {
-                    xtgraphics.newmaini(u[0], checkpoints, amadness, aconto, aconto1);
+                    xtgraphics.newmaini(this, u[0], checkpoints, amadness, aconto, aconto1);
                     xtgraphics.ctachm(xm, ym, mouses, u[0]);
                     if (mouses == 2)
                         mouses = 0;

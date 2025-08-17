@@ -232,6 +232,32 @@ public class ContO {
                 1.0F, 1.0F, 1.0F
         };
 
+        int swits[] = new int[3];
+        float acelf[] = new float[3];
+        int handb = 0;
+        int airs = 0;
+        int airc = 0;
+        int turn = 0;
+        float grip = 0F;
+        float bounce = 0F;
+        float simag = 0F;
+        float moment = 0F;
+        float comprad = 0F;
+        int push = 0;
+        int revpush = 0;
+        int lift = 0;
+        int revlift = 0;
+        int powerloss = 0;
+        float flipy = 0F;
+        int msquash = 0;
+        int clrad = 0;
+        float dammult = 0F;
+        int maxmag = 0;
+        float dishandle = 0F;
+        float outdam = 0F;
+        int engine = 0;
+        String name = "[ UNDEFINED ]";
+
         try (BufferedReader bufferedreader = new BufferedReader(
                 new InputStreamReader((new ByteArrayInputStream(abyte0))))) {
             for (String line; (line = bufferedreader.readLine()) != null; ) {
@@ -431,6 +457,12 @@ public class ContO {
                 }
                 if (line.startsWith("ScaleZ")) {
                     nfmm_scale[2] = Utility.getint("ScaleZ", line, 0) / 100F;
+                }
+                ///stats
+                if (line.startsWith("swits")) {
+                    swits[0] = Utility.getint("swits", line, 0);
+                    swits[1] = Utility.getint("swits", line, 1);
+                    swits[2] = Utility.getint("swits", line, 2);
                 }
             }
         } catch (IOException e) {
