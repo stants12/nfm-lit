@@ -133,6 +133,9 @@ public class GameSparker extends Applet implements Runnable {
 
     private SettingsManager settingsManager = new SettingsManager();
 
+    // temp test
+    List<Integer> ownedCarIds = new ArrayList<>();
+
     /**
      * <a href=
      * "http://www.expandinghead.net/keycode.html">http://www.expandinghead.net/keycode.html</a>
@@ -1058,6 +1061,7 @@ public class GameSparker extends Applet implements Runnable {
             z,
             rot
         );
+        System.out.println("usercar nob: " + nob);
         nob++;
     }
 
@@ -1065,6 +1069,11 @@ public class GameSparker extends Applet implements Runnable {
         settingsManager.load();
         GameSparker.menuStage = settingsManager.getMenuStage();
         GameSparker.menuMusic = settingsManager.getMenuMusic();
+
+        for (int i = 0; i < GameFacts.numberOfCars; i++) {
+            ownedCarIds.add(i);
+        }
+        
     }
     
 
@@ -1102,6 +1111,9 @@ public class GameSparker extends Applet implements Runnable {
         /**
          * this bit in here reads cookies and set values
          */
+
+        loadsettings();
+
         l = readcookie("unlocked");
         if (l >= 1 && l <= GameFacts.numberOfStages) {
             /*
@@ -1117,13 +1129,18 @@ public class GameSparker extends Applet implements Runnable {
         l = readcookie("usercar");
         if (l >= 0 && l <= GameFacts.numberOfCars - 1)
             xtgraphics.sc[0] = l;
+            // garage
+            int idx = ownedCarIds.indexOf(xtgraphics.sc[0]);
+            if (idx != -1) {
+                xtgraphics.garageSelectedCardIdx = idx;
+            } else {
+                xtgraphics.garageSelectedCardIdx = 0; // fallback to first card
+            }
         l = readcookie("gameprfact");
         if (l != -1) {
             f = l;
             i1 = 1;
         }
-
-        loadsettings();
 
         xtgraphics.stoploading();
         Medium.setxtGraphics(xtgraphics);
@@ -1281,8 +1298,15 @@ public class GameSparker extends Applet implements Runnable {
 
                 //Medium.scenicCamera(aconto1[0], checkpoints, System.currentTimeMillis() - GameSparker.menuStartTime, 4000);
 
-                Medium.menucam(aconto1[0]);
-                //Medium.around(aconto1[0], false);
+                if (menuState == Phase.GARAGE) {
+                    xtgraphics.garage(u[0], ownedCarIds, aconto);
+                }
+
+                if (menuState != Phase.GARAGE) {
+                    Medium.menucam(aconto1[0]);
+                } else {
+                    Medium.garagecam(aconto1[0]);
+                }
 
                 if (menuState == Phase.MAINMENU) {
                     xtgraphics.newmaini(u[0], checkpoints, amadness, aconto, aconto1);
@@ -1314,8 +1338,10 @@ public class GameSparker extends Applet implements Runnable {
                 if (mouses == 1)
                     mouses = 2;
             }
-            if (xtgraphics.fase == Phase.CUSTOMSETTINGS) { // settings menu
-                xtgraphics.menusettings(u[0]);
+            if (xtgraphics.fase == Phase.MODELDEBUG) {
+                rd.setColor(new Color(100,100,100));
+                rd.fillRect(0, 0, GameFacts.screenWidth, GameFacts.screenHeight);
+                xtgraphics.modelPreviewDebug(u[0], aconto[0]);
             }
             if (xtgraphics.fase == Phase.POSTGAMEHANDOVER) {
                 xtgraphics.fase = Phase.POSTGAME;
@@ -1426,6 +1452,7 @@ public class GameSparker extends Applet implements Runnable {
                 createUserCar(xtgraphics, aconto1, aconto, 0, -760, 0, 0);
 
                 xtGraphics.intertrack.play();
+                Medium.focus_point = 400;
 
                 xtgraphics.fase = Phase.MAINMENU;
             }
@@ -1471,6 +1498,7 @@ public class GameSparker extends Applet implements Runnable {
             }
             if (xtgraphics.fase == Phase.INGAME) {
                 int k3 = 0;
+                Medium.focus_point = 500;
                 do {
                     if (amadness[k3].newcar) {
                         int j5 = aconto1[k3].xz;

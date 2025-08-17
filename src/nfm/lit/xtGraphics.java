@@ -261,25 +261,18 @@ public class xtGraphics extends Panel implements Runnable {
     private int main_menu_button_height = 25;
     
     private int main_menu_op_0_y = 100 + main_menu_height_origin;
-    private int main_menu_op_0_width = 230;
+    private int main_menu_op_width = 230;
 
     private int main_menu_op_1_y = 140 + main_menu_height_origin;
-    private int main_menu_op_1_width = 230;
-
     private int main_menu_op_2_y = 180 + main_menu_height_origin;
-    private int main_menu_op_2_width = 230;
-
     private int main_menu_op_3_y = 220 + main_menu_height_origin;
-    private int main_menu_op_3_width = 230;
+    private int main_menu_op_4_y = 260 + main_menu_height_origin;
 
     // private int main_menu_op_0_x = Utility.centeredWidthX(main_menu_op_0_width);
     // private int main_menu_op_1_x = Utility.centeredWidthX(main_menu_op_1_width);
     // private int main_menu_op_2_x = Utility.centeredWidthX(main_menu_op_2_width);
 
-    private int main_menu_op_0_x = 100;
-    private int main_menu_op_1_x = 100;
-    private int main_menu_op_2_x = 100;
-    private int main_menu_op_3_x = 100;
+    private int main_menu_op_x = 100;
 
     private int main_menu_arcwidth = 10;
     private int main_menu_archeight = 20;
@@ -392,6 +385,13 @@ public class xtGraphics extends Panel implements Runnable {
     Socket socket = null;
     BufferedReader serverResponse = null;
     public String serverMessage = "Connecting to authentication server...";
+
+    private SettingsManager settingsManager = new SettingsManager();
+
+    private int garageScrollOffset = 0;
+    private int garageSpin = 0;
+    public int garageSelectedCardIdx = 0;
+
 
     /**
      * Filter images
@@ -817,8 +817,6 @@ public class xtGraphics extends Panel implements Runnable {
         fase = Phase.AWAITLOADDISMISSAL;
     }
 
-    private SettingsManager settingsManager = new SettingsManager();
-
     public void savesettings() {
         settingsManager.setMenuStage(GameSparker.menuStage);
         settingsManager.setMenuMusic(GameSparker.menuMusic);
@@ -839,8 +837,8 @@ public class xtGraphics extends Panel implements Runnable {
         rd.setColor(new Color(20, 20, 20, 100));
         rd.fillRoundRect(Utility.centeredWidthX(145), 20, 145, 27, 23, 30);
 
-        rd.setFont(new Font("SansSerif", 1, 16));
-        drawcs(37, "SETTINGS", 255, 255, 255, 3);
+        rd.setFont(new Font("Adventure", 1, 18));
+        drawcs(50, "SETTINGS", 255, 128, 0, 3);
 
         rd.setFont(new Font("SansSerif", 1, 13));
         FontHandler.fMetrics = rd.getFontMetrics();
@@ -3743,7 +3741,7 @@ public class xtGraphics extends Panel implements Runnable {
             }
             dudo = 150;
             Medium.trk = false;
-            Medium.focus_point = 500;
+            Medium.focus_point = 400;
             fase = Phase.SELECTEDCARSAVE;
             control.handb = false;
             control.enter = false;
@@ -4442,7 +4440,7 @@ public class xtGraphics extends Panel implements Runnable {
 
     public void newmaini(Control control, CheckPoints checkpoints, Madness madness[], ContO conto[], ContO conto1[]) {
 
-        int menuItems = 4;
+        int menuItems = 5;
 
         if (GameSparker.DEBUG) {
             if (!devtriggered) {
@@ -4534,23 +4532,28 @@ public class xtGraphics extends Panel implements Runnable {
             control.down = false;
         }
 
-        drawMenuButton(rd, main_menu_op_0_x, main_menu_op_0_y, main_menu_op_0_width, main_menu_button_height,
+        drawMenuButton(rd, main_menu_op_x, main_menu_op_0_y, main_menu_op_width, main_menu_button_height,
             main_menu_arcwidth, main_menu_archeight, opselect == 0, shaded,
             new Color(140, 70, 0), new Color(255, 128, 0), new Color(255, 255, 0),
             "PLAY", new Font("Adventure", Font.BOLD, 20));
 
-        drawMenuButton(rd, main_menu_op_1_x, main_menu_op_1_y, main_menu_op_1_width, main_menu_button_height,
+        drawMenuButton(rd, main_menu_op_x, main_menu_op_1_y, main_menu_op_width, main_menu_button_height,
             main_menu_arcwidth, main_menu_archeight, opselect == 1, shaded,
+            new Color(140, 70, 0), new Color(255, 128, 0), new Color(255, 255, 0),
+            "GARAGE", new Font("Adventure", Font.BOLD, 20));
+
+        drawMenuButton(rd, main_menu_op_x, main_menu_op_2_y, main_menu_op_width, main_menu_button_height,
+            main_menu_arcwidth, main_menu_archeight, opselect == 2, shaded,
             new Color(140, 70, 0), new Color(255, 128, 0), new Color(255, 255, 0),
             "GAME INSTRUCTIONS", new Font("Adventure", Font.BOLD, 20));
 
-        drawMenuButton(rd, main_menu_op_2_x, main_menu_op_2_y, main_menu_op_2_width, main_menu_button_height,
-            main_menu_arcwidth, main_menu_archeight, opselect == 2, shaded,
+        drawMenuButton(rd, main_menu_op_x, main_menu_op_3_y, main_menu_op_width, main_menu_button_height,
+            main_menu_arcwidth, main_menu_archeight, opselect == 3, shaded,
             new Color(140, 70, 0), new Color(255, 128, 0), new Color(255, 255, 0),
             "SETTINGS", new Font("Adventure", Font.BOLD, 20));
 
-        drawMenuButton(rd, main_menu_op_3_x, main_menu_op_3_y, main_menu_op_3_width, main_menu_button_height,
-            main_menu_arcwidth, main_menu_archeight, opselect == 3, shaded,
+        drawMenuButton(rd, main_menu_op_x, main_menu_op_4_y, main_menu_op_width, main_menu_button_height,
+            main_menu_arcwidth, main_menu_archeight, opselect == 4, shaded,
             new Color(140, 70, 0), new Color(255, 128, 0), new Color(255, 255, 0),
             "CREDITS", new Font("Adventure", Font.BOLD, 20));
 
@@ -4568,13 +4571,18 @@ public class xtGraphics extends Panel implements Runnable {
                 //}
             }
             if (opselect == 1) {
-                GameSparker.menuState = Phase.INSTRUCTIONS;
+                GameSparker.menuState = Phase.GARAGE;
+                opselect = 1;
+                Medium.resetGarageCam();
             }
             if (opselect == 2) {
+                GameSparker.menuState = Phase.INSTRUCTIONS;
+            }
+            if (opselect == 3) {
                 GameSparker.menuState = Phase.CUSTOMSETTINGS;
                 opselect = 1;
             }
-            if (opselect == 3) {
+            if (opselect == 4) {
                 fase = Phase.CREDITS;
             }
             flipo = 0;
@@ -4595,6 +4603,204 @@ public class xtGraphics extends Panel implements Runnable {
         }
         long elapsed = System.currentTimeMillis() - mainMenuFadeStart;
         boolean fading = drawFadeIn(rd, MAIN_MENU_FADE_SECONDS, elapsed, GameFacts.screenWidth, GameFacts.screenHeight);
+    }
+
+    //magic ass numbers for renderCarPreview, guarantee a screen res will break it
+
+    public int roffsetX = -550;
+    public int roffsetY = -400;
+    public int rcarX = 650;
+    public int rcarY = 750;
+    public int rcarZ = 1400;
+
+    private BufferedImage renderCarPreview(ContO car, int width, int height, int carId) {
+        BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2 = img.createGraphics();
+
+            // Calculate offset to center car (adjust these as needed)
+        int offsetX = roffsetX;
+        int offsetY = roffsetY;
+
+        g2.translate(offsetX, offsetY);
+
+        Medium.crs = true;
+        Medium.x = 0;
+        Medium.y = 0;
+        Medium.z = 0;
+        Medium.xz = 0;
+        Medium.zy = 0;
+        Medium.ground = 2000;
+
+        car.x = rcarX;
+        car.y = rcarY - car.grat;
+        car.z = rcarZ;
+        car.xz = garageSpin;
+        //car.xz = 0;
+        car.zy = 0;
+
+        car.d(g2);
+
+        g2.dispose();
+        return img;
+    }
+
+    // Static variables to keep state between frames
+    static int camX = 0, camY = 0, camZ = 0, camXZ = 0, camZY = 0, camGround = 2000;
+    static int carX = 0, carY = 0, carZ = 950, carXZ = 0, carZY = 0, carWZY = 0;
+
+    public void modelPreviewDebug(Control control, ContO car) {
+
+        if (control.up)    carY -= 10;
+        if (control.down)  carY += 10;
+        if (control.left)  carX -= 10;
+        if (control.right) carX += 10;
+
+        // Set camera
+        Medium.crs = true;
+        Medium.x = camX;
+        Medium.y = camY;
+        Medium.z = camZ;
+        Medium.xz = camXZ;
+        Medium.zy = camZY;
+        Medium.ground = camGround;
+
+        // Set car
+        car.x = carX;
+        car.y = carY;
+        car.z = carZ;
+        car.xz = carXZ;
+        car.zy = carZY;
+
+        car.d(rd);
+
+        // Draw debug info
+        rd.setFont(new Font("Monospaced", Font.PLAIN, 14));
+        rd.setColor(Color.WHITE);
+        rd.drawString("Medium.x=" + camX + " y=" + camY + " z=" + camZ + " xz=" + camXZ + " zy=" + camZY + " ground=" + camGround, 30, 35);
+        rd.drawString("car.x=" + carX + " y=" + carY + " z=" + carZ + " xz=" + carXZ + " zy=" + carZY + " wzy=" + carWZY, 30, 60);
+
+        System.out.println("camX=" + camX + " camY=" + camY + " camZ=" + camZ + " carX=" + carX + " carY=" + carY + " carZ=" + carZ);
+    }
+
+    public void garage(Control control, List<Integer> ownedCarIds, ContO[] carModels) {
+
+        int menuItems = 2;
+
+        drawMenuButton(rd, 50, 100, main_menu_op_width, main_menu_button_height,
+            main_menu_arcwidth, main_menu_archeight, opselect == 0, shaded,
+            new Color(140, 70, 0), new Color(255, 128, 0), new Color(255, 255, 0),
+            "BACK", new Font("Adventure", Font.BOLD, 20));
+
+        int cardWidth = 180;
+        int cardHeight = 120;
+        int cardGap = 30;
+        int cardsPerRow = 5; // visible cards at once
+        garageSpin += 1;
+
+        rd.setFont(new Font("Adventure", Font.BOLD, 22));
+        drawcs(50, "G A R A G E", 255, 128, 0, 3);
+
+        // cards are drawn in a horizontal row at the bottom
+        int y = GameFacts.screenHeight - cardHeight - 20;
+        int startIdx = garageScrollOffset;
+        int endIdx = Math.min(ownedCarIds.size(), startIdx + cardsPerRow);
+
+        if (opselect == 1) {
+            if (control.right) {
+                if (garageSelectedCardIdx < cardsPerRow - 1 && garageSelectedCardIdx < endIdx - startIdx - 1) {
+                    garageSelectedCardIdx++;
+                    sm.play("tick");
+                } else if (garageScrollOffset < ownedCarIds.size() - cardsPerRow) {
+                    garageScrollOffset++;
+                    // Don't reset selectedCardIdx, but clamp if needed
+                    int maxIdx = Math.min(cardsPerRow - 1, ownedCarIds.size() - 1 - garageScrollOffset);
+                    if (garageSelectedCardIdx > maxIdx) {
+                        garageSelectedCardIdx = maxIdx;
+                    }
+                    sm.play("tick");
+                    sc[0] = garageSelectedCardIdx;
+                }
+                control.right = false;
+            }
+            if (control.left) {
+                if (garageSelectedCardIdx > 0) {
+                    garageSelectedCardIdx--;
+                    sm.play("tick");
+                } else if (garageScrollOffset > 0) {
+                    garageScrollOffset--;
+                    // Don't reset selectedCardIdx, but clamp if needed
+                    int maxIdx = Math.min(cardsPerRow - 1, ownedCarIds.size() - 1 - garageScrollOffset);
+                    if (garageSelectedCardIdx > maxIdx) {
+                        garageSelectedCardIdx = maxIdx;
+                    }
+                    sm.play("tick");
+                    sc[0] = garageSelectedCardIdx;
+                }
+                control.left = false;
+            }
+        }
+
+        if (control.enter || control.handb) {
+            if (opselect == 0) {
+                GameSparker.menuState = Phase.MAINMENU;
+                Medium.resetGarageCam();
+            }
+            control.enter = false;
+            control.handb = false;
+        }
+
+        if (control.up) {
+            if (opselect >= menuItems - 1) {
+                opselect--;
+            }
+            control.up = false;
+        }
+        if (control.down) {
+            if (opselect <= 0) {
+                opselect++;
+            }
+            control.down = false;
+        }
+
+        for (int i = startIdx; i < endIdx; i++) {
+            int carId = ownedCarIds.get(i);
+            int col = i - startIdx;
+            int x = Utility.centeredWidthX(cardsPerRow * cardWidth + (cardsPerRow - 1) * cardGap)
+                    + col * (cardWidth + cardGap);
+
+            // card background
+
+            boolean selected = (opselect == 1) && (col == garageSelectedCardIdx);
+
+            rd.setColor(selected ? new Color(190, 50, 0, 100) : new Color(100, 20, 0, 100));
+            rd.fillRoundRect(x, y, cardWidth, cardHeight, 18, 18);
+            rd.setColor(selected ? Color.YELLOW : new Color(255, 128, 0));
+            rd.drawRoundRect(x, y, cardWidth, cardHeight, 18, 18);
+
+            // render car preview to image
+            BufferedImage carImg = renderCarPreview(carModels[carId], cardWidth, cardHeight, carId);
+
+            // draw car preview image in card
+            rd.drawImage(carImg, x, y, null);
+
+            // car name
+            rd.setFont(new Font("Adventure", Font.BOLD, 18));
+            rd.setColor(selected ? Color.YELLOW : new Color(255, 128, 0));
+            String carName = names[carId];
+            rd.drawString(carName, x + 10, y + cardHeight - 10);
+        }
+
+        rd.setColor(new Color(255, 128, 0));
+        rd.setFont(new Font("SanSerif", Font.BOLD, 70));
+        // draw scroll arrows
+        if (garageScrollOffset > 0) {
+            rd.drawString("←", Utility.centeredWidthX(cardsPerRow * cardWidth + (cardsPerRow - 1) * cardGap) - 70, y + cardHeight / 2);
+        }
+        if (endIdx < ownedCarIds.size()) {
+            rd.drawString("→", Utility.centeredWidthX(cardsPerRow * cardWidth + (cardsPerRow - 1) * cardGap) + cardsPerRow * (cardWidth + cardGap) - cardGap + 10, y + cardHeight / 2);
+        }
+
+        // TODO: Handle selection (mouse/keyboard), highlight selected card, confirm pick
     }
 
     public void blendude(Image image) {
@@ -5622,24 +5828,29 @@ public class xtGraphics extends Panel implements Runnable {
         }
         if (fase == Phase.MAINMENU) {
             if (k == 1) {
-                if (overon(main_menu_op_0_x, main_menu_op_0_y, main_menu_op_0_width,
+                if (overon(main_menu_op_x, main_menu_op_0_y, main_menu_op_width,
                         main_menu_button_height, i, j)) {
                     opselect = 0;
                     shaded = true;
                 }
-                if (overon(main_menu_op_1_x, main_menu_op_1_y, main_menu_op_1_width,
+                if (overon(main_menu_op_x, main_menu_op_1_y, main_menu_op_width,
                         main_menu_button_height, i, j)) {
                     opselect = 1;
                     shaded = true;
                 }
-                if (overon(main_menu_op_2_x, main_menu_op_2_y, main_menu_op_2_width,
+                if (overon(main_menu_op_x, main_menu_op_2_y, main_menu_op_width,
                         main_menu_button_height, i, j)) {
                     opselect = 2;
                     shaded = true;
                 }
-                if (overon(main_menu_op_3_x, main_menu_op_3_y, main_menu_op_3_width,
+                if (overon(main_menu_op_x, main_menu_op_3_y, main_menu_op_width,
                         main_menu_button_height, i, j)) {
                     opselect = 3;
+                    shaded = true;
+                }
+                if (overon(main_menu_op_x, main_menu_op_4_y, main_menu_op_width,
+                        main_menu_button_height, i, j)) {
+                    opselect = 4;
                     shaded = true;
                 }
             }
@@ -5648,21 +5859,25 @@ public class xtGraphics extends Panel implements Runnable {
                 shaded = false;
             }
             if (k == 0 && (i != lxm || j != lym)) {
-                if (overon(main_menu_op_0_x, main_menu_op_0_y, main_menu_op_0_width,
+                if (overon(main_menu_op_x, main_menu_op_0_y, main_menu_op_width,
                         main_menu_button_height, i, j)) {
                     opselect = 0;
                 }
-                if (overon(main_menu_op_1_x, main_menu_op_1_y, main_menu_op_1_width,
+                if (overon(main_menu_op_x, main_menu_op_1_y, main_menu_op_width,
                         main_menu_button_height, i, j)) {
                     opselect = 1;
                 }
-                if (overon(main_menu_op_2_x, main_menu_op_2_y, main_menu_op_2_width,
+                if (overon(main_menu_op_x, main_menu_op_2_y, main_menu_op_width,
                         main_menu_button_height, i, j)) {
                     opselect = 2;
                 }
-                if (overon(main_menu_op_3_x, main_menu_op_3_y, main_menu_op_3_width,
+                if (overon(main_menu_op_x, main_menu_op_3_y, main_menu_op_width,
                         main_menu_button_height, i, j)) {
                     opselect = 3;
+                }
+                if (overon(main_menu_op_x, main_menu_op_4_y, main_menu_op_width,
+                        main_menu_button_height, i, j)) {
+                    opselect = 4;
                 }
                 lxm = i;
                 lym = j;

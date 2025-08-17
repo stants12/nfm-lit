@@ -127,7 +127,7 @@ public enum Phase {
     /**
      * 9000 - hidden settings menu (may be removed)
      */
-    CUSTOMSETTINGS(9000),
+    CUSTOMSETTINGS(10000),
     /**
      * 9001 - for loading a sage (custom)
      */
@@ -137,7 +137,9 @@ public enum Phase {
     LOADSTAGEMENU(9005),
     RELOADSTAGEMENU(9006),
     LOADMENUMUSIC(9010),
-    RELOADMENUMUSIC(9011);
+    RELOADMENUMUSIC(9011),
+    GARAGE(10001),
+    MODELDEBUG(-10001);
 
     public final int value;
     

@@ -143,6 +143,9 @@ public class Medium {
 
     public static boolean noclouds = false;
 
+    public static int lastCamX, lastCamY, lastCamZ;
+    public static float lastCamXZ, lastCamZY;
+
     public static void setxtGraphics(xtGraphics xtg) {
         xtgraphics = xtg;
     }
@@ -445,7 +448,7 @@ public class Medium {
     }
 
     public Medium() {
-        focus_point = 500;
+        focus_point = 400;
         ground = 250;
         skyline = -300;
         fogd = 7;
@@ -1868,6 +1871,85 @@ public class Medium {
                 zy = 20;
             }
         }
+
+        lastCamX = x;
+        lastCamY = y;
+        lastCamZ = z;
+        lastCamXZ = xz;
+        lastCamZY = zy;
+    }
+
+    private static long garageStartTime = 0;
+    private static int garageCamStartX, garageCamStartY, garageCamStartZ;
+    private static float garageCamStartXZ, garageCamStartZY;
+    private static boolean garageTransitioning = false;
+
+    public static void garagecam(ContO conto) {
+        final double GARAGE_TRANSITION_DURATION = 2000.0; // ms for smooth transition
+        final double ORBIT_DURATION = 15000.0; // ms for a full 360 orbit (slow)
+
+        int orbitRadius = 900;
+        int orbitHeight = conto.y - 650;
+
+        // Transition setup
+        if (garageStartTime == 0L) {
+            garageStartTime = System.currentTimeMillis();
+            garageCamStartX = lastCamX;
+            garageCamStartY = lastCamY;
+            garageCamStartZ = lastCamZ;
+            garageCamStartXZ = lastCamXZ;
+            garageCamStartZY = lastCamZY;
+            garageTransitioning = true;
+        }
+        long elapsed = System.currentTimeMillis() - garageStartTime;
+        double progress = Math.min(elapsed / GARAGE_TRANSITION_DURATION, 1.0);
+        double eased = 1 - Math.pow(1 - progress, 3);
+
+        // Orbit angle (slow)
+        double orbitElapsed = Math.max(0, elapsed - (long)GARAGE_TRANSITION_DURATION);
+        double orbitAngle = Math.toRadians(90) + 2 * Math.PI * (orbitElapsed % (long)ORBIT_DURATION) / ORBIT_DURATION;
+
+        
+        int targetX = conto.x + (int)(orbitRadius * Math.cos(orbitAngle));
+        int targetZ = conto.z + (int)(orbitRadius * Math.sin(orbitAngle));
+        int targetY = orbitHeight;
+
+        // Interpolate position and angles during transition
+        if (garageTransitioning && progress < 1.0) {
+            x = (int)(garageCamStartX + (targetX - garageCamStartX) * eased);
+            y = (int)(garageCamStartY + (targetY - garageCamStartY) * eased);
+            z = (int)(garageCamStartZ + (targetZ - garageCamStartZ) * eased);
+
+            // Smoothly interpolate rotation
+            int dx = conto.x - x;
+            int dz = conto.z - z;
+            float targetXZ = (float)(Math.atan2(dx, dz) / 0.017453292519943295D);
+            xz = (float)(garageCamStartXZ + (targetXZ - garageCamStartXZ) * eased);
+            zy = (float)(garageCamStartZY + ((22 - garageCamStartZY) * eased));
+        } else {
+            garageTransitioning = false;
+            x = targetX;
+            y = targetY;
+            z = targetZ;
+
+            // Orbit: always look at car
+            int dx = conto.x - x;
+            int dz = conto.z - z;
+            xz = (float)(Math.atan2(dx, dz) / 0.017453292519943295D);
+            zy = 22;
+        }
+
+        // Save last camera position for transition back to menu
+        lastCamX = x;
+        lastCamY = y;
+        lastCamZ = z;
+        lastCamXZ = xz;
+        lastCamZY = zy;
+    }
+
+    public static void resetGarageCam() {
+        garageStartTime = 0L;
+        garageTransitioning = false;
     }
 
     public static void watch(ContO conto, int i) {

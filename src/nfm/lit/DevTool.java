@@ -134,6 +134,27 @@ public class DevTool {
                     print("nplayers is " + GameFacts.numberOfPlayers + "\nUsage: nplayers <0-51>");
                 }
                 break;
+            case "iconpos":
+                if (args.length == 5) {
+                    try {
+                        int off1 = Integer.parseInt(args[0]);
+                        int off2 = Integer.parseInt(args[1]);
+                        int carX = Integer.parseInt(args[2]);
+                        int carY = Integer.parseInt(args[3]);
+                        int carZ = Integer.parseInt(args[4]);
+                        xt.roffsetX = off1;
+                        xt.roffsetY = off2;
+                        xt.rcarX = carX;
+                        xt.rcarY = carY;
+                        xt.rcarZ = carZ;
+                        print("Set icon preview position: camX=" + off1 + " camY=" + off2 + " carX=" + carX + " carY=" + carY + " carZ=" + carZ);
+                    } catch (NumberFormatException e) {
+                        print("Invalid argument. All parameters must be integers.");
+                    }
+                } else {
+                    print("Usage: iconpos <camX> <camY> <carX> <carY> <carZ>");
+                }
+                break;
             case "fix":
                 if (args.length == 1) {
                     try {
