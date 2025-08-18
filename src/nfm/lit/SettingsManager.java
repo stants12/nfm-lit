@@ -4,7 +4,7 @@ import java.io.*;
 import java.util.Properties;
 
 public class SettingsManager {
-    private static final String SETTINGS_FILE = "data/config.cfg";
+    private static final String SETTINGS_FILE = "data/user/config.cfg";
     private Properties props = new Properties();
 
     public SettingsManager() {

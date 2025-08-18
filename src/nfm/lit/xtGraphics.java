@@ -3270,6 +3270,7 @@ public class xtGraphics extends Panel implements Runnable {
 
     public void finish(CheckPoints checkpoints, ContO aconto[], Control control) {
         rd.drawImage(fleximg, 0, 0, null);
+        byte byte0 = 0;
         if (winner) {
             if (checkpoints.stage == unlocked) {
                 if (checkpoints.stage != GameFacts.numberOfStages) {
@@ -3282,7 +3283,6 @@ public class xtGraphics extends Panel implements Runnable {
                 } else {
                     rd.drawImage(congrd, Utility.centeredImageX(congrd) + (int) (Medium.random() * 10F), 30, null);
                 }
-                byte byte0 = 0;
                 int i = 0;
                 pin = 60;
                 if (checkpoints.stage == 2) {
@@ -3491,6 +3491,16 @@ public class xtGraphics extends Panel implements Runnable {
                 checkpoints.stage++;
                 unlocked++;
                 HLogger.info(unlocked);
+                if (byte0 != 0) {
+                    GameSparker.ownedCarIds.add((int)byte0);
+                    try {
+                        GarageManager.saveOwnedCarIds(GameSparker.ownedCarIds);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        // Optionally handle error (e.g., show message to user)
+                    }
+                    setSelectedGarageCar();
+                }
             }
             fase = Phase.SAVEGAME;
             flipo = 0;
@@ -4460,8 +4470,13 @@ public class xtGraphics extends Panel implements Runnable {
         }
 
         String mainText = "Need  For  MADNESS ?";
+        String subTitle = "WOOORLD ??!?!";
         int base_x = 100;
         int base_y = 30 + main_menu_height_origin;
+
+        int base_sub_x = 330;
+        int base_sub_y = 30;
+
         int x;
         int y;
 
@@ -4487,8 +4502,20 @@ public class xtGraphics extends Panel implements Runnable {
             rd.setColor(new Color(232, 45, 8));
             rd.drawString(mainText, x, y);
 
-            // rd.drawImage(logomadnes, 100 + (int) (4D - Math.random() * 8D),
-            //         50 + main_menu_height_origin + (int) (4D - Math.random() * 8D), null);
+            /////////////////////////////////
+            rd.setFont(new Font("Adventure", 1, 20));
+            FontHandler.fMetrics = rd.getFontMetrics();
+            rd.setColor(new Color(255, 200, 25));
+            for (int dx = -2; dx <= 2; dx++) {
+                for (int dy = -2; dy <= 2; dy++) {
+                    if (dx != 0 || dy != 0) {
+                        rd.drawString(subTitle, x + dx + base_sub_x, y + dy + base_sub_y);
+                    }
+                }
+            }
+            rd.setColor(new Color(232, 45, 8));
+            rd.drawString(subTitle, x + base_sub_x, y + base_sub_y);
+
         } else {
             rd.setFont(new Font("Adventure", 1, 50));
             FontHandler.fMetrics = rd.getFontMetrics();
@@ -4507,6 +4534,20 @@ public class xtGraphics extends Panel implements Runnable {
 
             rd.setColor(new Color(232, 45, 8));
             rd.drawString(mainText, x, y);
+
+            /////////////////////////////////
+            rd.setFont(new Font("Adventure", 1, 20));
+            FontHandler.fMetrics = rd.getFontMetrics();
+             rd.setColor(new Color(255, 200, 25));
+            for (int dx = -2; dx <= 2; dx++) {
+                for (int dy = -2; dy <= 2; dy++) {
+                    if (dx != 0 || dy != 0) {
+                        rd.drawString(subTitle, x + dx + base_sub_x, y + dy + base_sub_y);
+                    }
+                }
+            }
+            rd.setColor(new Color(232, 45, 8));
+            rd.drawString(subTitle, x + base_sub_x, y + base_sub_y);
         }
 
         flipo++;
@@ -4689,6 +4730,12 @@ public class xtGraphics extends Panel implements Runnable {
 
         int menuItems = 2;
 
+        // top bar
+        rd.setColor(new Color(50, 50, 50, 200));
+        rd.fillRect(0, 0, GameFacts.screenWidth, 80);
+        rd.setColor(new Color(255, 128, 0));
+        rd.fillRect(0, 80, GameFacts.screenWidth, 5);
+
         drawMenuButton(rd, 50, 100, main_menu_op_width, main_menu_button_height,
             main_menu_arcwidth, main_menu_archeight, opselect == 0, shaded,
             new Color(140, 70, 0), new Color(255, 128, 0), new Color(255, 255, 0),
@@ -4703,7 +4750,7 @@ public class xtGraphics extends Panel implements Runnable {
         drawcs(50, "G A R A G E", 255, 128, 0, 3);
 
         // cards are drawn in a horizontal row at the bottom
-        int y = GameFacts.screenHeight - cardHeight - 35;
+        int y = GameFacts.screenHeight - cardHeight - 25;
         int startIdx = garageScrollOffset;
         int endIdx = Math.min(ownedCarIds.size(), startIdx + cardsPerRow);
 
@@ -4829,7 +4876,7 @@ public class xtGraphics extends Panel implements Runnable {
         int barY = y + cardHeight + 10;
 
         // Draw scrollbar track
-        rd.setColor(new Color(80, 80, 80, 120));
+        rd.setColor(new Color(80, 80, 80, 150));
         rd.fillRoundRect(barX, barY, barWidth, barHeight, 6, 6);
 
         // Calculate thumb width and position
@@ -4842,12 +4889,34 @@ public class xtGraphics extends Panel implements Runnable {
         rd.setColor(new Color(255, 128, 0));
         rd.fillRoundRect(thumbX, barY, thumbWidth, barHeight, 6, 6);
 
-        // Draw card range text
-        rd.setFont(new Font("SansSerif", Font.BOLD, 12));
-        rd.setColor(Color.YELLOW);
-        String rangeText = "Showing " + (scrollPos + 1) + "–" + Math.min(scrollPos + visibleCards, totalCards) + " of " + totalCards;
-        int textWidth = rd.getFontMetrics().stringWidth(rangeText);
-        rd.drawString(rangeText, barX + (barWidth - textWidth) / 2, barY + barHeight + 14);
+        // // Draw card range text
+        // rd.setFont(new Font("SansSerif", Font.BOLD, 12));
+        // rd.setColor(Color.YELLOW);
+        // String rangeText = "Showing " + (scrollPos + 1) + "–" + Math.min(scrollPos + visibleCards, totalCards) + " of " + totalCards;
+        // int textWidth = rd.getFontMetrics().stringWidth(rangeText);
+        // rd.drawString(rangeText, barX + (barWidth - textWidth) / 2, barY + barHeight + 14);
+    }
+
+    public void setSelectedGarageCar() {
+        int idx = GameSparker.ownedCarIds.indexOf(sc[0]);
+        if (idx != -1) {
+            // Clamp idx to valid range
+            if (idx >= GameSparker.ownedCarIds.size()) idx = GameSparker.ownedCarIds.size() - 1;
+
+            // Calculate scroll offset and card index for the current page
+            garageScrollOffset = (idx / cardsPerRow) * cardsPerRow;
+            garageSelectedCardIdx = idx % cardsPerRow;
+
+            // Clamp scroll offset so it doesn't go out of bounds
+            int maxScroll = Math.max(GameSparker.ownedCarIds.size() - cardsPerRow, 0);
+            if (garageScrollOffset > maxScroll) {
+                garageScrollOffset = maxScroll;
+                garageSelectedCardIdx = idx - maxScroll;
+            }
+        } else {
+            garageSelectedCardIdx = 0;
+            garageScrollOffset = 0;
+        }
     }
 
     public void blendude(Image image) {

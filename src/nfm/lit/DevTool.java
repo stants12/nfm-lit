@@ -159,7 +159,7 @@ public class DevTool {
                 if (args.length == 1) {
                     try {
                         int n = Integer.parseInt(args[0]);
-                        gamesparker.ownedCarIds.add(n);
+                        GameSparker.ownedCarIds.add(n);
                     } catch (NumberFormatException e) {
                         print("Invalid argument. All parameters must be integers.");
                     }

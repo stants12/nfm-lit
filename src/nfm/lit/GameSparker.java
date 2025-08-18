@@ -20,8 +20,6 @@ import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
-import nfm.lit.SettingsManager; // Make sure this import is present
-
 /**
  * GameSparker brings everything together.
  *
@@ -134,7 +132,7 @@ public class GameSparker extends Applet implements Runnable {
     private SettingsManager settingsManager = new SettingsManager();
 
     // temp test
-    List<Integer> ownedCarIds = new ArrayList<>();
+    static List<Integer> ownedCarIds = new ArrayList<>();
     public int usercarNob = 0;
 
     /**
@@ -1078,16 +1076,12 @@ public class GameSparker extends Applet implements Runnable {
         settingsManager.load();
         GameSparker.menuStage = settingsManager.getMenuStage();
         GameSparker.menuMusic = settingsManager.getMenuMusic();
+    }
 
-        ownedCarIds.add(0);
-        ownedCarIds.add(6);
-        
-        // for (int i = 0; i < GameFacts.numberOfCars; i++) {
-        //     ownedCarIds.add(i);
-        // }
+    public void displayNotification() {
+        Notifications.addNotification("Notification: New car unlocked!");
     }
     
-
     @Override
     public void run() {
         rd.setColor(new Color(0, 0, 0));
@@ -1140,27 +1134,29 @@ public class GameSparker extends Applet implements Runnable {
         l = readcookie("usercar");
         if (l >= 0 && l <= GameFacts.numberOfCars - 1)
             xtgraphics.sc[0] = l;
-            // garage
-            int idx = ownedCarIds.indexOf(xtgraphics.sc[0]);
-            if (idx != -1) {
-                // Clamp idx to valid range
-                if (idx >= ownedCarIds.size()) idx = ownedCarIds.size() - 1;
-
-                // Calculate scroll offset and card index for the current page
-                int cardsPerRow = xtgraphics.cardsPerRow;
-                xtgraphics.garageScrollOffset = (idx / cardsPerRow) * cardsPerRow;
-                xtgraphics.garageSelectedCardIdx = idx % cardsPerRow;
-
-                // Clamp scroll offset so it doesn't go out of bounds
-                int maxScroll = Math.max(ownedCarIds.size() - cardsPerRow, 0);
-                if (xtgraphics.garageScrollOffset > maxScroll) {
-                    xtgraphics.garageScrollOffset = maxScroll;
-                    xtgraphics.garageSelectedCardIdx = idx - maxScroll;
-                }
+        // garage
+        try {
+            File garageFile = new File("data/user/garage.json");
+            if (garageFile.exists()) {
+                GarageManager.loadOwnedCarIds(ownedCarIds);
             } else {
-                xtgraphics.garageSelectedCardIdx = 0;
-                xtgraphics.garageScrollOffset = 0;
+                for (int i = 0; i <= 7; i++) { // this adds the first NFM2 starter cars to garage
+                    ownedCarIds.add(i);
+                }
+                // Optionally, save the initial garage
+                try {
+                    GarageManager.saveOwnedCarIds(ownedCarIds);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Optionally handle error (e.g., show message to user)
+        }
+
+        xtgraphics.setSelectedGarageCar();
+
         l = readcookie("gameprfact");
         if (l != -1) {
             f = l;

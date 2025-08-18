@@ -13,3 +13,5 @@
 .classpath
 /data/music/temp*
 *.log
+data/user/config.cfg
+data/user/garage.json
