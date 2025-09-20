@@ -135,6 +135,11 @@ public class GameSparker extends Applet implements Runnable {
     static List<Integer> ownedCarIds = new ArrayList<>();
     public int usercarNob = 0;
 
+    // temp mp test
+    private boolean lobbyConnected = false;
+
+    public static boolean isMP = false;
+
     /**
      * <a href=
      * "http://www.expandinghead.net/keycode.html">http://www.expandinghead.net/keycode.html</a>
@@ -1081,6 +1086,86 @@ public class GameSparker extends Applet implements Runnable {
     public void displayNotification() {
         Notifications.addNotification("Notification: New car unlocked!");
     }
+
+    public void connectlobby(xtGraphics xtgraphics, String serverip, String serverport, Lobby lobby, ContO aconto1[]) {
+        // Allow localhost, domains, and IPs
+        String regex = "^([a-zA-Z0-9.-]+):(\\d{1,5})$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(serverip + ":" + serverport);
+
+        if (matcher.matches()) {
+            String host = matcher.group(1);
+            int port = Integer.parseInt(matcher.group(2));
+
+            if (port >= 0 && port <= 65535) {
+                System.out.println("Connecting to " + host + " on port " + port + "...");
+
+                try {
+                    xtgraphics.socket = new Socket(host, port);
+                    xtgraphics.serverResponse = new BufferedReader(new InputStreamReader(xtgraphics.socket.getInputStream()));
+                    xtgraphics.serverWriter = new PrintWriter(xtgraphics.socket.getOutputStream(), true);
+
+                    // Send JOIN message (replace "Player1" with actual player name/ID)
+                    xtgraphics.serverWriter.println("JOIN " + xtgraphics.playerId);
+
+                    // Start a thread to listen for server messages
+                    new Thread(() -> {
+                        String line;
+                        try {
+                            while ((line = xtgraphics.serverResponse.readLine()) != null) {
+                                System.out.println("Server: " + line);
+                                // TODO: Parse messages and update lobby/game state
+                                // Example: if (line.startsWith("PLAYERCOUNT")) { ... }
+
+                                if (line.startsWith("PLAYERS ")) {
+                                    String ids = line.substring(8);
+                                    String[] arr = ids.split(",");
+                                    lobby.lobbyPlayerIds.clear();
+                                    for (String id : arr) lobby.lobbyPlayerIds.add(id.trim());
+                                }
+                                if (line.startsWith("YOURINDEX ")) {
+                                    xtgraphics.playerIdx = Integer.parseInt(line.substring(10).trim());
+                                    System.out.println("Assigned playerIdx: " + xtgraphics.playerIdx);
+                                }
+                                if (line.equals("START")) {
+                                    xtgraphics.fase = Phase.INITMP;
+                                }
+                                if (line.startsWith("POS ")) {
+                                    String[] parts = line.split(" ");
+                                    String pid = parts[1];
+                                    int idx = lobby.lobbyPlayerIds.indexOf(pid);
+                                    if (idx >= 0 && idx != 0) { // Don't overwrite your own car
+                                        ContO remoteCar = aconto1[idx];
+                                        remoteCar.x = Integer.parseInt(parts[2]);
+                                        remoteCar.y = Integer.parseInt(parts[3]);
+                                        remoteCar.z = Integer.parseInt(parts[4]);
+                                        remoteCar.xz = Integer.parseInt(parts[5]);
+                                    }
+                                }
+                            }
+                        } catch (IOException e) {
+                            System.out.println("Connection lost: " + e.getMessage());
+                            lobbyConnected = false;
+                        }
+                    }).start();
+
+                } catch (java.net.ConnectException e) {
+                    System.out.println("Connection refused: " + e.getMessage());
+                    lobbyConnected = false;
+                } catch (IOException e) {
+                    System.out.println("An error occurred:\n" + e.toString());
+                    lobbyConnected = false;
+                }
+
+            } else {
+                System.out.println("Port must be between 0 and 65535.");
+                lobbyConnected = false;
+            }
+        } else {
+            System.out.println("Invalid host:port format.");
+            lobbyConnected = false;
+        }
+    }
     
     @Override
     public void run() {
@@ -1094,6 +1179,9 @@ public class GameSparker extends Applet implements Runnable {
         Trackers trackers = new Trackers();
         CheckPoints checkpoints = new CheckPoints();
         xtGraphics xtgraphics = new xtGraphics(rd, this);
+
+        Lobby lobby = new Lobby(xtgraphics, rd, checkpoints);
+
         xtgraphics.loaddata();
         Record record = new Record();
         ContO aconto[] = new ContO[carModels.length + trackModels.length + extraModels.length]; // be sure all your
@@ -1305,6 +1393,18 @@ public class GameSparker extends Applet implements Runnable {
             //     if (mouses == 1)
             //         mouses = 2;
             // }
+            if (xtgraphics.fase == Phase.LOBBY) {
+                if (!lobbyConnected) {
+                    checkpoints.stage = 1;
+                    GameFacts.numberOfPlayers = 2;
+                    loadstage(aconto1, aconto, trackers, checkpoints, xtgraphics, amadness, record, false);
+                    connectlobby(xtgraphics, "127.0.0.1", "6900", lobby, aconto1);
+                    isMP = true;
+                    lobbyConnected = true;
+                }
+
+                lobby.lobby(u[0], aconto1);
+            }
             if (xtgraphics.fase == Phase.MAINMENU) {
                 rd.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 
@@ -1351,6 +1451,7 @@ public class GameSparker extends Applet implements Runnable {
                         mouses = 2;
                 }
             }
+            ///////////////////////////////////////////////////
             if (xtgraphics.fase == Phase.INSTRUCTIONS) {
                 xtgraphics.inst(u[0]);
                 xtgraphics.ctachm(xm, ym, mouses, u[0]);
@@ -1448,6 +1549,13 @@ public class GameSparker extends Applet implements Runnable {
                 loadstage(aconto1, aconto, trackers, checkpoints, xtgraphics, amadness, record, true);
                 xtgraphics.loadmusic(checkpoints.stage, i1);
             }
+            if (xtgraphics.fase == Phase.INITMP) { // for custom stage loading
+                repaint();
+                for (int x = 0; x < GameFacts.numberOfPlayers; x++) {
+                    amadness[x].stat = new Stat(xtgraphics.sc[x], aconto1[x]);
+                }
+                xtgraphics.loadmusic(checkpoints.stage, i1);
+            }
             if (xtgraphics.fase == Phase.LOADMENUMUSIC) {
                 (new Thread() {
                     public void run() {
@@ -1541,6 +1649,7 @@ public class GameSparker extends Applet implements Runnable {
                         amadness[k3].newcar = false;
                     }
                 } while (++k3 < GameFacts.numberOfPlayers);
+
                 Medium.d(rd);
                 renderObjects(rd, aconto1, 0, nob);
 
@@ -1622,6 +1731,117 @@ public class GameSparker extends Applet implements Runnable {
                         checkpoints.checkstat(amadness, aconto1, record, GameFacts.numberOfPlayers);
                         Medium.follow(aconto1[0], amadness[0].cxz, 0);
                         xtgraphics.stat(amadness, checkpoints, u[0], aconto1, true);
+                        rd.setColor(new Color(255, 255, 255));
+                        rd.fillRect(0, 0, GameFacts.screenWidth, GameFacts.screenHeight);
+                    }
+                }
+            }
+            if (xtgraphics.fase == Phase.INGAME_MP) {
+                int k3 = 0;
+                Medium.focus_point = 500;
+
+                do {
+                    if (amadness[k3].newcar) {
+                        int j5 = aconto1[k3].xz;
+                        int j6 = aconto1[k3].xy;
+                        int l8 = aconto1[k3].zy;
+                        aconto1[k3] = new ContO(aconto[amadness[k3].cn], aconto1[k3].x, aconto1[k3].y, aconto1[k3].z,
+                                0);
+                        aconto1[k3].xz = j5;
+                        aconto1[k3].xy = j6;
+                        aconto1[k3].zy = l8;
+                        amadness[k3].newcar = false;
+                    }
+                } while (++k3 < GameFacts.numberOfPlayers);
+
+                Medium.d(rd);
+                renderObjects(rd, aconto1, 0, nob);
+
+                if (xtgraphics.starcnt == 0) {
+                    int l12 = 0;
+                    do {
+                        int j14 = 0;
+                        do {
+                            if (j14 != l12) {
+                                amadness[l12].colide(aconto1[l12], amadness[j14], aconto1[j14]);
+                            }
+                        } while (++j14 < GameFacts.numberOfPlayers);
+                    } while (++l12 < GameFacts.numberOfPlayers);
+                    l12 = 0;
+                    do
+                        amadness[l12].drive(u[l12], aconto1[l12], trackers, checkpoints);
+                    while (++l12 < GameFacts.numberOfPlayers);
+                    l12 = 0;
+                    do
+                        record.rec(aconto1[l12], l12, amadness[l12].squash, amadness[l12].lastcolido,
+                                amadness[l12].cntdest);
+                    while (++l12 < GameFacts.numberOfPlayers);
+                    checkpoints.checkstat(amadness, aconto1, record, GameFacts.numberOfPlayers);
+
+                    // Find your own player index in the lobby
+                    if (xtgraphics.serverWriter != null && xtgraphics.playerIdx >= 0) {
+                        String myId = lobby.lobbyPlayerIds.get(xtgraphics.playerIdx);
+                        ContO myCar = aconto1[xtgraphics.playerIdx];
+                        xtgraphics.serverWriter.println("POS " + myId + " " + myCar.x + " " + myCar.y + " " + myCar.z + " " + myCar.xz);
+                    }
+
+                    // // This starts the AI code for all the cars.
+                    // l12 = 1;
+                    // do
+                    //     u[l12].preform(amadness[l12], aconto1[l12], checkpoints, trackers, GameFacts.numberOfPlayers);
+                    // while (++l12 < GameFacts.numberOfPlayers);
+                } else {
+                    if (xtgraphics.starcnt == 130) {
+                        Medium.adv = 1900;
+                        Medium.zy = 40;
+                        Medium.vxz = 70;
+                        rd.setColor(new Color(255, 255, 255));
+                        rd.fillRect(0, 0, GameFacts.screenWidth, GameFacts.screenHeight);
+                    }
+                    if (xtgraphics.starcnt != 0)
+                        xtgraphics.starcnt--;
+                }
+                if (xtgraphics.starcnt < 38) {
+                    if (view == 0) {
+                        Medium.follow(aconto1[xtgraphics.playerIdx], amadness[xtgraphics.playerIdx].cxz,
+                                u[xtgraphics.playerIdx].lookback);
+                        xtgraphics.stat(amadness, checkpoints, u[xtgraphics.playerIdx], aconto1, true);
+                        initMoto(amadness, 2, 5);
+                    }
+                    if (view == 1) {
+                        Medium.around(aconto1[xtgraphics.playerIdx], false);
+                        xtgraphics.stat(amadness, checkpoints, u[xtgraphics.playerIdx], aconto1, false);
+                    }
+                    if (view == 2) {
+                        Medium.watch(aconto1[xtgraphics.playerIdx], amadness[xtgraphics.playerIdx].mxz);
+                        xtgraphics.stat(amadness, checkpoints, u[xtgraphics.playerIdx], aconto1, false);
+                    }
+                    if (mouses == 1) {
+                        u[xtgraphics.playerIdx].enter = true;
+                        mouses = 0;
+                    }
+                    if (xtgraphics.starcnt == 36) {
+                        repaint();
+                        xtgraphics.blendude(offImage);
+                    }
+                } else {
+                    if (GameFacts.numberOfPlayers < 5)
+                        Medium.around(aconto1[xtgraphics.playerIdx], true);
+                    else
+                        Medium.around(aconto1[3], true);
+                    if (u[xtgraphics.playerIdx].enter || u[xtgraphics.playerIdx].handb) {
+                        xtgraphics.starcnt = 38;
+                        u[xtgraphics.playerIdx].enter = false;
+                        u[xtgraphics.playerIdx].handb = false;
+                    }
+                    if (xtgraphics.starcnt == 38) {
+                        mouses = 0;
+                        Medium.vert = false;
+                        Medium.adv = GameFacts.screenWidth;
+                        Medium.vxz = 180;
+                        checkpoints.checkstat(amadness, aconto1, record, GameFacts.numberOfPlayers);
+                        Medium.follow(aconto1[xtgraphics.playerIdx], amadness[xtgraphics.playerIdx].cxz, 0);
+                        xtgraphics.stat(amadness, checkpoints, u[xtgraphics.playerIdx], aconto1, true);
                         rd.setColor(new Color(255, 255, 255));
                         rd.fillRect(0, 0, GameFacts.screenWidth, GameFacts.screenHeight);
                     }

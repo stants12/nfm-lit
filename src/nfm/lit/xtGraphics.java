@@ -382,9 +382,14 @@ public class xtGraphics extends Panel implements Runnable {
     public String authServerIP = "127.0.0.1";
     public int serverPort = 6900;
     public int authServerport = 6930;
+
+    public PrintWriter serverWriter;
+
     Socket socket = null;
     BufferedReader serverResponse = null;
     public String serverMessage = "Connecting to authentication server...";
+    public String playerId = "Player";
+    public int playerIdx;
 
     private SettingsManager settingsManager = new SettingsManager();
 
@@ -2498,6 +2503,7 @@ public class xtGraphics extends Panel implements Runnable {
                         strack.setPaused(false);
                     }
                 }
+
                 fase = Phase.INGAME;
             }
             if (opselect == 1) {
@@ -2650,7 +2656,9 @@ public class xtGraphics extends Panel implements Runnable {
                 if (loadedt) {
                     strack.setPaused(true);
                 }
-                fase = Phase.PAUSETRIGGER;
+                if (!GameSparker.isMP) {
+                    fase = Phase.PAUSETRIGGER;
+                }
                 control.enter = false;
             }
         }
@@ -4993,7 +5001,13 @@ public class xtGraphics extends Panel implements Runnable {
         hipnoload(i, true);
         if (control.handb || control.enter) {
             System.gc();
-            fase = Phase.INGAME;
+
+            if (GameSparker.isMP == true) {
+                fase = Phase.INGAME_MP;
+            } else {
+                fase = Phase.INGAME;
+            }
+
             control.handb = false;
             control.enter = false;
         }

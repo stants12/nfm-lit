@@ -248,6 +248,17 @@ public class DevTool {
                     print("xtGraphics.unlocked is " + xt.unlocked + "\nUsage: unlocked <n>");
                 }
                 break;
+            case "name":
+                if (args.length == 1) {
+                    try {
+                        String n = args[0];
+                        xt.playerId = n;
+                        print("Player name set to " + n);
+                    } catch (NumberFormatException e) {
+                        print("Invalid argument.");
+                    }
+                }
+                break;
             case "fase":
                 if (args.length == 1) {
                     try {

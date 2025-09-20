@@ -140,7 +140,11 @@ public enum Phase {
     LOADMENUMUSIC(9010),
     RELOADMENUMUSIC(9011),
     GARAGE(10001),
-    MODELDEBUG(-10001);
+    MODELDEBUG(-10001),
+
+    LOBBY(2300),
+    INGAME_MP(1000),
+    INITMP(999);
 
     public final int value;
     
