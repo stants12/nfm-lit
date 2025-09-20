@@ -196,7 +196,7 @@ public class xtGraphics extends Panel implements Runnable {
     public final String[] names = {
             "Tornado Shark", "Formula 7", "Wow Caninaro", "La Vite Crab", "Nimi", "MAX Revenge", "Lead Oxide",
             "Kool Kat", "Drifter X", "Sword of Justice", "High Rider", "EL KING", "Mighty Eight", "M A S H E E N",
-            "Radical One", "DR Monstaa", "dies"
+            "Radical One", "DR Monstaa"
     };
     private int dmcnt;
     private boolean dmflk;
@@ -398,6 +398,17 @@ public class xtGraphics extends Panel implements Runnable {
     private int garageSpin = 0;
     public int garageSelectedCardIdx = 0;
 
+    /**
+     * Get car name
+     * @param idx car id
+     */
+    public String getCarName(int idx) {
+        if (idx >= 0 && idx < names.length) {
+            return names[idx];
+        } else {
+            return "[ UNDEFINED ]";
+        }
+    }
 
     /**
      * Filter images
@@ -1411,8 +1422,8 @@ public class xtGraphics extends Panel implements Runnable {
             }
             k = (int) (90 + l2 + Math.atan((double) (checkpoints.opz[l] - checkpoints.opz[0])
                     / (double) (checkpoints.opx[l] - checkpoints.opx[0])) / 0.017453292519943295D);
-            drawcs(13, "[ " + names[sc[l]] + " ]", 76, 67, 240, 0);
-            drawcs(13, names[sc[l]], 0, 0, 0, 0);
+            drawcs(13, "[ " + getCarName(sc[l]) + " ]", 76, 67, 240, 0);
+            drawcs(13, getCarName(sc[l]), 0, 0, 0, 0);
             /*
              * example use of drawOver
              */
@@ -2733,10 +2744,10 @@ public class xtGraphics extends Panel implements Runnable {
                             }
                             rd.drawImage(youlost, Utility.centeredImageX(youlost), 70, null);
                             if (aflk) {
-                                drawcs(120, "" + names[sc[i]] + " finished first, race over!", 0, 0, 0, 0);
+                                drawcs(120, "" + getCarName(sc[i]) + " finished first, race over!", 0, 0, 0, 0);
                                 aflk = false;
                             } else {
-                                drawcs(120, "" + names[sc[i]] + " finished first, race over!", 0, 128, 255, 0);
+                                drawcs(120, "" + getCarName(sc[i]) + " finished first, race over!", 0, 128, 255, 0);
                                 aflk = true;
                             }
                             winner = false;
@@ -2791,8 +2802,8 @@ public class xtGraphics extends Panel implements Runnable {
                                     if (array_one >= 3)
                                         rd.drawString((array_one + 1) + "th", 541 + x_value, 76 + y_value + 30 * array_one);
                                     rd.setColor(new Color(0, 0, 0));
-                                    rd.drawString(names[sc[array_two]],
-                                            600 - ((FontHandler.fMetrics.stringWidth(names[sc[array_two]])) / 2) + x_value,
+                                    rd.drawString(getCarName(sc[array_two]),
+                                            600 - ((FontHandler.fMetrics.stringWidth(getCarName(sc[array_two]))) / 2) + x_value,
                                             70 + y_value + 30 * array_one);
                                     if (madness[0].im == array_two) {
                                         int red = (int) (159.0F + (159.0F * ((float) Medium.snap[0] / 100.0F)));
@@ -3258,12 +3269,12 @@ public class xtGraphics extends Panel implements Runnable {
                         dested[k] = checkpoints.dested[k];
                         if (dested[k] == 1) {
                             wasay = true;
-                            say = "" + names[sc[k]] + " has been wasted!";
+                            say = "" + getCarName(sc[k]) + " has been wasted!";
                             tcnt = -15;
                         }
                         if (dested[k] == 2) {
                             wasay = true;
-                            say = "You wasted " + names[sc[k]] + "!";
+                            say = "You wasted " + getCarName(sc[k]) + "!";
                             tcnt = -15;
                         }
                     }
@@ -3405,10 +3416,10 @@ public class xtGraphics extends Panel implements Runnable {
                         }
                         if (aflk) {
                             drawcs(Utility.centeredHeightY(carUnlockedBoxHeight) + carUnlockedBoxHeight + 20,
-                                    "" + names[byte0] + "" + s + " has been unlocked!", 176, 196, 0, 3);
+                                    "" + getCarName(byte0) + "" + s + " has been unlocked!", 176, 196, 0, 3);
                         } else {
                             drawcs(Utility.centeredHeightY(carUnlockedBoxHeight) + carUnlockedBoxHeight + 20,
-                                    "" + names[byte0] + "" + s + " has been unlocked!", 247, 255, 165, 3);
+                                    "" + getCarName(byte0) + "" + s + " has been unlocked!", 247, 255, 165, 3);
                         }
                         pin = 180;
                     }
@@ -4858,7 +4869,7 @@ public class xtGraphics extends Panel implements Runnable {
             // car name
             rd.setFont(new Font("Adventure", Font.BOLD, 18));
             rd.setColor(selected ? Color.YELLOW : new Color(255, 128, 0));
-            String carName = (carId >= 0 && carId < names.length) ? names[carId] : "[ UNDEFINED ]";
+            String carName = getCarName(carId);
             rd.drawString(carName, x + 10, y + cardHeight - 10);
         }
 
@@ -5676,10 +5687,10 @@ public class xtGraphics extends Panel implements Runnable {
                 }
             } else {
                 if (aflk) {
-                    drawcs((int) (GameFacts.screenHeight * 0.1) + byte0, names[sc[0]], 240, 240, 240, 3);
+                    drawcs((int) (GameFacts.screenHeight * 0.1) + byte0, getCarName(sc[0]), 240, 240, 240, 3);
                     aflk = false;
                 } else {
-                    drawcs((int) (GameFacts.screenHeight * 0.1), names[sc[0]], 176, 176, 176, 3);
+                    drawcs((int) (GameFacts.screenHeight * 0.1), getCarName(sc[0]), 176, 176, 176, 3);
                     aflk = true;
                 }
 
