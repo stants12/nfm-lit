@@ -110,6 +110,7 @@ public class GameSparker extends Applet implements Runnable {
 
     // settings
     public static Phase menuState = Phase.MAINMENU;
+    public static Phase menuButtonState = Phase.MAINMENU_MAIN;
     public static long menuStartTime = -1;
     public static int menuStage = 10;
 
@@ -1457,6 +1458,28 @@ public class GameSparker extends Applet implements Runnable {
                         mouses = 0;
                     if (mouses == 1)
                         mouses = 2;
+
+                    if (menuButtonState == Phase.MAINMENU_MAIN) {
+                        xtgraphics.mainMenuItems = 6;
+                        xtgraphics.menuButtons(u[0]);
+                    }
+                    if (menuButtonState == Phase.MAINMENU_WORKSHOP) {
+                        xtgraphics.mainMenuItems = 3;
+                        xtgraphics.menuButtonsWorkshop(u[0]);
+                    }
+                    if (menuButtonState == Phase.MAINMENU_PLAY) {
+                        xtgraphics.mainMenuItems = 4;
+                        xtgraphics.menuButtonsPlay(u[0]);
+                    }
+                    if (menuButtonState == Phase.MAINMENU_PLAY_SINGLEPLAYER) {
+                        xtgraphics.menuButtonsPlaySP(u[0]);
+                    }
+                    if (menuButtonState == Phase.MAINMENU_PLAY_MULTIPLAYER) {
+                        xtgraphics.menuButtonsPlayMP(u[0]);
+                    }
+                    if (menuButtonState == Phase.MAINMENU_PLAY_TRAINING) {
+                        xtgraphics.menuButtonsTraining(u[0]);
+                    }
                 }
 
                 if (menuState == Phase.CUSTOMSETTINGS) {

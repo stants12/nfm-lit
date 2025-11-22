@@ -843,7 +843,6 @@ public class xtGraphics extends Panel implements Runnable {
         rd.fillRect(0, 0, GameFacts.screenWidth, GameFacts.screenHeight);
 
         if (type == Phase.DIALOG_QUIT) {
-
             drawDialogueBoxBG(400, 70, 400, 120);
             rd.setFont(new Font("SansSerif", 1, 20));
             FontHandler.fMetrics = rd.getFontMetrics();
@@ -883,6 +882,23 @@ public class xtGraphics extends Panel implements Runnable {
                     opselect = 0;
                 }
                 control.right = false;
+            }
+        }
+        if (type == Phase.DIALOG_UNAVAILABLE) {
+            drawDialogueBoxBG(400, 70, 400, 120);
+            rd.setFont(new Font("SansSerif", 1, 20));
+            FontHandler.fMetrics = rd.getFontMetrics();
+            drawcs(GameFacts.screenHeight/2, "This feature is currently unavailable.", 255, 128, 0, 0);
+
+            drawMenuButton(rd, Utility.centeredWidthX(60), Utility.centeredHeightY(-70), 60, main_menu_button_height,
+            main_menu_arcwidth, main_menu_archeight, opselect == 0, shaded,
+            new Color(140, 70, 0), new Color(255, 128, 0), new Color(255, 255, 0),
+            "OK", new Font("Adventure", Font.BOLD, 20));
+
+            if (control.enter || control.handb) {
+                GameSparker.menuState = Phase.MAINMENU;
+                control.enter = false;
+                control.handb = false;
             }
         }
     }
@@ -2625,6 +2641,7 @@ public class xtGraphics extends Panel implements Runnable {
                 }
                 fase = Phase.LOADMENUMUSIC;
                 opselect = 0;
+                GameSparker.menuButtonState = Phase.MAINMENU_MAIN;
             }
             control.enter = false;
             control.handb = false;
@@ -4551,10 +4568,9 @@ public class xtGraphics extends Panel implements Runnable {
 
     public static long mainMenuFadeStart = -1;
     private final float MAIN_MENU_FADE_SECONDS = 1.5f; // duration in seconds
+    public int mainMenuItems = 6;
 
     public void newmaini(GameSparker gamesparker, Control control, CheckPoints checkpoints, Madness madness[], ContO conto[], ContO conto1[]) {
-
-        int menuItems = 6;
 
         if (GameSparker.DEBUG) {
             if (!devtriggered) {
@@ -4666,21 +4682,41 @@ public class xtGraphics extends Panel implements Runnable {
 
         //rd.drawImage(opback, Utility.centeredImageX(opback), 212 + main_menu_height_origin, null);
 
+
+
         if (control.up) {
             opselect--;
             if (opselect == -1) {
-                opselect = menuItems - 1;
+                opselect = mainMenuItems - 1;
             }
             control.up = false;
         }
         if (control.down) {
             opselect++;
-            if (opselect == menuItems) {
+            if (opselect == mainMenuItems) {
                 opselect = 0;
             }
             control.down = false;
         }
+        
+        if (shaded) {
+            app.repaint();
+            try {
+                Thread.sleep(100L);
+            } catch (InterruptedException _ex) {
+            }
+        }
 
+        // Fade-in logic
+        if (mainMenuFadeStart == -1) {
+            mainMenuFadeStart = System.currentTimeMillis();
+        }
+        long elapsed = System.currentTimeMillis() - mainMenuFadeStart;
+        boolean fading = drawFadeIn(rd, MAIN_MENU_FADE_SECONDS, elapsed, GameFacts.screenWidth, GameFacts.screenHeight);
+    }
+
+    
+    public void menuButtons(Control control) {
         drawMenuButton(rd, main_menu_op_x, main_menu_op_0_y, main_menu_op_width, main_menu_button_height,
             main_menu_arcwidth, main_menu_archeight, opselect == 0, shaded,
             new Color(140, 70, 0), new Color(255, 128, 0), new Color(255, 255, 0),
@@ -4694,7 +4730,7 @@ public class xtGraphics extends Panel implements Runnable {
         drawMenuButton(rd, main_menu_op_x, main_menu_op_0_y + 40 * 2, main_menu_op_width, main_menu_button_height,
             main_menu_arcwidth, main_menu_archeight, opselect == 2, shaded,
             new Color(140, 70, 0), new Color(255, 128, 0), new Color(255, 255, 0),
-            "GAME INSTRUCTIONS", new Font("Adventure", Font.BOLD, 20));
+            "WORKSHOP", new Font("Adventure", Font.BOLD, 20));
 
         drawMenuButton(rd, main_menu_op_x, main_menu_op_0_y + 40 * 3, main_menu_op_width, main_menu_button_height,
             main_menu_arcwidth, main_menu_archeight, opselect == 3, shaded,
@@ -4722,7 +4758,7 @@ public class xtGraphics extends Panel implements Runnable {
                 menuTip = "Customize and inspect your vehicles in the garage.";
                 break;
             case 2:
-                menuTip = "Learn the rules and controls of the game.";
+                menuTip = "Build your own cars and stages.";
                 break;
             case 3:
                 menuTip = "Adjust game settings.";
@@ -4739,7 +4775,6 @@ public class xtGraphics extends Panel implements Runnable {
         int padding = 70;
         int rectWidth = textWidth + padding;
 
-        //rd.drawImage(opti, Utility.centeredImageX(opti), 250 + main_menu_height_origin, null);
         rd.setColor(new Color(20, 20, 20, 100));
         rd.fillRoundRect(main_menu_op_x, main_menu_op_0_y + 40 * 6, rectWidth, 25, 23, 30);
 
@@ -4747,17 +4782,10 @@ public class xtGraphics extends Panel implements Runnable {
         rd.setFont(new Font("SansSerif", 1, 13));
         rd.drawString(menuTip, main_menu_op_x + 20, main_menu_op_0_y + 40 * 6 + 18);
 
-
         if (control.enter || control.handb) {
             if (opselect == 0) {
-                // if (unlocked == 1 && oldfase == Phase.INGAME) {
-                //     oldfase = Phase.CARSELECTTRIGGER;
-                //     GameSparker.menuState = Phase.INSTRUCTIONS;
-                // } else {
-                    //fase = Phase.CARSELECTTRIGGER;
-                    fase = Phase.NPLAYERSCHECK;
-                    Medium.crs = false;
-                //}
+                opselect = 0;
+                GameSparker.menuButtonState = Phase.MAINMENU_PLAY;
             }
             if (opselect == 1) {
                 GameSparker.menuState = Phase.GARAGE;
@@ -4765,7 +4793,9 @@ public class xtGraphics extends Panel implements Runnable {
                 Medium.resetGarageCam();
             }
             if (opselect == 2) {
-                GameSparker.menuState = Phase.INSTRUCTIONS;
+                //GameSparker.menuState = Phase.INSTRUCTIONS;
+                opselect = 0;
+                GameSparker.menuButtonState = Phase.MAINMENU_WORKSHOP;
             }
             if (opselect == 3) {
                 GameSparker.menuState = Phase.CUSTOMSETTINGS;
@@ -4782,21 +4812,370 @@ public class xtGraphics extends Panel implements Runnable {
             control.enter = false;
             control.handb = false;
         }
-        if (shaded) {
-            app.repaint();
-            try {
-                Thread.sleep(100L);
-            } catch (InterruptedException _ex) {
-            }
+    }
+
+    public void menuButtonsWorkshop(Control control) {
+        drawMenuButton(rd, main_menu_op_x, main_menu_op_0_y, main_menu_op_width, main_menu_button_height,
+            main_menu_arcwidth, main_menu_archeight, opselect == 0, shaded,
+            new Color(140, 70, 0), new Color(255, 128, 0), new Color(255, 255, 0),
+            "CAR MAKER", new Font("Adventure", Font.BOLD, 20));
+
+        drawMenuButton(rd, main_menu_op_x, main_menu_op_0_y + 40, main_menu_op_width, main_menu_button_height,
+            main_menu_arcwidth, main_menu_archeight, opselect == 1, shaded,
+            new Color(140, 70, 0), new Color(255, 128, 0), new Color(255, 255, 0),
+            "STAGE MAKER", new Font("Adventure", Font.BOLD, 20));
+
+        drawMenuButton(rd, main_menu_op_x, main_menu_op_0_y + 40 * 5, main_menu_op_width, main_menu_button_height,
+            main_menu_arcwidth, main_menu_archeight, opselect == 2, shaded,
+            new Color(140, 70, 0), new Color(255, 128, 0), new Color(255, 255, 0),
+            "BACK", new Font("Adventure", Font.BOLD, 20));
+
+
+        String menuTip = "";
+
+        switch(opselect) {
+            case 0:
+                menuTip = "Build and publish your custom cars.";
+                break;
+            case 1:
+                menuTip = "Build and publish your custom stages.";
+                break;
+            case 2:
+                menuTip = "Return to the previous menu.";
+                break;
         }
 
-        // Fade-in logic
-        if (mainMenuFadeStart == -1) {
-            mainMenuFadeStart = System.currentTimeMillis();
+        FontMetrics metrics = rd.getFontMetrics(new Font("SansSerif", Font.PLAIN, 13));
+        int textWidth = metrics.stringWidth(menuTip);
+        int padding = 70;
+        int rectWidth = textWidth + padding;
+
+        rd.setColor(new Color(20, 20, 20, 100));
+        rd.fillRoundRect(main_menu_op_x, main_menu_op_0_y + 40 * 6, rectWidth, 25, 23, 30);
+
+        rd.setColor(new Color(255, 128, 0));
+        rd.setFont(new Font("SansSerif", 1, 13));
+        rd.drawString(menuTip, main_menu_op_x + 20, main_menu_op_0_y + 40 * 6 + 18);
+
+        if (control.enter || control.handb) {
+            if (opselect == 0) {
+                GameSparker.menuState = Phase.DIALOG_UNAVAILABLE;
+                opselect = 0;
+            }
+            if (opselect == 1) {
+                GameSparker.menuState = Phase.DIALOG_UNAVAILABLE;
+                opselect = 1;
+            }
+            if (opselect == 2) {
+                opselect = 2;
+                GameSparker.menuButtonState = Phase.MAINMENU_MAIN;
+            }
+            flipo = 0;
+            control.enter = false;
+            control.handb = false;
         }
-        long elapsed = System.currentTimeMillis() - mainMenuFadeStart;
-        boolean fading = drawFadeIn(rd, MAIN_MENU_FADE_SECONDS, elapsed, GameFacts.screenWidth, GameFacts.screenHeight);
     }
+
+    public void menuButtonsPlay(Control control) {
+        drawMenuButton(rd, main_menu_op_x, main_menu_op_0_y, main_menu_op_width, main_menu_button_height,
+            main_menu_arcwidth, main_menu_archeight, opselect == 0, shaded,
+            new Color(140, 70, 0), new Color(255, 128, 0), new Color(255, 255, 0),
+            "SINGLEPLAYER", new Font("Adventure", Font.BOLD, 20));
+
+        drawMenuButton(rd, main_menu_op_x, main_menu_op_0_y + 40, main_menu_op_width, main_menu_button_height,
+            main_menu_arcwidth, main_menu_archeight, opselect == 1, shaded,
+            new Color(140, 70, 0), new Color(255, 128, 0), new Color(255, 255, 0),
+            "MULTIPLAYER", new Font("Adventure", Font.BOLD, 20));
+        drawMenuButton(rd, main_menu_op_x, main_menu_op_0_y + 40 * 2, main_menu_op_width, main_menu_button_height,
+            main_menu_arcwidth, main_menu_archeight, opselect == 2, shaded,
+            new Color(140, 70, 0), new Color(255, 128, 0), new Color(255, 255, 0),
+            "TRAINING", new Font("Adventure", Font.BOLD, 20));
+
+        drawMenuButton(rd, main_menu_op_x, main_menu_op_0_y + 40 * 5, main_menu_op_width, main_menu_button_height,
+            main_menu_arcwidth, main_menu_archeight, opselect == 3, shaded,
+            new Color(140, 70, 0), new Color(255, 128, 0), new Color(255, 255, 0),
+            "BACK", new Font("Adventure", Font.BOLD, 20));
+
+
+        String menuTip = "";
+
+        switch(opselect) {
+            case 0:
+                menuTip = "Play the original single player experiences.";
+                break;
+            case 1:
+                menuTip = "Play online with other players.";
+                break;
+            case 2:
+                menuTip = "Train your skills and learn the game mechanics.";
+                break;
+            case 3:
+                menuTip = "Return to the previous menu.";
+                break;
+        }
+
+        FontMetrics metrics = rd.getFontMetrics(new Font("SansSerif", Font.PLAIN, 13));
+        int textWidth = metrics.stringWidth(menuTip);
+        int padding = 70;
+        int rectWidth = textWidth + padding;
+
+        rd.setColor(new Color(20, 20, 20, 100));
+        rd.fillRoundRect(main_menu_op_x, main_menu_op_0_y + 40 * 6, rectWidth, 25, 23, 30);
+
+        rd.setColor(new Color(255, 128, 0));
+        rd.setFont(new Font("SansSerif", 1, 13));
+        rd.drawString(menuTip, main_menu_op_x + 20, main_menu_op_0_y + 40 * 6 + 18);
+
+        if (control.enter || control.handb) {
+            if (opselect == 0) {
+                GameSparker.menuButtonState = Phase.MAINMENU_PLAY_SINGLEPLAYER;
+                opselect = 0;
+            }
+            if (opselect == 1) {
+                GameSparker.menuButtonState = Phase.MAINMENU_PLAY_MULTIPLAYER;
+                opselect = 0;
+            }
+            if (opselect == 2) {
+                GameSparker.menuButtonState = Phase.MAINMENU_PLAY_TRAINING;
+                opselect = 0;
+            }
+            if (opselect == 3) {
+                opselect = 0;
+                GameSparker.menuButtonState = Phase.MAINMENU_MAIN;
+            }
+            flipo = 0;
+            control.enter = false;
+            control.handb = false;
+        }
+    }
+
+    public void menuButtonsPlaySP(Control control) {
+        drawMenuButton(rd, main_menu_op_x, main_menu_op_0_y, main_menu_op_width, main_menu_button_height,
+            main_menu_arcwidth, main_menu_archeight, opselect == 0, shaded,
+            new Color(140, 70, 0), new Color(255, 128, 0), new Color(255, 255, 0),
+            "NFM 1", new Font("Adventure", Font.BOLD, 20));
+
+        drawMenuButton(rd, main_menu_op_x, main_menu_op_0_y + 40, main_menu_op_width, main_menu_button_height,
+            main_menu_arcwidth, main_menu_archeight, opselect == 1, shaded,
+            new Color(140, 70, 0), new Color(255, 128, 0), new Color(255, 255, 0),
+            "NFM 2", new Font("Adventure", Font.BOLD, 20));
+        drawMenuButton(rd, main_menu_op_x, main_menu_op_0_y + 40 * 2, main_menu_op_width, main_menu_button_height,
+            main_menu_arcwidth, main_menu_archeight, opselect == 2, shaded,
+            new Color(140, 70, 0), new Color(255, 128, 0), new Color(255, 255, 0),
+            "FREE PLAY", new Font("Adventure", Font.BOLD, 20));
+
+        drawMenuButton(rd, main_menu_op_x, main_menu_op_0_y + 40 * 5, main_menu_op_width, main_menu_button_height,
+            main_menu_arcwidth, main_menu_archeight, opselect == 3, shaded,
+            new Color(140, 70, 0), new Color(255, 128, 0), new Color(255, 255, 0),
+            "BACK", new Font("Adventure", Font.BOLD, 20));
+
+
+        String menuTip = "";
+
+        switch(opselect) {
+            case 0:
+                menuTip = "Play the original Need For Madness campaign.";
+                break;
+            case 1:
+                menuTip = "Play the original Need For Madness 2 campaign.";
+                break;
+            case 2:
+                menuTip = "Play any stage with AI opponents.";
+                break;
+            case 3:
+                menuTip = "Return to the previous menu.";
+                break;
+        }
+
+        FontMetrics metrics = rd.getFontMetrics(new Font("SansSerif", Font.PLAIN, 13));
+        int textWidth = metrics.stringWidth(menuTip);
+        int padding = 70;
+        int rectWidth = textWidth + padding;
+
+        rd.setColor(new Color(20, 20, 20, 100));
+        rd.fillRoundRect(main_menu_op_x, main_menu_op_0_y + 40 * 6, rectWidth, 25, 23, 30);
+
+        rd.setColor(new Color(255, 128, 0));
+        rd.setFont(new Font("SansSerif", 1, 13));
+        rd.drawString(menuTip, main_menu_op_x + 20, main_menu_op_0_y + 40 * 6 + 18);
+
+        if (control.enter || control.handb) {
+            if (opselect == 0) {
+                GameSparker.menuState = Phase.DIALOG_UNAVAILABLE;
+                opselect = 0;
+            }
+            if (opselect == 1) {
+                // if (unlocked == 1 && oldfase == Phase.INGAME) {
+                //     oldfase = Phase.CARSELECTTRIGGER;
+                //     GameSparker.menuState = Phase.INSTRUCTIONS;
+                // } else {
+                    //fase = Phase.CARSELECTTRIGGER;
+                    fase = Phase.NPLAYERSCHECK;
+                    Medium.crs = false;
+                    opselect = 0;
+                //}
+            }
+            if (opselect == 2) {
+                GameSparker.menuState = Phase.DIALOG_UNAVAILABLE;
+                opselect = 2;
+            }
+            if (opselect == 3) {
+                opselect = 0;
+                GameSparker.menuButtonState = Phase.MAINMENU_PLAY;
+            }
+            flipo = 0;
+            control.enter = false;
+            control.handb = false;
+        }
+    }
+
+    public void menuButtonsPlayMP(Control control) {
+        drawMenuButton(rd, main_menu_op_x, main_menu_op_0_y, main_menu_op_width, main_menu_button_height,
+            main_menu_arcwidth, main_menu_archeight, opselect == 0, shaded,
+            new Color(140, 70, 0), new Color(255, 128, 0), new Color(255, 255, 0),
+            "FIND GAME", new Font("Adventure", Font.BOLD, 20));
+
+        drawMenuButton(rd, main_menu_op_x, main_menu_op_0_y + 40, main_menu_op_width, main_menu_button_height,
+            main_menu_arcwidth, main_menu_archeight, opselect == 1, shaded,
+            new Color(140, 70, 0), new Color(255, 128, 0), new Color(255, 255, 0),
+            "CREATE GAME", new Font("Adventure", Font.BOLD, 20));
+        drawMenuButton(rd, main_menu_op_x, main_menu_op_0_y + 40 * 2, main_menu_op_width, main_menu_button_height,
+            main_menu_arcwidth, main_menu_archeight, opselect == 2, shaded,
+            new Color(140, 70, 0), new Color(255, 128, 0), new Color(255, 255, 0),
+            "JOIN GAME", new Font("Adventure", Font.BOLD, 20));
+
+        drawMenuButton(rd, main_menu_op_x, main_menu_op_0_y + 40 * 5, main_menu_op_width, main_menu_button_height,
+            main_menu_arcwidth, main_menu_archeight, opselect == 3, shaded,
+            new Color(140, 70, 0), new Color(255, 128, 0), new Color(255, 255, 0),
+            "BACK", new Font("Adventure", Font.BOLD, 20));
+
+
+        String menuTip = "";
+
+        switch(opselect) {
+            case 0:
+                menuTip = "Find and join a game online using matchmaking.";
+                break;
+            case 1:
+                menuTip = "Create a game online.";
+                break;
+            case 2:
+                menuTip = "Join a game online.";
+                break;
+            case 3:
+                menuTip = "Return to the previous menu.";
+                break;
+        }
+
+        FontMetrics metrics = rd.getFontMetrics(new Font("SansSerif", Font.PLAIN, 13));
+        int textWidth = metrics.stringWidth(menuTip);
+        int padding = 70;
+        int rectWidth = textWidth + padding;
+
+        rd.setColor(new Color(20, 20, 20, 100));
+        rd.fillRoundRect(main_menu_op_x, main_menu_op_0_y + 40 * 6, rectWidth, 25, 23, 30);
+
+        rd.setColor(new Color(255, 128, 0));
+        rd.setFont(new Font("SansSerif", 1, 13));
+        rd.drawString(menuTip, main_menu_op_x + 20, main_menu_op_0_y + 40 * 6 + 18);
+
+        if (control.enter || control.handb) {
+            if (opselect == 0) {
+                GameSparker.menuState = Phase.DIALOG_UNAVAILABLE;
+                opselect = 0;
+            }
+            if (opselect == 1) {
+                GameSparker.menuState = Phase.DIALOG_UNAVAILABLE;
+                opselect = 1;
+            }
+            if (opselect == 2) {
+                GameSparker.menuState = Phase.DIALOG_UNAVAILABLE;
+                opselect = 2;
+            }
+            if (opselect == 3) {
+                opselect = 1;
+                GameSparker.menuButtonState = Phase.MAINMENU_PLAY;
+            }
+            flipo = 0;
+            control.enter = false;
+            control.handb = false;
+        }
+    }
+
+    public void menuButtonsTraining(Control control) {
+        drawMenuButton(rd, main_menu_op_x, main_menu_op_0_y, main_menu_op_width, main_menu_button_height,
+            main_menu_arcwidth, main_menu_archeight, opselect == 0, shaded,
+            new Color(140, 70, 0), new Color(255, 128, 0), new Color(255, 255, 0),
+            "TIME TRIALS", new Font("Adventure", Font.BOLD, 20));
+
+        drawMenuButton(rd, main_menu_op_x, main_menu_op_0_y + 40, main_menu_op_width, main_menu_button_height,
+            main_menu_arcwidth, main_menu_archeight, opselect == 1, shaded,
+            new Color(140, 70, 0), new Color(255, 128, 0), new Color(255, 255, 0),
+            "CHALLENGES", new Font("Adventure", Font.BOLD, 20));
+        drawMenuButton(rd, main_menu_op_x, main_menu_op_0_y + 40 * 2, main_menu_op_width, main_menu_button_height,
+            main_menu_arcwidth, main_menu_archeight, opselect == 2, shaded,
+            new Color(140, 70, 0), new Color(255, 128, 0), new Color(255, 255, 0),
+            "GAME INSTRUCTIONS", new Font("Adventure", Font.BOLD, 20));
+
+        drawMenuButton(rd, main_menu_op_x, main_menu_op_0_y + 40 * 5, main_menu_op_width, main_menu_button_height,
+            main_menu_arcwidth, main_menu_archeight, opselect == 3, shaded,
+            new Color(140, 70, 0), new Color(255, 128, 0), new Color(255, 255, 0),
+            "BACK", new Font("Adventure", Font.BOLD, 20));
+
+
+        String menuTip = "";
+
+        switch(opselect) {
+            case 0:
+                menuTip = "Flex your fastest time on any stage against other people.";
+                break;
+            case 1:
+                menuTip = "Complete challenges to sharpen your mechanical skills.";
+                break;
+            case 2:
+                menuTip = "Read about the rules and controls of the game.";
+                break;
+            case 3:
+                menuTip = "Return to the previous menu.";
+                break;
+        }
+
+        FontMetrics metrics = rd.getFontMetrics(new Font("SansSerif", Font.PLAIN, 13));
+        int textWidth = metrics.stringWidth(menuTip);
+        int padding = 70;
+        int rectWidth = textWidth + padding;
+
+        rd.setColor(new Color(20, 20, 20, 100));
+        rd.fillRoundRect(main_menu_op_x, main_menu_op_0_y + 40 * 6, rectWidth, 25, 23, 30);
+
+        rd.setColor(new Color(255, 128, 0));
+        rd.setFont(new Font("SansSerif", 1, 13));
+        rd.drawString(menuTip, main_menu_op_x + 20, main_menu_op_0_y + 40 * 6 + 18);
+
+        if (control.enter || control.handb) {
+            if (opselect == 0) {
+                GameSparker.menuState = Phase.DIALOG_UNAVAILABLE;
+                opselect = 0;
+            }
+            if (opselect == 1) {
+                GameSparker.menuState = Phase.DIALOG_UNAVAILABLE;
+                opselect = 1;
+            }
+            if (opselect == 2) {
+                GameSparker.menuState = Phase.INSTRUCTIONS;
+                opselect = 2;
+            }
+            if (opselect == 3) {
+                opselect = 2;
+                GameSparker.menuButtonState = Phase.MAINMENU_PLAY;
+            }
+            flipo = 0;
+            control.enter = false;
+            control.handb = false;
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     //magic ass numbers for renderCarPreview, guarantee a screen res will break it
 

@@ -18,6 +18,9 @@ class RunApp extends Panel {
     private static GameSparker applet;
     private static ArrayList<Image> icons;
 
+    private static boolean isFullscreen = false;
+    private static boolean isBorderless = false;
+
     /**
      * Fetches icons of 16, 32 and 48 pixels from the 'data' folder.
      *
@@ -91,9 +94,6 @@ class RunApp extends Panel {
         applet.init();
         applet.start();
     }
-
-    private static boolean isFullscreen = false;
-    private static boolean isBorderless = false;
 
     private static void toggleFullscreen() {
         GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
