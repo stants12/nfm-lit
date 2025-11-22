@@ -1112,6 +1112,9 @@ public class GameSparker extends Applet implements Runnable {
         settingsManager.load();
         GameSparker.menuStage = settingsManager.getMenuStage();
         GameSparker.menuMusic = settingsManager.getMenuMusic();
+        //graphics
+        GameSparker.antialiasing = settingsManager.getGraphicsAA();
+        //GameSparker.displayMode = settingsManager.getGraphicsDisplayMode();
     }
 
     public void displayNotification() {

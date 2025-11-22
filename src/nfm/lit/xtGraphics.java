@@ -890,6 +890,7 @@ public class xtGraphics extends Panel implements Runnable {
     public void savesettings() {
         settingsManager.setMenuStage(GameSparker.menuStage);
         settingsManager.setMenuMusic(GameSparker.menuMusic);
+        settingsManager.setGraphicsAA(GameSparker.antialiasing);
         settingsManager.save();
     }
 

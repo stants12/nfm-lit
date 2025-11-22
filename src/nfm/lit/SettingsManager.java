@@ -27,6 +27,16 @@ public class SettingsManager {
         return props.getProperty("menuMusic", "stages");
     }
 
+    // graphics
+
+    public void setGraphicsAA(boolean enabled) {
+        props.setProperty("gAntiAliasing", String.valueOf(enabled));
+    }
+
+    public boolean getGraphicsAA() {
+        return Boolean.parseBoolean(props.getProperty("gAntiAliasing", "true"));
+    }
+
     public void save() {
         try (FileOutputStream out = new FileOutputStream(SETTINGS_FILE)) {
             props.store(out, "config");
