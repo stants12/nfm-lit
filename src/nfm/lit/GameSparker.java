@@ -1995,7 +1995,7 @@ public class GameSparker extends Applet implements Runnable {
                     if (record.wasted != 0) {
                         if (record.closefinish == 0) {
                             if (i2 == 9 || i2 == 11) {
-                                rd.setColor(new Color(255, 255, 255));
+                                rd.setColor(new Color(255, 255, 255, 100));
                                 rd.fillRect(0, 0, GameFacts.screenWidth, GameFacts.screenHeight);
                             }
                             if (i2 == 0)
@@ -2072,16 +2072,16 @@ public class GameSparker extends Applet implements Runnable {
                         }
                     } else {
                         if (k2 == 67 && (i2 == 3 || i2 == 31 || i2 == 66)) {
-                            rd.setColor(new Color(255, 255, 255));
+                            rd.setColor(new Color(255, 255, 255, 100));
                             rd.fillRect(0, 0, GameFacts.screenWidth, GameFacts.screenHeight);
                         }
                         if (k2 == 69 && (i2 == 3 || i2 == 5 || i2 == 31 || i2 == 33 || i2 == 66 || i2 == 68)) {
-                            rd.setColor(new Color(255, 255, 255));
+                            rd.setColor(new Color(255, 255, 255, 100));
                             rd.fillRect(0, 0, GameFacts.screenWidth, GameFacts.screenHeight);
                         }
                         if (k2 == 30 && i2 >= 1 && i2 < 30)
                             if (i2 % (int) (2.0F + Medium.random() * 3F) == 0 && !flag2) {
-                                rd.setColor(new Color(255, 255, 255));
+                                rd.setColor(new Color(255, 255, 255, 100));
                                 rd.fillRect(0, 0, GameFacts.screenWidth, GameFacts.screenHeight);
                                 flag2 = true;
                             } else {

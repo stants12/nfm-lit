@@ -1158,7 +1158,7 @@ public class xtGraphics extends Panel implements Runnable {
 
         if (flipo == 3 || flipo == 5) {// 2-3 page
             if (flipo == 3) {
-                rd.drawString("Hello!  Welcome to the world of NEED FOR MADNESS !.", text_x, dudetext_base_y);
+                rd.drawString("Hello!  Welcome to the world of NEED FOR MADNESS !", text_x, dudetext_base_y);
 
                 //
                 // rd.drawImage(nfm, 519, 30, null);
@@ -4711,7 +4711,40 @@ public class xtGraphics extends Panel implements Runnable {
             "QUIT", new Font("Adventure", Font.BOLD, 20));
 
 
+        String menuTip = "";
+
+        switch(opselect) {
+            case 0:
+                menuTip = "Play public, private matches online or play singleplayer.";
+                break;
+            case 1:
+                menuTip = "Customize and inspect your vehicles in the garage.";
+                break;
+            case 2:
+                menuTip = "Learn the rules and controls of the game.";
+                break;
+            case 3:
+                menuTip = "Adjust game settings.";
+                break;
+            case 4:
+                menuTip = "View the credits.";
+                break;
+            case 5:
+                menuTip = "Exit the game.";
+        }
+
+        FontMetrics metrics = rd.getFontMetrics(new Font("SansSerif", Font.PLAIN, 13));
+        int textWidth = metrics.stringWidth(menuTip);
+        int padding = 70;
+        int rectWidth = textWidth + padding;
+
         //rd.drawImage(opti, Utility.centeredImageX(opti), 250 + main_menu_height_origin, null);
+        rd.setColor(new Color(20, 20, 20, 100));
+        rd.fillRoundRect(main_menu_op_x, main_menu_op_0_y + 40 * 6, rectWidth, 25, 23, 30);
+
+        rd.setColor(new Color(255, 128, 0));
+        rd.setFont(new Font("SansSerif", 1, 13));
+        rd.drawString(menuTip, main_menu_op_x + 20, main_menu_op_0_y + 40 * 6 + 18);
 
 
         if (control.enter || control.handb) {
