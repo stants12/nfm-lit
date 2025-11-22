@@ -1800,8 +1800,12 @@ public class Medium {
         // Optionally, add smooth transitions between scenes
     }
 
+    private static boolean menuFromGarage = false;
+    private static int menuCamStartX, menuCamStartY, menuCamStartZ;
+    private static float menuCamStartZY, menuCamStartXZ;
+    private static double ARRIVAL_DURATION = 4000.0; // ms to reach target
+
     public static void menucam(ContO conto) {
-        final double ARRIVAL_DURATION = 4000.0; // ms to reach target
         final double TRANSITION_DURATION = 2000.0; // ms for smooth transition to orbit
 
         if (GameSparker.menuStartTime == 0L) GameSparker.menuStartTime = System.currentTimeMillis();
@@ -1812,6 +1816,21 @@ public class Medium {
         int startX = conto.x - 5200;
         int startY = conto.y - 3000;
         int startZ = conto.z - 6000;
+
+        float startZY = 15;
+
+        int dx = conto.x - x;
+        int dz = conto.z - z;
+
+        float startXZ = (float)(Math.atan2(dx, dz) / 0.017453292519943295D);
+
+        if (menuFromGarage) {
+            startX = menuCamStartX;
+            startY = menuCamStartY;
+            startZ = menuCamStartZ;
+            startZY = menuCamStartZY;
+            startXZ = menuCamStartXZ;
+        }
 
         // End position: in front of car, slightly above, offset to the left
         int endX = conto.x - 1500;
@@ -1824,12 +1843,12 @@ public class Medium {
             y = (int)(startY + (endY - startY) * progress);
             z = (int)(startZ + (endZ - startZ) * progress);
 
-            int dx = conto.x - x;
-            int dz = conto.z - z;
-            xz = (float)(Math.atan2(dx, dz) / 0.017453292519943295D);
+            xz = startXZ;
 
-            zy = (float)(15 + (30 - 15) * progress);
+            //zy = (float)(15 + (30 - 15) * progress);
+            zy = (float)(startZY + (30 - startZY) * progress);
         } else {
+            if (menuFromGarage) menuFromGarage = false;
             // Orbit around the car after arrival
             double orbitSpeed = 0.15; // rotations per second
             double angle = ((System.currentTimeMillis() - GameSparker.menuStartTime - ARRIVAL_DURATION) * orbitSpeed / 1000.0) % (2 * Math.PI);
@@ -1852,8 +1871,6 @@ public class Medium {
                 y = (int)(endY + (orbitY - endY) * eased);
                 z = (int)(endZ + (orbitZ - endZ) * eased);
 
-                int dx = conto.x - x;
-                int dz = conto.z - z;
                 float targetXz = (float)(Math.atan2(dx, dz) / 0.017453292519943295D);
                 float arrivalXz = (float)(Math.atan2(conto.x - endX, conto.z - endZ) / 0.017453292519943295D);
                 xz = (float)(arrivalXz + (targetXz - arrivalXz) * eased);
@@ -1864,9 +1881,7 @@ public class Medium {
                 y = orbitY;
                 z = orbitZ;
 
-                int dx = conto.x - x;
-                int dz = conto.z - z;
-                xz = (float)(Math.atan2(dx, dz) / 0.017453292519943295D);
+                xz = startXZ;
 
                 zy = 20;
             }
@@ -1956,6 +1971,16 @@ public class Medium {
     public static void resetGarageCam() {
         garageStartTime = 0L;
         garageTransitioning = false;
+
+        // Prepare transition back to menu
+        menuFromGarage = true;
+        menuCamStartX = lastCamX;
+        menuCamStartY = lastCamY;
+        menuCamStartZ = lastCamZ;
+        menuCamStartZY = lastCamZY;
+        menuCamStartXZ = lastCamXZ;
+        GameSparker.menuStartTime = 0L;
+        ARRIVAL_DURATION = 0;
     }
 
     public static void watch(ContO conto, int i) {

@@ -2647,13 +2647,13 @@ public class xtGraphics extends Panel implements Runnable {
         }
         if (flipo == 101) {
             int i = 0;
-            do {
-                rd.drawImage(bgmain, 0, bgmy[i], null);
-                bgmy[i] -= 10;
-                if (bgmy[i] <= -GameFacts.screenHeight) {
-                    bgmy[i] = GameFacts.screenHeight;
-                }
-            } while (++i < 2);
+            // do {
+            //     rd.drawImage(bgmain, 0, bgmy[i], null);
+            //     bgmy[i] -= 10;
+            //     if (bgmy[i] <= -GameFacts.screenHeight) {
+            //         bgmy[i] = GameFacts.screenHeight;
+            //     }
+            // } while (++i < 2);
             rd.drawImage(mdness, Utility.centeredImageX(mdness), 7, null);
             rd.setFont(new Font("SansSerif", 1, 13));
             FontHandler.fMetrics = rd.getFontMetrics();
@@ -2679,14 +2679,14 @@ public class xtGraphics extends Panel implements Runnable {
                     3);
         }
         if (flipo == 102) {
-            int i = 0;
-            do {
-                rd.drawImage(bgmain, 0, bgmy[i], null);
-                bgmy[i] -= 10;
-                if (bgmy[i] <= -GameFacts.screenHeight) {
-                    bgmy[i] = GameFacts.screenHeight;
-                }
-            } while (++i < 2);
+            // int i = 0;
+            // do {
+            //     rd.drawImage(bgmain, 0, bgmy[i], null);
+            //     bgmy[i] -= 10;
+            //     if (bgmy[i] <= -GameFacts.screenHeight) {
+            //         bgmy[i] = GameFacts.screenHeight;
+            //     }
+            // } while (++i < 2);
             rd.setFont(new Font("SansSerif", 1, 13));
             FontHandler.fMetrics = rd.getFontMetrics();
             //////////////////////////////////////////////////////////////////////
@@ -2703,13 +2703,13 @@ public class xtGraphics extends Panel implements Runnable {
         }
         if (flipo == 103) {
             int j = 0;
-            do {
-                rd.drawImage(bgmain, 0, bgmy[j], null);
-                bgmy[j] -= 16;
-                if (bgmy[j] <= -GameFacts.screenHeight) {
-                    bgmy[j] = GameFacts.screenHeight;
-                }
-            } while (++j < 2);
+            // do {
+            //     rd.drawImage(bgmain, 0, bgmy[j], null);
+            //     bgmy[j] -= 16;
+            //     if (bgmy[j] <= -GameFacts.screenHeight) {
+            //         bgmy[j] = GameFacts.screenHeight;
+            //     }
+            // } while (++j < 2);
             rd.drawImage(nfmcom, Utility.centeredImageX(nfmcom), 170, null);
         }
 
@@ -2724,7 +2724,7 @@ public class xtGraphics extends Panel implements Runnable {
             }
             if (flipo == 104) {
                 flipo = 0;
-                fase = Phase.MAINMENU;
+                GameSparker.menuState = Phase.MAINMENU;
             }
             control.enter = false;
             control.handb = false;
@@ -4738,7 +4738,7 @@ public class xtGraphics extends Panel implements Runnable {
                 opselect = 1;
             }
             if (opselect == 4) {
-                fase = Phase.CREDITS;
+                GameSparker.menuState = Phase.CREDITS;
             }
             if (opselect == 5) {
                 GameSparker.menuState = Phase.DIALOG_QUIT;

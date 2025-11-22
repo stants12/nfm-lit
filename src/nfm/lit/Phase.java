@@ -146,7 +146,8 @@ public enum Phase {
     INGAME_MP(1000),
     INITMP(999),
 
-    DIALOG_QUIT(30001);
+    DIALOG_QUIT(30001),
+    DIALOG_UNAVAILABLE(30002);
 
     public final int value;
     

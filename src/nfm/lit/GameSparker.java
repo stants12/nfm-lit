@@ -1343,19 +1343,6 @@ public class GameSparker extends Applet implements Runnable {
                     xtgraphics.fase = Phase.CARSELECT;
                     mouses = 0;
                 }
-            if (xtgraphics.fase == Phase.CREDITS) {
-                xtgraphics.credits(u[0]);
-                if (xtgraphics.flipo == 102) {
-                    rd.drawImage(xtgraphics.credsnap(offImage), 0, 0, null);
-                }
-                xtgraphics.ctachm(xm, ym, mouses, u[0]);
-                if (xtgraphics.flipo <= 100)
-                    catchlink(0, xtgraphics);
-                if (mouses == 2)
-                    mouses = 0;
-                if (mouses == 1)
-                    mouses = 2;
-            }
             // if (xtgraphics.fase == Phase.DRM0) {
             //     xtgraphics.fase = Phase.DRMSCREEN;
             //     String regex = "^([a-zA-Z0-9.-]+):(\\d{1,5})$";
@@ -1482,8 +1469,25 @@ public class GameSparker extends Applet implements Runnable {
                         mouses = 2;
                 }
 
+                if (menuState == Phase.CREDITS) {
+                    xtgraphics.credits(u[0]);
+                    if (xtgraphics.flipo == 102) {
+                        rd.drawImage(xtgraphics.credsnap(offImage), 0, 0, null);
+                    }
+                    xtgraphics.ctachm(xm, ym, mouses, u[0]);
+                    if (xtgraphics.flipo <= 100)
+                        catchlink(0, xtgraphics);
+                    if (mouses == 2)
+                        mouses = 0;
+                    if (mouses == 1)
+                        mouses = 2;
+                }
+
                 if (menuState == Phase.DIALOG_QUIT) {
                     xtgraphics.dialogueBox(u[0], Phase.DIALOG_QUIT);
+                }
+                if (menuState == Phase.DIALOG_UNAVAILABLE) {
+                    xtgraphics.dialogueBox(u[0], Phase.DIALOG_UNAVAILABLE);
                 }
             }
             ///////////////////////////////////////////////////
