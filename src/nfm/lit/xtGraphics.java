@@ -4488,6 +4488,10 @@ public class xtGraphics extends Panel implements Runnable {
             app.setCursor(new Cursor(0));
         }
 
+        GradientPaint gradient = new GradientPaint(0, 0, new Color(0, 0, 0, 200), 600, 0, new Color(0, 0, 0, 0));
+        rd.setPaint(gradient);
+        rd.fillRect(0, 0, 600, GameFacts.screenHeight);
+
         String mainText = "Need  For  MADNESS ?";
         String subTitle = "WOOORLD ??!?!";
         int base_x = 100;
@@ -4755,7 +4759,7 @@ public class xtGraphics extends Panel implements Runnable {
         rd.setColor(new Color(255, 128, 0));
         rd.fillRect(0, 80, GameFacts.screenWidth, 5);
 
-        drawMenuButton(rd, 50, 100, main_menu_op_width, main_menu_button_height,
+        drawMenuButton(rd, 50, 20, main_menu_op_width, main_menu_button_height,
             main_menu_arcwidth, main_menu_archeight, opselect == 0, shaded,
             new Color(140, 70, 0), new Color(255, 128, 0), new Color(255, 255, 0),
             "BACK", new Font("Adventure", Font.BOLD, 20));
