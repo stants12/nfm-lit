@@ -144,7 +144,9 @@ public enum Phase {
 
     LOBBY(2300),
     INGAME_MP(1000),
-    INITMP(999);
+    INITMP(999),
+
+    DIALOG_QUIT(30001);
 
     public final int value;
     

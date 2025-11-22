@@ -20,6 +20,9 @@ import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
+import java.awt.*;
+import java.awt.geom.AffineTransform;
+
 /**
  * GameSparker brings everything together.
  *
@@ -105,11 +108,14 @@ public class GameSparker extends Applet implements Runnable {
     private int notb;
     private int view;
 
+    // settings
     public static Phase menuState = Phase.MAINMENU;
     public static long menuStartTime = -1;
     public static int menuStage = 10;
 
     public static String menuMusic = "stages";
+
+    public static boolean antialiasing = true;
 
 
     /* variables for screen shake */
@@ -318,6 +324,28 @@ public class GameSparker extends Applet implements Runnable {
     @Override
     public void paint(Graphics g) {
         Graphics2D graphics2d = (Graphics2D) g;
+
+        int currentWidth = this.getWidth();
+        int currentHeight = this.getHeight();
+        double scaleX = (double) currentWidth / GameFacts.screenWidth;
+        double scaleY = (double) currentHeight / GameFacts.screenHeight;
+
+        AffineTransform originalTransform = graphics2d.getTransform();
+
+        graphics2d.scale(scaleX, scaleY);
+
+        // Set rendering hints for better quality
+        graphics2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+        graphics2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
+
+        // interpolation
+        if (antialiasing) {
+            graphics2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        } else {
+            graphics2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
+        }
+
+        // Perform the original rendering logic
         int i = 0;
         int i_97_ = 0;
         if (this.shaka > 10) {
@@ -326,11 +354,14 @@ public class GameSparker extends Applet implements Runnable {
             this.shaka -= 5;
         }
 
-        this.apx = (int) ((float) (this.getWidth() / 2) - GameFacts.screenWidth/2);
-        this.apy = (int) ((float) (this.getHeight() / 2) - GameFacts.screenHeight/2);
-        graphics2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        this.apx = (int) ((float) (GameFacts.screenWidth / 2) - GameFacts.screenWidth / 2);
+        this.apy = (int) ((float) (GameFacts.screenHeight / 2) - GameFacts.screenHeight / 2);
+
         graphics2d.drawImage(this.offImage, this.apx + i, this.apy + i_97_, this);
         this.cropit(graphics2d, i, i_97_);
+
+        // Restore the original transform to avoid affecting other components
+        graphics2d.setTransform(originalTransform);
     }
 
     public GameSparker() {
@@ -1439,7 +1470,7 @@ public class GameSparker extends Applet implements Runnable {
                 }
 
                 if (menuState == Phase.CUSTOMSETTINGS) {
-                    xtgraphics.menusettings(u[0]);
+                    xtgraphics.settings(u[0]);
                 }
 
                 if (menuState == Phase.INSTRUCTIONS) {
@@ -1449,6 +1480,10 @@ public class GameSparker extends Applet implements Runnable {
                         mouses = 0;
                     if (mouses == 1)
                         mouses = 2;
+                }
+
+                if (menuState == Phase.DIALOG_QUIT) {
+                    xtgraphics.dialogueBox(u[0], Phase.DIALOG_QUIT);
                 }
             }
             ///////////////////////////////////////////////////

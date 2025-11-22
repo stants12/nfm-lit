@@ -263,11 +263,6 @@ public class xtGraphics extends Panel implements Runnable {
     private int main_menu_op_0_y = 100 + main_menu_height_origin;
     private int main_menu_op_width = 230;
 
-    private int main_menu_op_1_y = 140 + main_menu_height_origin;
-    private int main_menu_op_2_y = 180 + main_menu_height_origin;
-    private int main_menu_op_3_y = 220 + main_menu_height_origin;
-    private int main_menu_op_4_y = 260 + main_menu_height_origin;
-
     // private int main_menu_op_0_x = Utility.centeredWidthX(main_menu_op_0_width);
     // private int main_menu_op_1_x = Utility.centeredWidthX(main_menu_op_1_width);
     // private int main_menu_op_2_x = Utility.centeredWidthX(main_menu_op_2_width);
@@ -834,22 +829,81 @@ public class xtGraphics extends Panel implements Runnable {
         fase = Phase.AWAITLOADDISMISSAL;
     }
 
+    
+    public void drawDialogueBoxBG(int centeredWidth, int centeredHeight, int width, int height) {
+        rd.setColor(new Color(20, 20, 20, 200));
+        rd.fillRoundRect(Utility.centeredWidthX(centeredWidth), Utility.centeredHeightY(centeredHeight), width, height, 23, 30);
+
+        rd.setColor(new Color(255, 128, 0, 255));
+        rd.drawRoundRect(Utility.centeredWidthX(centeredWidth), Utility.centeredHeightY(centeredHeight), width, height, 23, 30);
+    }
+    
+    public void dialogueBox(Control control, Phase type) {
+        rd.setColor(new Color(0, 0, 0, 180));
+        rd.fillRect(0, 0, GameFacts.screenWidth, GameFacts.screenHeight);
+
+        if (type == Phase.DIALOG_QUIT) {
+
+            drawDialogueBoxBG(400, 70, 400, 120);
+            rd.setFont(new Font("SansSerif", 1, 20));
+            FontHandler.fMetrics = rd.getFontMetrics();
+            drawcs(GameFacts.screenHeight/2, "Are you sure you want to quit?", 255, 128, 0, 0);
+
+            drawMenuButton(rd, Utility.centeredWidthX(300), Utility.centeredHeightY(-70), 60, main_menu_button_height,
+            main_menu_arcwidth, main_menu_archeight, opselect == 0, shaded,
+            new Color(140, 70, 0), new Color(255, 128, 0), new Color(255, 255, 0),
+            "YES", new Font("Adventure", Font.BOLD, 20));
+
+            drawMenuButton(rd, Utility.centeredWidthX(-180), Utility.centeredHeightY(-70), 60, main_menu_button_height,
+            main_menu_arcwidth, main_menu_archeight, opselect == 1, shaded,
+            new Color(140, 70, 0), new Color(255, 128, 0), new Color(255, 255, 0),
+            "NO", new Font("Adventure", Font.BOLD, 20));
+
+            if (control.enter || control.handb) {
+                if (opselect == 0) {
+                    RunApp.exitSequence();
+                }
+                if (opselect == 1) {
+                    GameSparker.menuState = Phase.MAINMENU;
+                    opselect = 5;
+                }
+                control.enter = false;
+                control.handb = false;
+            }
+            if (control.left) {
+                opselect--;
+                if (opselect == -1) {
+                    opselect = 1;
+                }
+                control.left = false;
+            }
+            if (control.right) {
+                opselect++;
+                if (opselect == 2) {
+                    opselect = 0;
+                }
+                control.right = false;
+            }
+        }
+    }
+
     public void savesettings() {
         settingsManager.setMenuStage(GameSparker.menuStage);
         settingsManager.setMenuMusic(GameSparker.menuMusic);
         settingsManager.save();
     }
 
-    public void menusettings(Control control) {
+    public void settings(Control control) {
 
         //rd.setColor(new Color(100, 100, 100));
         //rd.fillRect(0, 0, GameFacts.screenWidth, GameFacts.screenHeight);
 
-        int menuItems = 4;
+        int menuItems = 5;
 
         //int y_nplayers = 90;
         int y_menustage = 110;
         int y_menumusic = 130;
+        int y_antialiasing = 150;
 
         rd.setColor(new Color(20, 20, 20, 100));
         rd.fillRoundRect(Utility.centeredWidthX(145), 20, 145, 27, 23, 30);
@@ -863,6 +917,7 @@ public class xtGraphics extends Panel implements Runnable {
         //drawcs(y_nplayers, "Number of Players: " + GameFacts.numberOfPlayers, 255, 255, 255, 3);
         drawcs(y_menustage, "Menu Stage: " + GameSparker.menuStage, 255, 255, 255, 3);
         drawcs(y_menumusic, "Menu Music: " + GameSparker.menuMusic, 255, 255, 255, 3);
+        drawcs(y_antialiasing, "Antialiasing: " + GameSparker.antialiasing, 255, 255, 255, 3);
         drawcs(GameFacts.screenHeight - 20, "Back", 255, 255, 255, 3);
 
         if (control.up) {
@@ -945,6 +1000,20 @@ public class xtGraphics extends Panel implements Runnable {
         }
 
         if (opselect == 3) {
+            rd.setFont(new Font("SansSerif", 1, 13));
+            FontHandler.fMetrics = rd.getFontMetrics();
+            if (aflk) {
+                drawcs(y_antialiasing, "Antialiasing: " + GameSparker.antialiasing, 255, 0, 0, 3);
+                rd.setColor(new Color(200, 255, 0));
+                aflk = false;
+            } else {
+                drawcs(y_antialiasing, "Antialiasing: " + GameSparker.antialiasing, 0, 0, 0, 3);
+                rd.setColor(new Color(255, 128, 0));
+                aflk = true;
+            }
+        }
+
+        if (opselect == 4) {
             if (shaded) {
                 rd.setColor(new Color(140, 70, 0));
                 rd.fillRect(234, 275, 196, 22);
@@ -962,9 +1031,9 @@ public class xtGraphics extends Panel implements Runnable {
         }
 
         if (control.enter || control.handb) {
-            if (opselect == 3) {
+            if (opselect == 4) {
                 GameSparker.menuState = Phase.MAINMENU;
-                opselect = 2;
+                opselect = 3;
                 savesettings();
             }
             control.enter = false;
@@ -984,6 +1053,13 @@ public class xtGraphics extends Panel implements Runnable {
                 }
                 fase = Phase.RELOADSTAGEMENU;
             }
+            if (opselect == 3) {
+                if (GameSparker.antialiasing) {
+                    GameSparker.antialiasing = false;
+                } else {
+                    GameSparker.antialiasing = true;
+                }
+            }
             control.left = false;
         }
         if (control.right) {
@@ -999,6 +1075,13 @@ public class xtGraphics extends Panel implements Runnable {
                     GameSparker.menuStage = 1;
                 }
                 fase = Phase.RELOADSTAGEMENU;
+            }
+            if (opselect == 3) {
+                if (GameSparker.antialiasing) {
+                    GameSparker.antialiasing = false;
+                } else {
+                    GameSparker.antialiasing = true;
+                }
             }
             control.right = false;
         }
@@ -4470,7 +4553,7 @@ public class xtGraphics extends Panel implements Runnable {
 
     public void newmaini(GameSparker gamesparker, Control control, CheckPoints checkpoints, Madness madness[], ContO conto[], ContO conto1[]) {
 
-        int menuItems = 5;
+        int menuItems = 6;
 
         if (GameSparker.DEBUG) {
             if (!devtriggered) {
@@ -4602,25 +4685,30 @@ public class xtGraphics extends Panel implements Runnable {
             new Color(140, 70, 0), new Color(255, 128, 0), new Color(255, 255, 0),
             "PLAY", new Font("Adventure", Font.BOLD, 20));
 
-        drawMenuButton(rd, main_menu_op_x, main_menu_op_1_y, main_menu_op_width, main_menu_button_height,
+        drawMenuButton(rd, main_menu_op_x, main_menu_op_0_y + 40, main_menu_op_width, main_menu_button_height,
             main_menu_arcwidth, main_menu_archeight, opselect == 1, shaded,
             new Color(140, 70, 0), new Color(255, 128, 0), new Color(255, 255, 0),
             "GARAGE", new Font("Adventure", Font.BOLD, 20));
 
-        drawMenuButton(rd, main_menu_op_x, main_menu_op_2_y, main_menu_op_width, main_menu_button_height,
+        drawMenuButton(rd, main_menu_op_x, main_menu_op_0_y + 40 * 2, main_menu_op_width, main_menu_button_height,
             main_menu_arcwidth, main_menu_archeight, opselect == 2, shaded,
             new Color(140, 70, 0), new Color(255, 128, 0), new Color(255, 255, 0),
             "GAME INSTRUCTIONS", new Font("Adventure", Font.BOLD, 20));
 
-        drawMenuButton(rd, main_menu_op_x, main_menu_op_3_y, main_menu_op_width, main_menu_button_height,
+        drawMenuButton(rd, main_menu_op_x, main_menu_op_0_y + 40 * 3, main_menu_op_width, main_menu_button_height,
             main_menu_arcwidth, main_menu_archeight, opselect == 3, shaded,
             new Color(140, 70, 0), new Color(255, 128, 0), new Color(255, 255, 0),
             "SETTINGS", new Font("Adventure", Font.BOLD, 20));
 
-        drawMenuButton(rd, main_menu_op_x, main_menu_op_4_y, main_menu_op_width, main_menu_button_height,
+        drawMenuButton(rd, main_menu_op_x, main_menu_op_0_y + 40 * 4, main_menu_op_width, main_menu_button_height,
             main_menu_arcwidth, main_menu_archeight, opselect == 4, shaded,
             new Color(140, 70, 0), new Color(255, 128, 0), new Color(255, 255, 0),
             "CREDITS", new Font("Adventure", Font.BOLD, 20));
+
+        drawMenuButton(rd, main_menu_op_x, main_menu_op_0_y + 40 * 5, main_menu_op_width, main_menu_button_height,
+            main_menu_arcwidth, main_menu_archeight, opselect == 5, shaded,
+            new Color(140, 70, 0), new Color(255, 128, 0), new Color(255, 255, 0),
+            "QUIT", new Font("Adventure", Font.BOLD, 20));
 
 
         //rd.drawImage(opti, Utility.centeredImageX(opti), 250 + main_menu_height_origin, null);
@@ -4651,6 +4739,10 @@ public class xtGraphics extends Panel implements Runnable {
             }
             if (opselect == 4) {
                 fase = Phase.CREDITS;
+            }
+            if (opselect == 5) {
+                GameSparker.menuState = Phase.DIALOG_QUIT;
+                opselect = 1;
             }
             flipo = 0;
             control.enter = false;
@@ -4830,6 +4922,7 @@ public class xtGraphics extends Panel implements Runnable {
                 GameSparker.menuState = Phase.MAINMENU;
                 Medium.resetGarageCam();
                 Medium.crs = false;
+                opselect = 1;
             }
             control.enter = false;
             control.handb = false;
@@ -5978,24 +6071,29 @@ public class xtGraphics extends Panel implements Runnable {
                     opselect = 0;
                     shaded = true;
                 }
-                if (overon(main_menu_op_x, main_menu_op_1_y, main_menu_op_width,
+                if (overon(main_menu_op_x, main_menu_op_0_y + 40, main_menu_op_width,
                         main_menu_button_height, i, j)) {
                     opselect = 1;
                     shaded = true;
                 }
-                if (overon(main_menu_op_x, main_menu_op_2_y, main_menu_op_width,
+                if (overon(main_menu_op_x, main_menu_op_0_y + 40 * 2, main_menu_op_width,
                         main_menu_button_height, i, j)) {
                     opselect = 2;
                     shaded = true;
                 }
-                if (overon(main_menu_op_x, main_menu_op_3_y, main_menu_op_width,
+                if (overon(main_menu_op_x, main_menu_op_0_y + 40 * 3, main_menu_op_width,
                         main_menu_button_height, i, j)) {
                     opselect = 3;
                     shaded = true;
                 }
-                if (overon(main_menu_op_x, main_menu_op_4_y, main_menu_op_width,
+                if (overon(main_menu_op_x, main_menu_op_0_y + 40 * 4, main_menu_op_width,
                         main_menu_button_height, i, j)) {
                     opselect = 4;
+                    shaded = true;
+                }
+                if (overon(main_menu_op_x, main_menu_op_0_y + 40 * 5, main_menu_op_width,
+                        main_menu_button_height, i, j)) {
+                    opselect = 5;
                     shaded = true;
                 }
             }
@@ -6008,21 +6106,25 @@ public class xtGraphics extends Panel implements Runnable {
                         main_menu_button_height, i, j)) {
                     opselect = 0;
                 }
-                if (overon(main_menu_op_x, main_menu_op_1_y, main_menu_op_width,
+                if (overon(main_menu_op_x, main_menu_op_0_y  + 40, main_menu_op_width,
                         main_menu_button_height, i, j)) {
                     opselect = 1;
                 }
-                if (overon(main_menu_op_x, main_menu_op_2_y, main_menu_op_width,
+                if (overon(main_menu_op_x, main_menu_op_0_y  + 40 * 2, main_menu_op_width,
                         main_menu_button_height, i, j)) {
                     opselect = 2;
                 }
-                if (overon(main_menu_op_x, main_menu_op_3_y, main_menu_op_width,
+                if (overon(main_menu_op_x, main_menu_op_0_y  + 40 * 3, main_menu_op_width,
                         main_menu_button_height, i, j)) {
                     opselect = 3;
                 }
-                if (overon(main_menu_op_x, main_menu_op_4_y, main_menu_op_width,
+                if (overon(main_menu_op_x, main_menu_op_0_y  + 40 * 4, main_menu_op_width,
                         main_menu_button_height, i, j)) {
                     opselect = 4;
+                }
+                if (overon(main_menu_op_x, main_menu_op_0_y  + 40 * 5, main_menu_op_width,
+                        main_menu_button_height, i, j)) {
+                    opselect = 5;
                 }
                 lxm = i;
                 lym = j;
