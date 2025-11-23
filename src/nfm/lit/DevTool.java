@@ -290,7 +290,7 @@ public class DevTool {
                         int n = Integer.parseInt(args[0]);
                         if (GameSparker.gameStateID == 10) {
                             if ((n >= 1 && n <= 3)) {
-                                xt.nfmmode = n;
+                                xtGraphics.nfmMode = n;
                                 if (n < 2) {
                                     print("Need For Madness " + n);
                                 } else {
@@ -313,7 +313,7 @@ public class DevTool {
                 if (args.length == 1) {
                     try {
                         String path = args[0];
-                        xt.nfmmode = 3;
+                        xtGraphics.nfmMode = 3;
                         print("Loading stage from: " + path + ".txt");
                         GameSparker.loadStageCus = path;    //idk
                         checkpoints.stage = -1;
@@ -335,7 +335,7 @@ public class DevTool {
                     try {
                         String sub = args[0];
                             GameSparker.stageSubDir = sub + "/";    //idk
-                            xt.nfmmode = 3;
+                            xtGraphics.nfmMode = 3;
                             print("Set stage subdir to " + sub);
                     } catch (NumberFormatException e) {
                         print("Invalid argument.");

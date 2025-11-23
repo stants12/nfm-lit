@@ -13,6 +13,7 @@ fadefrom(6000)
 nlaps(2)
 
 detail(0)
+noarrow()
 
 set(15,0,0,0)p
 set(15,0,5600,0)p

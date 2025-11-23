@@ -125,11 +125,11 @@ public enum Phase {
      */
     SELECTEDCARSAVE(205), 
     /**
-     * 9000 - hidden settings menu (may be removed)
+     * 10000 - settings menu
      */
-    CUSTOMSETTINGS(10000),
+    SETTINGS(10000),
     /**
-     * 9001 - for loading a sage (custom)
+     * 9001 - for loading a stage (custom)
      */
     LOADSTAGE(9001),
     LOADSTAGE2(9004),
@@ -139,23 +139,26 @@ public enum Phase {
     RELOADGARAGECAR(9007),
     LOADMENUMUSIC(9010),
     RELOADMENUMUSIC(9011),
-    GARAGE(10001),
     MODELDEBUG(-10001),
 
+    // multiplayer
     LOBBY(2300),
     INGAME_MP(1000),
     INITMP(999),
 
+    // main menu (10) sub phases
     MAINMENU_MAIN(1001),
     MAINMENU_WORKSHOP(1002),
     MAINMENU_PLAY(10010),
     MAINMENU_PLAY_SINGLEPLAYER(10011),
     MAINMENU_PLAY_MULTIPLAYER(10012),
     MAINMENU_PLAY_TRAINING(10013),
+    GARAGE(10001),
 
     CARMAKER(20000),
     STAGEMAKER(21000),
 
+    // dialog boxes
     DIALOG_QUIT(30001),
     DIALOG_UNAVAILABLE(30002);
 

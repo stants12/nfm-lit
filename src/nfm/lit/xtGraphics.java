@@ -360,7 +360,7 @@ public class xtGraphics extends Panel implements Runnable {
 
     public int spectate = 0;
 
-    public int nfmmode = 2;
+    public static int nfmMode = 2;
 
     public boolean arrowDisabled = false;
     public boolean opstatusDisabled = false;
@@ -3432,6 +3432,7 @@ public class xtGraphics extends Panel implements Runnable {
                 }
                 int i = 0;
                 pin = 60;
+                // NEEDS TO BE REWORKED !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                 if (checkpoints.stage == 2) {
                     byte0 = 8;
                     i = 265;
@@ -4824,7 +4825,7 @@ public class xtGraphics extends Panel implements Runnable {
                 GameSparker.menuButtonState = Phase.MAINMENU_WORKSHOP;
             }
             if (opselect == 3) {
-                GameSparker.menuState = Phase.CUSTOMSETTINGS;
+                GameSparker.menuState = Phase.SETTINGS;
                 opselect = 1;
             }
             if (opselect == 4) {
@@ -5026,26 +5027,34 @@ public class xtGraphics extends Panel implements Runnable {
         rd.drawString(menuTip, main_menu_op_x + 20, main_menu_op_0_y + 40 * 6 + 18);
 
         if (control.enter || control.handb) {
-            if (opselect == 0) {
+            if (opselect == 0) {        // NFM1
                 GameSparker.menuState = Phase.DIALOG_UNAVAILABLE;
                 opselect = 0;
+
+                //nfmMode = 1;
+                //GameFacts.numberOfStages = 11;
             }
-            if (opselect == 1) {
+            if (opselect == 1) {        // NFM2
                 // if (unlocked == 1 && oldfase == Phase.INGAME) {
                 //     oldfase = Phase.CARSELECTTRIGGER;
                 //     GameSparker.menuState = Phase.INSTRUCTIONS;
                 // } else {
                     //fase = Phase.CARSELECTTRIGGER;
+                    //fase = Phase.NPLAYERSCHECK;
+                    //Medium.crs = false;
+
                     fase = Phase.NPLAYERSCHECK;
-                    Medium.crs = false;
+
                     opselect = 0;
+                    //nfmMode = 2;
+                    //GameFacts.numberOfStages = 17;
                 //}
             }
-            if (opselect == 2) {
+            if (opselect == 2) {        // FREE PLAY
                 GameSparker.menuState = Phase.DIALOG_UNAVAILABLE;
                 opselect = 2;
             }
-            if (opselect == 3) {
+            if (opselect == 3) {    // BACK
                 opselect = 0;
                 GameSparker.menuButtonState = Phase.MAINMENU_PLAY;
             }

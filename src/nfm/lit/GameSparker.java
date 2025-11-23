@@ -53,8 +53,22 @@ public class GameSparker extends Applet implements Runnable {
     private static final long serialVersionUID = -34048182014310663L;
 
     public static final String[] carModels = {
+            // NFM2 0-15
             "2000tornados", "formula7", "canyenaro", "lescrab", "nimi", "maxrevenge", "leadoxide", "koolkat", "drifter",
-            "policecops", "mustang", "king", "audir8", "masheen", "radicalone", "drmonster", "btone", "marauder", "dies", "drmonster2005"
+            "policecops", "mustang", "king", "audir8", "masheen", "radicalone", "drmonster",
+            // Test/placeholder cars 16-19
+            "btone", "marauder", "dies", "dies2",
+            // NFM1 20-29
+            // "2005_2000tornados",
+            // "2005_formula7",
+            // "2005_canyenaro",
+            // "2005_lescrab",
+            // "2005_nimi",
+            // "2005_maxrevenge",
+            // "2005_leadoxide",
+            // "2005_king",
+            // "2005_radicalone",
+            "2005_drmonster"
     };
 
     private static final String[] trackModels = {
@@ -90,7 +104,8 @@ public class GameSparker extends Applet implements Runnable {
     /**
      * Set location for the cookie.radq
      */
-    private static final String cookieDirZip = "data/cookies.radq";
+    private static final String cookieNFM2 = "data/cookies.radq";
+    private static final String cookieNFM1 = "data/cookies_nfm1.radq";
 
     private String stageError = "";
 
@@ -119,6 +134,9 @@ public class GameSparker extends Applet implements Runnable {
     public static boolean antialiasing = true;
     public static int displayMode = 0; // 0=windowed, 1=borderless, 2=fullscreen
 
+    public static boolean nfm1Complete = false;
+    public static boolean nfm2Complete = false;
+
 
     /* variables for screen shake */
 
@@ -139,7 +157,7 @@ public class GameSparker extends Applet implements Runnable {
 
     private SettingsManager settingsManager = new SettingsManager();
 
-    // temp test
+    // garage
     static List<Integer> ownedCarIds = new ArrayList<>();
     public int usercarNob = 0;
 
@@ -214,7 +232,7 @@ public class GameSparker extends Applet implements Runnable {
         return false;
     }
 
-    private void savecookie(String filename, String num) {
+    private void savecookie(String filename, String num, String cookieDirZip) {
         try {
             /**
              * since I want full control over the filenames, we'll create a normal file in
@@ -275,7 +293,7 @@ public class GameSparker extends Applet implements Runnable {
      * @param string name to match
      * @return value
      */
-    private int readcookie(String string) {
+    private int readcookie(String string, String cookieDirZip) {
         try {
             ZipFile zipFile = new ZipFile(cookieDirZip);
             Enumeration<? extends ZipEntry> entries = zipFile.entries();
@@ -613,9 +631,9 @@ public class GameSparker extends Applet implements Runnable {
         CheckPoints.customTrack = false;
 
         loadStage = stageDir + stageSubDir + checkpoints.stage + ".txt";
-        if (xtgraphics.nfmmode == 1) {
+        if (xtGraphics.nfmMode == 1) {
             stageSubDir = "nfm1/";
-        } else if (xtgraphics.nfmmode == 2) {
+        } else if (xtGraphics.nfmMode == 2) {
             stageSubDir = "nfm2/";
         }
 
@@ -1242,7 +1260,7 @@ public class GameSparker extends Applet implements Runnable {
 
         loadsettings();
 
-        l = readcookie("unlocked");
+        l = readcookie("unlocked", cookieNFM2);
         if (l >= 1 && l <= GameFacts.numberOfStages) {
             /*
              * Note: that is an L
@@ -1254,16 +1272,18 @@ public class GameSparker extends Applet implements Runnable {
                 checkpoints.stage = (int) (Math.random() * 17D) + 1;
             xtgraphics.opselect = 0;
         }
-        l = readcookie("usercar");
+
+        l = readcookie("usercar", cookieNFM2);
         if (l >= 0 && l <= GameFacts.numberOfCars - 1)
             xtgraphics.sc[0] = l;
+
         // garage
         try {
             File garageFile = new File("data/user/garage.json");
             if (garageFile.exists()) {
                 GarageManager.loadOwnedCarIds(ownedCarIds);
             } else {
-                for (int i = 0; i <= 7; i++) { // this adds the first NFM2 starter cars to garage
+                for (int i = 0; i <= 7; i++) { // this adds the first NFM1 starter cars to garage
                     ownedCarIds.add(i);
                 }
                 // Optionally, save the initial garage
@@ -1280,7 +1300,7 @@ public class GameSparker extends Applet implements Runnable {
 
         xtgraphics.setSelectedGarageCar();
 
-        l = readcookie("gameprfact");
+        l = readcookie("gameprfact", cookieNFM2);
         if (l != -1) {
             f = l;
             i1 = 1;
@@ -1485,7 +1505,7 @@ public class GameSparker extends Applet implements Runnable {
                     boolean fading = xtGraphics.drawFadeIn(rd, xtgraphics.MAIN_MENU_FADE_SECONDS, elapsed, GameFacts.screenWidth, GameFacts.screenHeight);
                 }
 
-                if (menuState == Phase.CUSTOMSETTINGS) {
+                if (menuState == Phase.SETTINGS) {
                     xtgraphics.settings(u[0]);
                 }
 
@@ -1540,9 +1560,16 @@ public class GameSparker extends Applet implements Runnable {
 
                 if (checkpoints.stage == xtgraphics.unlocked && xtgraphics.winner
                         && xtgraphics.unlocked != GameFacts.numberOfStages + 1)
-                    savecookie("unlocked", "" + xtgraphics.unlocked);
-                savecookie("gameprfact", "" + (int) f);
-                savecookie("usercar", "" + xtgraphics.sc[0]);
+
+                    if (xtGraphics.nfmMode == 2) {
+                        savecookie("unlocked", "" + xtgraphics.unlocked, cookieNFM2);
+                        savecookie("usercar", "" + xtgraphics.sc[0], cookieNFM2);
+                    }
+                    if (xtGraphics.nfmMode == 1) {
+                        savecookie("unlocked_nfm1", "" + xtgraphics.unlocked, cookieNFM1);
+                        savecookie("usercar_nfm1", "" + xtgraphics.sc[0], cookieNFM1);
+                    }
+                savecookie("gameprfact", "" + (int) f, cookieNFM2);
 
                 xtgraphics.fase = Phase.LOADMENUMUSIC;
             }
@@ -1573,8 +1600,12 @@ public class GameSparker extends Applet implements Runnable {
                     mouses = 2;
             }
             if (xtgraphics.fase == Phase.SELECTEDCARSAVE) {
-                savecookie("usercar", "" + xtgraphics.sc[0]);
-
+                if (xtGraphics.nfmMode == 2) {
+                    savecookie("usercar", "" + xtgraphics.sc[0], cookieNFM2);
+                }
+                if (xtGraphics.nfmMode == 1) {
+                    savecookie("usercar_nfm1", "" + xtgraphics.sc[0], cookieNFM1);
+                }
                 for (int x = 0; x < GameFacts.numberOfPlayers; x++) {
                     amadness[x].stat = new Stat(xtgraphics.sc[x], aconto1[x]);
                 }
@@ -1612,12 +1643,12 @@ public class GameSparker extends Applet implements Runnable {
                 loadstage(aconto1, aconto, trackers, checkpoints, xtgraphics, amadness, record, true);
                 xtgraphics.fase = Phase.STAGESELECT;
             }
-            if (xtgraphics.fase == Phase.LOADSTAGE2) { // for custom stage loading
+            if (xtgraphics.fase == Phase.LOADSTAGE2) { // for custom stage loading (while in game, console)
                 repaint();
                 loadstage(aconto1, aconto, trackers, checkpoints, xtgraphics, amadness, record, true);
                 xtgraphics.loadmusic(checkpoints.stage, i1);
             }
-            if (xtgraphics.fase == Phase.INITMP) { // for custom stage loading
+            if (xtgraphics.fase == Phase.INITMP) {
                 repaint();
                 for (int x = 0; x < GameFacts.numberOfPlayers; x++) {
                     amadness[x].stat = new Stat(xtgraphics.sc[x], aconto1[x]);
@@ -1662,7 +1693,7 @@ public class GameSparker extends Applet implements Runnable {
 
                 xtgraphics.fase = Phase.MAINMENU;
             }
-            if (xtgraphics.fase == Phase.RELOADGARAGECAR) { // for when garage car reloads
+            if (xtgraphics.fase == Phase.RELOADGARAGECAR) { // for when garage car reloads (doesn't regen environment)
                 repaint();
                 GameSparker.loadStageCus = "nfm2/" + menuStage;
                 loadstage(aconto1, aconto, trackers, checkpoints, xtgraphics, amadness, record, true);
@@ -1721,7 +1752,7 @@ public class GameSparker extends Applet implements Runnable {
                 Medium.d(rd);
                 renderObjects(rd, aconto1, 0, nob);
 
-                if (xtgraphics.starcnt == 0) {
+                if (xtgraphics.starcnt == 0) {  // what happens after insano says GO!
                     int l12 = 0;
                     do {
                         int j14 = 0;
@@ -1747,7 +1778,7 @@ public class GameSparker extends Applet implements Runnable {
                     do
                         u[l12].preform(amadness[l12], aconto1[l12], checkpoints, trackers, GameFacts.numberOfPlayers);
                     while (++l12 < GameFacts.numberOfPlayers);
-                } else {
+                } else {        // countdown
                     if (xtgraphics.starcnt == 130) {
                         Medium.adv = 1900;
                         Medium.zy = 40;
@@ -1804,7 +1835,7 @@ public class GameSparker extends Applet implements Runnable {
                     }
                 }
             }
-            if (xtgraphics.fase == Phase.INGAME_MP) {
+            if (xtgraphics.fase == Phase.INGAME_MP) {       // aids rushed shit, multiplayer in game
                 int k3 = 0;
                 Medium.focus_point = 500;
 
