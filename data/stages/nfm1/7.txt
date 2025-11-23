@@ -11,6 +11,8 @@ name(When In Danger Just Chill Out)
 
 nlaps(3)
 
+detail(0)
+
 set(10,0,0,0)p
 
 set(10,0,5600,0)p

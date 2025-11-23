@@ -44,7 +44,7 @@ public class Stat {
 
     public int revlift = 0;
 
-    public int revpush = 0;
+    public float revpush = 0F;
 
     public float simag = 0F;
 

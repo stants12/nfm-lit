@@ -33,22 +33,22 @@ public class ContO {
     private boolean noline = false;
     private float grounded = 1.0F;
     public int grat = 0;
-    public final int[] keyx = new int[4];
-    public final int[] keyz = new int[4];
-    public final int[] sx = new int[4];
-    public final int[] sy = new int[4];
-    public final int[] sz = new int[4];
-    public final int[] stg = new int[4];
-    public final int[] dov = new int[4];
-    public final float[] smag = new float[4];
-    public final int[] scx = new int[4];
-    public final int[] scz = new int[4];
-    public final boolean[] fulls = new boolean[4];
+    public final int[] keyx = new int[8];
+    public final int[] keyz = new int[8];
+    public final int[] sx = new int[8];
+    public final int[] sy = new int[8];
+    public final int[] sz = new int[8];
+    public final int[] stg = new int[8];
+    public final int[] dov = new int[8];
+    public final float[] smag = new float[8];
+    public final int[] scx = new int[8];
+    public final int[] scz = new int[8];
+    public final boolean[] fulls = new boolean[8];
     public boolean elec = false;
     public boolean roted = false;
-    private final int[] edl = new int[4];
-    private final int[] edr = new int[4];
-    private final int[] elc = new int[4];
+    private final int[] edl = new int[8];
+    private final int[] edr = new int[8];
+    private final int[] elc = new int[8];
     public boolean fix = false;
     public int fcnt = 0;
     public int checkpoint = 0;
@@ -84,7 +84,7 @@ public class ContO {
     public float moment = 0F;
     public float comprad = 0F;
     public int push = 0;
-    public int revpush = 0;
+    public float revpush = 0F;
     public int lift = 0;
     public int revlift = 0;
     public int powerloss = 0;
@@ -505,7 +505,7 @@ public class ContO {
                     push = Utility.getint("push", line, 0);
                 }
                 if (line.startsWith("revpush")) {
-                    revpush = Utility.getint("revpush", line, 0);
+                    revpush = Utility.getfloat("revpush", line, 0);
                 }
                 if (line.startsWith("lift")) {
                     lift = Utility.getint("lift", line, 0);
@@ -653,7 +653,7 @@ public class ContO {
             stg[l1] = 0;
             keyx[l1] = conto.keyx[l1];
             keyz[l1] = conto.keyz[l1];
-        } while (++l1 < 4);
+        } while (++l1 < 8);
     }
 
     public void d(Graphics2D rd) {

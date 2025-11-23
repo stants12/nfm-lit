@@ -11,6 +11,8 @@ fadefrom(5000)
 
 nlaps(4)
 
+detail(0)
+
 set(10,0,0,0)p
 set(10,0,5600,180)p
 set(26,0,9000,0)pr

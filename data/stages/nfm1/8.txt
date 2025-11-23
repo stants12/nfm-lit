@@ -13,6 +13,8 @@ name(The Fast & The Furious + The Radical)
 
 nlaps(3)
 
+detail(0)
+
 set(15,0,0,0)p
 set(15,0,5600,0)p
 set(15,0,11200,0)

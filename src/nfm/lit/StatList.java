@@ -311,23 +311,23 @@ class StatList {
      * The amount of "reverse push" or recoil the car will get from others
      * @author Omar Waly
      */
-    static final int[] revpush = {
-            2,
-            3,
-            2,
-            2,
-            2,
-            2,
-            2,
-            1,
-            2,
-            1,
-            2,
-            1,
-            2,
-            2,
-            2,
-            1
+    static final float[] revpush = {
+            2.0F,
+            3.0F,
+            2.0F,
+            2.0F,
+            2.0F,
+            2.0F,
+            2.0F,
+            1.0F,
+            2.0F,
+            1.0F,
+            2.0F,
+            1.0F,
+            2.0F,
+            2.0F,
+            2.0F,
+            1.0F
     };
     /**
      * How much a car can lift another car while wasting

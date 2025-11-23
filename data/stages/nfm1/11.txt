@@ -11,6 +11,8 @@ name(The Mad Party)
 
 nlaps(10)
 
+detail(0)
+
 set(15,0,0,0)p
 set(15,0,5600,0)p
 set(15,0,11200,0)p

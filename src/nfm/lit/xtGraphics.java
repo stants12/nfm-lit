@@ -834,6 +834,14 @@ public class xtGraphics extends Panel implements Runnable {
         rd.setColor(new Color(255, 128, 0, 255));
         rd.drawRoundRect(Utility.centeredWidthX(centeredWidth), Utility.centeredHeightY(centeredHeight), width, height, 23, 30);
     }
+
+    public void drawDialogueBoxBG(int centeredWidth, int centeredHeight, int width, int height, Color borderColor, Color fillColor) {
+        rd.setColor(fillColor);
+        rd.fillRoundRect(Utility.centeredWidthX(centeredWidth), Utility.centeredHeightY(centeredHeight), width, height, 23, 30);
+
+        rd.setColor(borderColor);
+        rd.drawRoundRect(Utility.centeredWidthX(centeredWidth), Utility.centeredHeightY(centeredHeight), width, height, 23, 30);
+    }
     
     public void dialogueBox(Control control, Phase type) {
         rd.setColor(new Color(0, 0, 0, 180));
@@ -1102,6 +1110,10 @@ public class xtGraphics extends Panel implements Runnable {
     }
 
     public void inst(Control control) {
+
+        int y_anchor = 140;
+        int y_anchor2 = 60;
+
         if (flipo == 0) {
             flipo = 1;
             bgmy[0] = 0;
@@ -1196,22 +1208,25 @@ public class xtGraphics extends Panel implements Runnable {
                 rd.setColor(new Color(0, 0, 0));
             }
 
-            int middle = Utility.centeredImageX(ory);
-            rd.drawImage(racing, middle - racing.getWidth(null) - 30, 200, null);
-            rd.drawImage(ory, middle, 250, null);
-            rd.drawImage(wasting, middle + ory.getWidth(null) + 30, 200, null);
-            rd.setFont(new Font("SansSerif", 1, 11));
-            rd.drawString("Checkpoint", middle - ory.getWidth(null) - 15, 200);
+            drawDialogueBoxBG(680, 300, 680, 300, new Color(255, 0, 0, 200), new Color(200, 200, 200, 200));
+            rd.setColor(new Color(0, 0, 0));
             rd.setFont(new Font("SansSerif", 1, 13));
-            rd.drawString("Drive your car using the Arrow Keys and Spacebar :", start_x, 330);
-            rd.drawImage(space, start_x + 50, 370, null);
-            rd.drawImage(arrows, middle + 120, 340, null);
+            int middle = Utility.centeredImageX(ory);
+            rd.drawImage(racing, middle - racing.getWidth(null) - 30, 200 + y_anchor2, null);
+            rd.drawImage(ory, middle, 250 + y_anchor2, null);
+            rd.drawImage(wasting, middle + ory.getWidth(null) + 30, 200 + y_anchor2, null);
             rd.setFont(new Font("SansSerif", 1, 11));
-            rd.drawString("(When your car is on the ground Spacebar is for Handbrake)", start_x, 350);
-            rd.drawString("Accelerate", middle + 130, 335);
-            rd.drawString("Brake/Reverse", middle + 120, 415);
-            rd.drawString("Turn left", middle + 70, 390);
-            rd.drawString("Turn right", middle + 210, 390);
+            rd.drawString("Checkpoint", middle - ory.getWidth(null) - 15, 200 + y_anchor2);
+            rd.setFont(new Font("SansSerif", 1, 13));
+            rd.drawString("Drive your car using the Arrow Keys and Spacebar :", start_x, 330 + y_anchor2);
+            rd.drawImage(space, start_x + 50, 370 + y_anchor2, null);
+            rd.drawImage(arrows, middle + 120, 340 + y_anchor2, null);
+            rd.setFont(new Font("SansSerif", 1, 11));
+            rd.drawString("(When your car is on the ground Spacebar is for Handbrake)", start_x, 350 + y_anchor2);
+            rd.drawString("Accelerate", middle + 130, 335 + y_anchor2);
+            rd.drawString("Brake/Reverse", middle + 120, 415 + y_anchor2);
+            rd.drawString("Turn left", middle + 70, 390 + y_anchor2);
+            rd.drawString("Turn right", middle + 210, 390 + y_anchor2);
 
         }
         if (flipo == 7 || flipo == 9) { // 4-5 page
@@ -1238,22 +1253,26 @@ public class xtGraphics extends Panel implements Runnable {
                         dudetext_base_y + dudetext_line_gap * 4);
 
             }
-            rd.drawImage(stunts, Utility.centeredImageX(stunts), 200, null);
+            drawDialogueBoxBG(680, 300, 680, 300, new Color(255, 0, 0, 200), new Color(200, 200, 200, 200));
+            rd.setColor(new Color(0, 0, 0));
+            rd.setFont(new Font("SansSerif", 1, 13));
+
+            rd.drawImage(stunts, Utility.centeredImageX(stunts), 200 + y_anchor2, null);
 
             rd.setFont(new Font("SansSerif", 1, 13));
-            rd.drawString("To perform stunts. When your car is in the AIR;", start_x, 330);
-            rd.drawString("Press combo Spacebar + Arrow Keys :", start_x, 350);
-            rd.drawImage(space, start_x + 50, 370, null);
+            rd.drawString("To perform stunts. When your car is in the AIR;", start_x, 330 + y_anchor2);
+            rd.drawString("Press combo Spacebar + Arrow Keys :", start_x, 350 + y_anchor2);
+            rd.drawImage(space, start_x + 50, 370 + y_anchor2, null);
 
             /* use same middle as pervious page to keep alignments the same */
             int middle = Utility.centeredImageX(ory);
-            rd.drawImage(arrows, middle + 120, 340, null);
+            rd.drawImage(arrows, middle + 120, 340 + y_anchor2, null);
             rd.setFont(new Font("SansSerif", 1, 11));
             rd.setColor(new Color(0, 0, 0));
-            rd.drawString("Forward Loop", middle + 125, 335);
-            rd.drawString("Backward Loop", middle + 120, 415);
-            rd.drawString("Left Roll", middle + 70, 390);
-            rd.drawString("Right Roll", middle + 210, 390);
+            rd.drawString("Forward Loop", middle + 125, 335 + y_anchor2);
+            rd.drawString("Backward Loop", middle + 120, 415 + y_anchor2);
+            rd.drawString("Left Roll", middle + 70, 390 + y_anchor2);
+            rd.drawString("Right Roll", middle + 210, 390 + y_anchor2);
 
         }
         if (flipo == 11 || flipo == 13) { // 6-7 page
@@ -1281,16 +1300,20 @@ public class xtGraphics extends Panel implements Runnable {
                 rd.setColor(new Color(0, 0, 0));
             }
 
+            drawDialogueBoxBG(680, 300, 680, 300, new Color(255, 0, 0, 200), new Color(200, 200, 200, 200));
+            rd.setColor(new Color(0, 0, 0));
+            rd.setFont(new Font("SansSerif", 1, 13));
+
             int middle = GameFacts.screenWidth / 2;
             int fixhoop_x = middle - fixhoop.getWidth(null) - 100;
             int guidance_x = middle + 100;
 
-            rd.drawImage(fixhoop, fixhoop_x, 193, null);
-            rd.drawImage(sarrow, guidance_x, 203, null);
+            rd.drawImage(fixhoop, fixhoop_x, 193 + y_anchor2, null);
+            rd.drawImage(sarrow, guidance_x, 203 + y_anchor2, null);
             rd.setFont(new Font("SansSerif", 1, 11));
-            rd.drawString("The Electrified Hoop", fixhoop_x + 5, 191);
-            rd.drawString("Jumping through it fixes your car.", fixhoop_x - 30, 313);
-            rd.drawString("Make guidance arrow point to cars.", guidance_x, 191);
+            rd.drawString("The Electrified Hoop", fixhoop_x + 5, 191 + y_anchor2);
+            rd.drawString("Jumping through it fixes your car.", fixhoop_x - 30, 313 + y_anchor2);
+            rd.drawString("Make guidance arrow point to cars.", guidance_x, 191 + y_anchor2);
         }
         if (flipo == 15) { // 8
             rd.drawString("There is a total of 17 stages!", text_x, dudetext_base_y);
@@ -1304,30 +1327,37 @@ public class xtGraphics extends Panel implements Runnable {
             int col1_base_x = middle - 300;
             int col2_base_x = middle + 50;
 
-            drawcs(185, "Other Controls :", 0, 0, 0, 0);
+            drawDialogueBoxBG(680, 300, 680, 300, new Color(255, 0, 0, 200), new Color(200, 200, 200, 200));
+            rd.setColor(new Color(0, 0, 0));
+            rd.setFont(new Font("SansSerif", 1, 13));
+
+            drawcs(185 + y_anchor2, "Other Controls :", 0, 0, 0, 0);
 
             rd.setFont(new Font("SansSerif", 1, 11));
-            rd.drawImage(kz, col1_base_x, 200, null);
-            rd.drawString("OR", col1_base_x + kz.getWidth(null) + 10, 226);
-            rd.drawImage(kx, col1_base_x + 70, 200, null);
-            rd.drawString("=> To look behind you while driving.", col1_base_x + 110, 226);
-            rd.drawImage(kv, col1_base_x, 250, null);
-            rd.drawString("Change Views", col1_base_x + kv.getWidth(null) + 10, 276);
-            rd.drawImage(kp, col1_base_x, 300, null);
-            rd.drawString("OR", col1_base_x + kp.getWidth(null) + 10, 326);
-            rd.drawImage(kenter, col1_base_x + 70, 300, null);
-            rd.drawString("Pause Game", col1_base_x + 200, 326);
-            rd.drawImage(km, col2_base_x, 200, null);
-            rd.drawString("Mute Music", col2_base_x + km.getWidth(null) + 10, 226);
-            rd.drawImage(kn, col2_base_x, 250, null);
-            rd.drawString("Mute Sound Effects", col2_base_x + kn.getWidth(null) + 10, 276);
+            rd.drawImage(kz, col1_base_x, 200 + y_anchor2, null);
+            rd.drawString("OR", col1_base_x + kz.getWidth(null) + 10, 226 + y_anchor2);
+            rd.drawImage(kx, col1_base_x + 70, 200 + y_anchor2, null);
+            rd.drawString("=> To look behind you while driving.", col1_base_x + 110, 226 + y_anchor2);
+            rd.drawImage(kv, col1_base_x, 250 + y_anchor2, null);
+            rd.drawString("Change Views", col1_base_x + kv.getWidth(null) + 10, 276 + y_anchor2);
+            rd.drawImage(kp, col1_base_x, 300 + y_anchor2, null);
+            rd.drawString("OR", col1_base_x + kp.getWidth(null) + 10, 326 + y_anchor2);
+            rd.drawImage(kenter, col1_base_x + 70, 300 + y_anchor2, null);
+            rd.drawString("Pause Game", col1_base_x + 200, 326 + y_anchor2);
+            rd.drawImage(km, col2_base_x, 200 + y_anchor2, null);
+            rd.drawString("Mute Music", col2_base_x + km.getWidth(null) + 10, 226 + y_anchor2);
+            rd.drawImage(kn, col2_base_x, 250 + y_anchor2, null);
+            rd.drawString("Mute Sound Effects", col2_base_x + kn.getWidth(null) + 10, 276 + y_anchor2);
         }
         if (flipo == 1) {// first papge
             rd.setFont(new Font("SansSerif", 1, 13));
             FontHandler.fMetrics = rd.getFontMetrics();
 
-            
-            drawcs(20, "Main Game Controls", 0, 0, 0, 3);
+            drawDialogueBoxBG(600, 450, 600, 450, new Color(255, 0, 0, 200), new Color(200, 200, 200, 200));
+            rd.setColor(new Color(0, 0, 0));
+            rd.setFont(new Font("SansSerif", 1, 13));
+
+            drawcs(20 + y_anchor, "Main Game Controls", 0, 0, 0, 3);
 
             String arrkey_txt = "Drive your car using the Arrow Keys:";
             int arrkey_txt_width = FontHandler.fMetrics.stringWidth(arrkey_txt);
@@ -1336,35 +1366,35 @@ public class xtGraphics extends Panel implements Runnable {
             /* same for column 2 */
             int col_2_x_start = Utility.centeredImageX(arrows) + 150;
 
-            rd.drawString(arrkey_txt, col_1_x_start + 20, 55);
-            rd.drawString("On the GROUND Spacebar is for Handbrake", col_1_x_start, 76);
-            rd.drawImage(space, col_1_x_start + 30, 90, null);
-            rd.drawImage(arrows, col_2_x_start, 58, null);
+            rd.drawString(arrkey_txt, col_1_x_start + 20, 55 + y_anchor);
+            rd.drawString("On the GROUND Spacebar is for Handbrake", col_1_x_start, 76 + y_anchor);
+            rd.drawImage(space, col_1_x_start + 30, 90 + y_anchor, null);
+            rd.drawImage(arrows, col_2_x_start, 58 + y_anchor, null);
             rd.setFont(new Font("SansSerif", 1, 11));
             FontHandler.fMetrics = rd.getFontMetrics();
-            rd.drawString("Accelerate", col_2_x_start + 15, 54);
-            rd.drawString("Brake/Reverse", col_2_x_start + 5, 132);
-            rd.drawString("Turn left", col_2_x_start - 50, 110);
-            rd.drawString("Turn right", col_2_x_start + 85, 110);
+            rd.drawString("Accelerate", col_2_x_start + 15, 54 + y_anchor);
+            rd.drawString("Brake/Reverse", col_2_x_start + 5, 132 + y_anchor);
+            rd.drawString("Turn left", col_2_x_start - 50, 110 + y_anchor);
+            rd.drawString("Turn right", col_2_x_start + 85, 110 + y_anchor);
 
-            drawcs(150, "--------------------------------------------------------------------------------"
+            drawcs(150 + y_anchor, "--------------------------------------------------------------------------------"
                     + "--------------------------------------------------------------------", 0, 0, 0, 3);
             rd.setFont(new Font("SansSerif", 1, 13));
             FontHandler.fMetrics = rd.getFontMetrics();
-            rd.drawString("To perform stunts:", col_1_x_start, 175);
-            rd.drawString("In the AIR press combo Spacebar + Arrow Keys :", col_1_x_start, 195);
-            rd.drawImage(space, col_1_x_start + 30, 220, null);
+            rd.drawString("To perform stunts:", col_1_x_start, 175 + y_anchor);
+            rd.drawString("In the AIR press combo Spacebar + Arrow Keys :", col_1_x_start, 195 + y_anchor);
+            rd.drawImage(space, col_1_x_start + 30, 220 + y_anchor, null);
 
-            rd.drawImage(arrows, col_2_x_start, 188, null);
+            rd.drawImage(arrows, col_2_x_start, 188 + y_anchor, null);
             rd.setFont(new Font("SansSerif", 1, 11));
             FontHandler.fMetrics = rd.getFontMetrics();
             rd.setColor(new Color(0, 0, 0));
-            rd.drawString("Forward Loop", col_2_x_start + 3, 184);
-            rd.drawString("Backward Loop", col_2_x_start + 3, 262);
-            rd.drawString("Left Roll", col_2_x_start - 50, 240);
-            rd.drawString("Right Roll", col_2_x_start + 85, 240);
+            rd.drawString("Forward Loop", col_2_x_start + 3, 184 + y_anchor);
+            rd.drawString("Backward Loop", col_2_x_start + 3, 262 + y_anchor);
+            rd.drawString("Left Roll", col_2_x_start - 50, 240 + y_anchor);
+            rd.drawString("Right Roll", col_2_x_start + 85, 240 + y_anchor);
 
-            rd.drawImage(stunts, Utility.centeredImageX(stunts), 290, null);
+            rd.drawImage(stunts, Utility.centeredImageX(stunts), 290 + y_anchor, null);
         }
         if (flipo >= 1 && flipo <= 13) {
             rd.drawImage(next[pnext], instructions_next_button_x, instructions_next_back_button_y, null);
@@ -4564,11 +4594,11 @@ public class xtGraphics extends Panel implements Runnable {
     }
 
     public static long mainMenuFadeStart = -1;
-    private final float MAIN_MENU_FADE_SECONDS = 1.5f; // duration in seconds
+    public final float MAIN_MENU_FADE_SECONDS = 1.5f; // duration in seconds
     public int mainMenuItems = 6;
 
     public void newmaini(GameSparker gamesparker, Control control, CheckPoints checkpoints, Madness madness[], ContO conto[], ContO conto1[]) {
-
+        
         if (GameSparker.DEBUG) {
             if (!devtriggered) {
                 HLogger.info("Developer Console triggered");
@@ -4708,8 +4738,7 @@ public class xtGraphics extends Panel implements Runnable {
         if (mainMenuFadeStart == -1) {
             mainMenuFadeStart = System.currentTimeMillis();
         }
-        long elapsed = System.currentTimeMillis() - mainMenuFadeStart;
-        boolean fading = drawFadeIn(rd, MAIN_MENU_FADE_SECONDS, elapsed, GameFacts.screenWidth, GameFacts.screenHeight);
+        
     }
 
     
@@ -5261,6 +5290,12 @@ public class xtGraphics extends Panel implements Runnable {
         rd.setColor(new Color(255, 128, 0));
         rd.fillRect(0, 80, GameFacts.screenWidth, 5);
 
+        // bottom bar
+        rd.setColor(new Color(50, 50, 50, 200));
+        rd.fillRect(0, GameFacts.screenHeight - 150, GameFacts.screenWidth, 150);
+        rd.setColor(new Color(255, 128, 0));
+        rd.fillRect(0, GameFacts.screenHeight - 155, GameFacts.screenWidth, 5);
+
         drawMenuButton(rd, 50, 20, main_menu_op_width, main_menu_button_height,
             main_menu_arcwidth, main_menu_archeight, opselect == 0, shaded,
             new Color(140, 70, 0), new Color(255, 128, 0), new Color(255, 255, 0),
@@ -5275,7 +5310,7 @@ public class xtGraphics extends Panel implements Runnable {
         drawcs(50, "G A R A G E", 255, 128, 0, 3);
 
         // cards are drawn in a horizontal row at the bottom
-        int y = GameFacts.screenHeight - cardHeight - 25;
+        int y = GameFacts.screenHeight - cardHeight - 20;
         int startIdx = garageScrollOffset;
         int endIdx = Math.min(ownedCarIds.size(), startIdx + cardsPerRow);
 
@@ -5409,8 +5444,8 @@ public class xtGraphics extends Panel implements Runnable {
         int barY = y + cardHeight + 10;
 
         // Draw scrollbar track
-        rd.setColor(new Color(80, 80, 80, 150));
-        rd.fillRoundRect(barX, barY, barWidth, barHeight, 6, 6);
+        rd.setColor(new Color(10, 10, 10, 200));
+        rd.fillRoundRect(barX, barY, barWidth, barHeight, 3, 3);
 
         // Calculate thumb width and position
         int thumbMinWidth = 32;
@@ -5420,7 +5455,7 @@ public class xtGraphics extends Panel implements Runnable {
 
         // Draw thumb
         rd.setColor(new Color(255, 128, 0));
-        rd.fillRoundRect(thumbX, barY, thumbWidth, barHeight, 6, 6);
+        rd.fillRoundRect(thumbX, barY, thumbWidth, barHeight, 3, 3);
 
         // // Draw card range text
         // rd.setFont(new Font("SansSerif", Font.BOLD, 12));
@@ -6095,7 +6130,7 @@ public class xtGraphics extends Panel implements Runnable {
         rd.drawImage(statbo, bar_x, y, null);
     }
 
-    public void carselect(Control control, ContO aconto[], Madness madness) {
+    public void carselect(Control control, ContO conto, ContO aconto[], Madness madness) {
         /* this is a mess... */
 
         if (flatrstart == 6) {

@@ -7,8 +7,10 @@ ground(200,200,210)
 
 fadefrom(5000)
 
-name(Contrary To Popular Believe)
+name(Contrary To Popular Belief)
 nlaps(4)
+
+detail(0)
 
 set(10,0,0,0)p
 set(10,0,5600,0)

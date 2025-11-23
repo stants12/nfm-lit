@@ -54,7 +54,7 @@ public class GameSparker extends Applet implements Runnable {
 
     public static final String[] carModels = {
             "2000tornados", "formula7", "canyenaro", "lescrab", "nimi", "maxrevenge", "leadoxide", "koolkat", "drifter",
-            "policecops", "mustang", "king", "audir8", "masheen", "radicalone", "drmonster", "dies", "drmonster2005"
+            "policecops", "mustang", "king", "audir8", "masheen", "radicalone", "drmonster", "btone", "marauder", "dies", "drmonster2005"
     };
 
     private static final String[] trackModels = {
@@ -117,6 +117,7 @@ public class GameSparker extends Applet implements Runnable {
     public static String menuMusic = "stages";
 
     public static boolean antialiasing = true;
+    public static int displayMode = 0; // 0=windowed, 1=borderless, 2=fullscreen
 
 
     /* variables for screen shake */
@@ -335,7 +336,6 @@ public class GameSparker extends Applet implements Runnable {
 
         graphics2d.scale(scaleX, scaleY);
 
-        // Set rendering hints for better quality
         graphics2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
         graphics2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
 
@@ -1480,6 +1480,9 @@ public class GameSparker extends Applet implements Runnable {
                     if (menuButtonState == Phase.MAINMENU_PLAY_TRAINING) {
                         xtgraphics.menuButtonsTraining(u[0]);
                     }
+
+                    long elapsed = System.currentTimeMillis() - xtgraphics.mainMenuFadeStart;
+                    boolean fading = xtGraphics.drawFadeIn(rd, xtgraphics.MAIN_MENU_FADE_SECONDS, elapsed, GameFacts.screenWidth, GameFacts.screenHeight);
                 }
 
                 if (menuState == Phase.CUSTOMSETTINGS) {
@@ -1554,7 +1557,7 @@ public class GameSparker extends Applet implements Runnable {
                     mouses = 2;
             }
             if (xtgraphics.fase == Phase.CARSELECT) {
-                xtgraphics.carselect(u[0], aconto, amadness[0]);
+                xtgraphics.carselect(u[0], aconto[0], aconto, amadness[0]);
                 xtgraphics.ctachm(xm, ym, mouses, u[0]);
                 if (mouses == 2)
                     mouses = 0;
