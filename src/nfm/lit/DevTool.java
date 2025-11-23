@@ -207,10 +207,10 @@ public class DevTool {
                         if (GameSparker.gameStateID == 0) {
                             if (n > 0 && n < GameFacts.numberOfPlayers) {
                                 xt.spectate = n;
-                                print("Spectating [AI]" + xt.names[xt.sc[n]]);
+                                print("Spectating [AI]" + StatList.name[xt.sc[n]]);
                             } else if (n == 0) {
                                 xt.spectate = n;
-                                print("Spectating [Player]" + xt.names[xt.sc[n]]);
+                                print("Spectating [Player]" + StatList.name[xt.sc[n]]);
                             } else {
                                 print("Invalid player ID.");
                             }
@@ -279,7 +279,7 @@ public class DevTool {
 
                     conto[n] = new ContO(conto1[xt.sc[n]], 0, 250 - conto1[xt.sc[n]].grat, -760 + ((n / 3) * 760), 0);
                     madness[n].reseto(xt.sc[n], conto[n], checkpoints);
-                    print("Spawned " + xt.names[xt.sc[n]]);
+                    print("Spawned " + StatList.name[xt.sc[n]]);
                 } else {
                     print("This command only works in game.");
                 }

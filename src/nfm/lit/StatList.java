@@ -570,4 +570,10 @@ class StatList {
             0,
             3
     };
+
+    public static final String[] name = {
+            "Tornado Shark", "Formula 7", "Wow Caninaro", "La Vite Crab", "Nimi", "MAX Revenge", "Lead Oxide",
+            "Kool Kat", "Drifter X", "Sword of Justice", "High Rider", "EL KING", "Mighty Eight", "M A S H E E N",
+            "Radical One", "DR Monstaa"
+    };
 }

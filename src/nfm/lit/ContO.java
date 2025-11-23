@@ -75,7 +75,7 @@ public class ContO {
     public int swits[] = new int[3];
     public float acelf[] = new float[3];
     public int handb = 0;
-    public int airs = 0;
+    public float airs = 0;
     public int airc = 0;
     public int turn = 0;
     public float grip = 0F;
@@ -265,7 +265,7 @@ public class ContO {
             for (String line; (line = bufferedreader.readLine()) != null; ) {
                 line = line.trim();
 
-                if (line.startsWith("<p>")) {
+                if (line.startsWith("<p>") || line.startsWith("[p]")) {
                     flag = true;
                     i = 0;
                     k = 0;
@@ -313,7 +313,7 @@ public class ContO {
                         i++;
                     }
                 }
-                if (line.startsWith("</p>")) {
+                if (line.startsWith("</p>") || line.startsWith("[/p]")) {
                     p[npl] = new Plane(t, ai, ai2, ai1, i, ai3, flag2, k, l, 0, 0, 0, disline, 0, flag3, byte0, flag4);
                     npl++;
                     flag = false;
@@ -475,7 +475,7 @@ public class ContO {
                     handb = Utility.getint("handb", line, 0);
                 }
                 if (line.startsWith("airs")) {
-                    airs = Utility.getint("airs", line, 0);
+                    airs = Utility.getfloat("airs", line, 0);
                 }
                 if (line.startsWith("airc")) {
                     airc = Utility.getint("airc", line, 0);

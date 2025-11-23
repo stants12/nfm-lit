@@ -52,9 +52,9 @@ public class GameSparker extends Applet implements Runnable {
 
     private static final long serialVersionUID = -34048182014310663L;
 
-    private static final String[] carModels = {
+    public static final String[] carModels = {
             "2000tornados", "formula7", "canyenaro", "lescrab", "nimi", "maxrevenge", "leadoxide", "koolkat", "drifter",
-            "policecops", "mustang", "king", "audir8", "masheen", "radicalone", "drmonster", "dies"
+            "policecops", "mustang", "king", "audir8", "masheen", "radicalone", "drmonster", "dies", "drmonster2005"
     };
 
     private static final String[] trackModels = {
@@ -1442,7 +1442,7 @@ public class GameSparker extends Applet implements Runnable {
                 //Medium.scenicCamera(aconto1[0], checkpoints, System.currentTimeMillis() - GameSparker.menuStartTime, 4000);
 
                 if (menuState == Phase.GARAGE) {
-                    xtgraphics.garage(u[0], ownedCarIds, aconto);
+                    xtgraphics.garage(amadness, u[0], ownedCarIds, aconto);
                 }
 
                 if (menuState != Phase.GARAGE) {
@@ -1544,7 +1544,7 @@ public class GameSparker extends Applet implements Runnable {
                 xtgraphics.fase = Phase.LOADMENUMUSIC;
             }
             if (xtgraphics.fase == Phase.POSTGAME) {
-                xtgraphics.finish(checkpoints, aconto, u[0]);
+                xtgraphics.finish(checkpoints, aconto, u[0], amadness);
                 xtgraphics.ctachm(xm, ym, mouses, u[0]);
                 if (checkpoints.stage == GameFacts.numberOfStages && xtgraphics.winner)
                     catchlink(1, xtgraphics);

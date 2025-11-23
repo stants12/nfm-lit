@@ -58,6 +58,8 @@ public class Stat {
 
     public int engine = 0;
 
+    public String name = "";
+
     /**
      * set up a new stat
      *
@@ -88,6 +90,7 @@ public class Stat {
         outdam = (car >= 0 && car < StatList.outdam.length && StatList.outdam[car] != 0F) ? StatList.outdam[car] : aconto.outdam;
         dishandle = (car >= 0 && car < StatList.dishandle.length && StatList.dishandle[car] != 0F) ? StatList.dishandle[car] : aconto.dishandle;
         engine = (car >= 0 && car < StatList.engine.length && StatList.engine[car] != 0) ? StatList.engine[car] : aconto.engine;
+        name = (car >= 0 && car < StatList.name.length && StatList.name[car] != null) ? StatList.name[car] : aconto.name;
     }
 
     public Stat(){
