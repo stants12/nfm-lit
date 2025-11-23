@@ -388,6 +388,8 @@ public class xtGraphics extends Panel implements Runnable {
     private int garageSpin = 0;
     public int garageSelectedCardIdx = 0;
 
+    public int engineCount = 8; // 0-8
+
     /**
      * Get car name
      * @param idx car id
@@ -4208,7 +4210,7 @@ public class xtGraphics extends Panel implements Runnable {
         ocntdn = new Image[4];
         cntdn = new Image[4];
         gocnt = 0;
-        pengs = new boolean[5];
+        pengs = new boolean[engineCount + 1];
         aird = false;
         grrd = false;
         setnumber = false;
@@ -5678,7 +5680,7 @@ public class xtGraphics extends Panel implements Runnable {
 
                 int i;
                 for (i = 0; i < 5; ++i) {
-                    for (int v = 0; v < 5; ++v) {
+                    for (int v = 0; v < engineCount + 1; ++v) {
                         if (name.equals(v + "" + i + ".wav")) {
                             sm.add("engs" + v + i, new SoundClipUnthreaded(sound));
                         }

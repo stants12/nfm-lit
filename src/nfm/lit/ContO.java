@@ -98,6 +98,9 @@ public class ContO {
     public int engine = 0;
     public String name = "[ UNDEFINED ]";
 
+    public String family = "hogan rewish";
+    public String skin = "2010";
+
     private void pdust(int i, Graphics2D rd, int j) {
         if (j * dov[i] > 0) {
             int k;
@@ -539,6 +542,12 @@ public class ContO {
                 }
                 if (line.startsWith("name")) {
                     name = Utility.getstring("name", line, 0);
+                }
+                if (line.startsWith("family")) {
+                    family = Utility.getstring("family", line, 0);
+                }
+                if (line.startsWith("skin")) {
+                    skin = Utility.getstring("skin", line, 0);
                 }
             }
         } catch (IOException e) {
