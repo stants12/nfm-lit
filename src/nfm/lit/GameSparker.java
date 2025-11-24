@@ -1272,7 +1272,7 @@ public class GameSparker extends Applet implements Runnable {
         devTool = new DevTool(this, checkpoints, amadness, aconto, aconto1, xtgraphics);
 
         l = 0;
-        float f = 30F;
+        float f = 35F;
         int i1 = 80;
         /*
          * stop an example timer
@@ -1334,8 +1334,8 @@ public class GameSparker extends Applet implements Runnable {
         Medium.setxtGraphics(xtgraphics);
         System.gc();
         Date date = new Date();
-        int i = 5;
-        int j = 300;        // seems to slow down the game a lot if you increase any of the values here
+        int i = 15;
+        int j = 530;        // seems to slow down the game a lot if you increase any of the values here
         long l3 = date.getTime();
         float f1 = 30F;
         boolean flag1 = false;
