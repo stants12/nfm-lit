@@ -166,6 +166,8 @@ public class GameSparker extends Applet implements Runnable {
 
     public static boolean isMP = false;
 
+    public DevTool devTool;
+
     /**
      * <a href=
      * "http://www.expandinghead.net/keycode.html">http://www.expandinghead.net/keycode.html</a>
@@ -173,6 +175,24 @@ public class GameSparker extends Applet implements Runnable {
     @Override
     public boolean keyDown(Event event, int i) {
         if (!exwist) {
+
+            if (i == 96 || i == 126) {
+                if (devTool != null) {
+                    devTool.active = !devTool.active;
+                    if (!devTool.active) {
+                        // reset controls when closing console to prevent stuck keys
+                        u[0].falseo();
+                    }
+                }
+                return true;
+            }
+
+            // route input to console if active
+            if (devTool != null && devTool.active) {
+                devTool.input(i);
+                return true;
+            }
+
             if (i == 1004)
                 u[0].up = true;
             if (i == 1005)
@@ -1247,8 +1267,12 @@ public class GameSparker extends Applet implements Runnable {
             amadness[l] = new Madness(record, xtgraphics, l);
             u[l] = new Control();
         } while (++l < 51); // dont touch this
+
+
+        devTool = new DevTool(this, checkpoints, amadness, aconto, aconto1, xtgraphics);
+
         l = 0;
-        float f = 35F;
+        float f = 30F;
         int i1 = 80;
         /*
          * stop an example timer
@@ -1310,8 +1334,8 @@ public class GameSparker extends Applet implements Runnable {
         Medium.setxtGraphics(xtgraphics);
         System.gc();
         Date date = new Date();
-        int i = 15;
-        int j = 530;
+        int i = 5;
+        int j = 300;        // seems to slow down the game a lot if you increase any of the values here
         long l3 = date.getTime();
         float f1 = 30F;
         boolean flag1 = false;
@@ -2204,6 +2228,11 @@ public class GameSparker extends Applet implements Runnable {
                 if (mouses == 1 || mouses == 2)
                     lostfcs = false;
             }
+
+            if (devTool != null) {
+                devTool.draw(rd, GameFacts.screenWidth, GameFacts.screenHeight);
+            }
+
             repaint();
             xtgraphics.playsounds(amadness[0], u[0], checkpoints.stage);
             date1 = new Date();

@@ -4599,16 +4599,6 @@ public class xtGraphics extends Panel implements Runnable {
     public int mainMenuItems = 6;
 
     public void newmaini(GameSparker gamesparker, Control control, CheckPoints checkpoints, Madness madness[], ContO conto[], ContO conto1[]) {
-        
-        if (GameSparker.DEBUG) {
-            if (!devtriggered) {
-                HLogger.info("Developer Console triggered");
-
-                DevTool console = new DevTool(gamesparker, checkpoints, madness, conto, conto1, this);
-                console.showConsole();
-                devtriggered = true;
-            }
-        }
 
         if (flipo == 0) {
             bgmy[0] = 0;

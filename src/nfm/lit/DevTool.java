@@ -1,11 +1,6 @@
 package nfm.lit;
-import javax.swing.*;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -24,9 +19,10 @@ import java.util.regex.Pattern;
  * @author oteek
  */
 public class DevTool {
-    private JFrame frame;
-    private JTextArea textArea;
-    private JTextField inputField;
+    public boolean active = false;
+    private ArrayList<String> consoleLog = new ArrayList<>();
+    private StringBuilder currentInput = new StringBuilder();
+    
     private List<String> commandHistory;
     private int historyIndex;
 
@@ -36,85 +32,132 @@ public class DevTool {
 
     private Map<String, String> commandDescriptions; // for help command
 
+    // Game references
+    private GameSparker gamesparker;
+    private CheckPoints checkpoints;
+    private Madness[] madness;
+    private ContO[] conto;
+    private ContO[] conto1;
+    private xtGraphics xt;
+
     public DevTool(GameSparker gamesparker, CheckPoints checkpoints, Madness madness[], ContO conto[], ContO conto1[], xtGraphics xt) {
+        this.gamesparker = gamesparker;
+        this.checkpoints = checkpoints;
+        this.madness = madness;
+        this.conto = conto;
+        this.conto1 = conto1;
+        this.xt = xt;
+
         commandHistory = new ArrayList<>();
         historyIndex = -1;
 
         commandDescriptions = new HashMap<>();
         populateCommandDescriptions();
-
-        frame = new JFrame("Console");
-        textArea = new JTextArea();
-        inputField = new JTextField();
-
-        textArea.setEditable(false);
-        textArea.setLineWrap(true);
-
-        inputField.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String command = inputField.getText();
-                executeCommand(command, gamesparker, checkpoints, madness, conto, conto1, xt);
-                if (!command.trim().isEmpty()) {
-                    commandHistory.add(command);
-                    historyIndex = commandHistory.size();
-                }
-                inputField.setText("");
-            }
-        });
-
-        inputField.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_UP) {
-                    if (historyIndex > 0) {
-                        historyIndex--;
-                        inputField.setText(commandHistory.get(historyIndex));
-                    } else if (historyIndex == 0) {
-                        inputField.setText(commandHistory.get(historyIndex));
-                    }
-                } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-                    if (historyIndex < commandHistory.size() - 1) {
-                        historyIndex++;
-                        inputField.setText(commandHistory.get(historyIndex));
-                    } else if (historyIndex == commandHistory.size() - 1) {
-                        inputField.setText("");
-                    }
-                }
-            }
-        });
-
-        frame.setLayout(new BorderLayout());
-        frame.add(new JScrollPane(textArea), BorderLayout.CENTER);
-        frame.add(inputField, BorderLayout.SOUTH);
-
-        frame.setSize(600, 400);
-        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
     }
 
-    public void showConsole() {
-        frame.setVisible(true);
+    public void draw(Graphics2D g, int width, int height) {
+        if (!active) return;
+
+        int consoleHeight = height / 2;
+        
+        // Background
+        g.setColor(new Color(0, 0, 0, 200));
+        g.fillRect(0, 0, width, consoleHeight);
+        
+        // Border
+        g.setColor(new Color(255, 128, 0));
+        g.drawLine(0, consoleHeight, width, consoleHeight);
+
+        // Text setup
+        g.setColor(Color.WHITE);
+        g.setFont(new Font("SansSerif", Font.BOLD, 13));
+        FontMetrics fm = g.getFontMetrics();
+        int lineHeight = fm.getHeight();
+        int y = consoleHeight - 10;
+
+        // Draw Input Line
+        String inputStr = "> " + currentInput.toString() + "_";
+        g.drawString(inputStr, 10, y);
+        y -= lineHeight;
+
+        // Draw Log History
+        for (int i = consoleLog.size() - 1; i >= 0; i--) {
+            String line = consoleLog.get(i);
+            g.drawString(line, 10, y);
+            y -= lineHeight;
+            if (y < 0) break;
+        }
+    }
+
+    public void input(int key) {
+        if (!active) return;
+
+        if (key == 10) { // Enter
+            String command = currentInput.toString();
+            if (!command.trim().isEmpty()) {
+                executeCommand(command);
+                commandHistory.add(command);
+                historyIndex = commandHistory.size();
+            }
+            currentInput.setLength(0);
+        } else if (key == 8) { // Backspace
+            if (currentInput.length() > 0) {
+                currentInput.setLength(currentInput.length() - 1);
+            }
+        } else if (key == 1004) { // Up Arrow (AWT Event)
+            if (historyIndex > 0) {
+                historyIndex--;
+                currentInput.setLength(0);
+                currentInput.append(commandHistory.get(historyIndex));
+            } else if (historyIndex == 0 && !commandHistory.isEmpty()) {
+                 currentInput.setLength(0);
+                 currentInput.append(commandHistory.get(0));
+            }
+        } else if (key == 1005) { // Down Arrow (AWT Event)
+            if (historyIndex < commandHistory.size() - 1) {
+                historyIndex++;
+                currentInput.setLength(0);
+                currentInput.append(commandHistory.get(historyIndex));
+            } else {
+                historyIndex = commandHistory.size();
+                currentInput.setLength(0);
+            }
+        } else if (key >= 32 && key <= 126) { // Printable characters
+            currentInput.append((char) key);
+        }
     }
 
     public void print(String s) {
-        textArea.append(s + "\n");
+        String[] lines = s.split("\n");
+        for (String line : lines) {
+            consoleLog.add(line);
+        }
+        // Keep log size manageable
+        if (consoleLog.size() > 100) {
+            consoleLog.subList(0, consoleLog.size() - 100).clear();
+        }
     }
 
-    private void executeCommand(String command, GameSparker gamesparker, CheckPoints checkpoints, Madness madness[], ContO conto[], ContO conto1[], xtGraphics xt) {
-        textArea.append("> " + command + "\n");
+    private void executeCommand(String command) {
+        print("> " + command);
 
         String[] parts = command.split(" ");
         String commandName = parts[0];
         String[] args = Arrays.copyOfRange(parts, 1, parts.length);
 
         switch (commandName) {
+            case "quit":
+                RunApp.exitSequence();
+                break;
+            case "exit":
+                RunApp.exitSequence();
+                break;
             case "nplayers":
                 if (args.length == 1) {
                     try {
                         int nplayers = Integer.parseInt(args[0]);
                         if (GameSparker.gameStateID > 1) {
                             if ((nplayers >= 1 && nplayers <= 51)) {
-                                //GameFacts.numberOfPlayers = nplayers;
                                 xt.nplayers_debug = true;
                                 xt.nplayers_override = nplayers;
                                 print("Numbers of players set to " + nplayers + ", overriden for all stages.");
@@ -160,6 +203,7 @@ public class DevTool {
                     try {
                         int n = Integer.parseInt(args[0]);
                         GameSparker.ownedCarIds.add(n);
+                        print("Added car ID " + n + " to garage.");
                     } catch (NumberFormatException e) {
                         print("Invalid argument. All parameters must be integers.");
                     }
@@ -398,7 +442,7 @@ public class DevTool {
                 }
                 break;
             case "clear":
-                textArea.setText("");
+                consoleLog.clear();
                 break;
             case "help":
                 if (args.length == 0) {
@@ -424,6 +468,7 @@ public class DevTool {
     }
     
     private void populateCommandDescriptions() {
+        commandDescriptions.put("debug", "Enables/disables debug information.");
         commandDescriptions.put("nplayers", "Sets the number of players. Usage: nplayers <1-51>");
         commandDescriptions.put("fix", "Fixes a specified car. Usage: fix <n>");
         commandDescriptions.put("spectate", "Spectates a specified car. Usage: spectate <n>");
