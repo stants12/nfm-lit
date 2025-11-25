@@ -8,6 +8,7 @@ import java.awt.geom.Rectangle2D;
 import java.io.*;
 import java.net.Socket;
 import java.net.URI;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Date;
@@ -2532,10 +2533,7 @@ public class GameSparker extends Applet implements Runnable {
     private void addFile(File source, File[] files, String path) {
         try {
             File tmpZip = File.createTempFile(source.getName(), null);
-            tmpZip.delete();
-            if (!source.renameTo(tmpZip)) {
-                throw new RuntimeException("Could not make temp file (" + source.getName() + ")");
-            }
+            Files.move(source.toPath(), tmpZip.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
             byte[] buffer = new byte[4096];
             ZipInputStream zin = new ZipInputStream(new FileInputStream(tmpZip));
             ZipOutputStream out = new ZipOutputStream(new FileOutputStream(source));
