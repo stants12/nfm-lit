@@ -7,7 +7,7 @@ In order to achieve this, much of the original source code needs rewriting. Whil
 
 Some of the work already done includes:
  - Providing a complete, playable, version of NFM2.
- - Improving 2D graphics rendering to not rely on a hardcoded screen resolution (however, dynamic scaling is not yet supported).
+ - Improving 2D graphics rendering to not rely on a hardcoded screen resolution.
  - Improving the fluency and look & feel of the overall game.
  - Rendering at 720p by default.
  - Providing a much more reasonable source tree, grouping the source files into subfolders where appropriate.
