@@ -1,6 +1,7 @@
 package nfm.lit.audio;
 
 import nfm.lit.GameSparker;
+import nfm.lit.LoggerWrapper;
 
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.Sequencer;
@@ -36,7 +37,7 @@ public class RadicalMidi implements RadicalMusic {
             fi = new FileInputStream(new File(fn));
         } catch (final FileNotFoundException ex) {
             if (GameSparker.DEBUG) {
-                System.out.println("Midi file \"" + fn + "\" not found!");
+                LoggerWrapper.error("Midi file \"" + fn + "\" not found!");
             }
             ex.printStackTrace();
         }
@@ -49,7 +50,7 @@ public class RadicalMidi implements RadicalMusic {
 
         } catch (final Exception ex) {
             if (GameSparker.DEBUG) {
-                System.out.println("Error loading Midi file \"" + fn + "\":");
+                LoggerWrapper.error("Error loading Midi file \"" + fn + "\":");
             }
             ex.printStackTrace();
         }
@@ -58,7 +59,7 @@ public class RadicalMidi implements RadicalMusic {
             is = new BufferedInputStream(fi);
         } catch (final Exception ex) {
             if (GameSparker.DEBUG) {
-                System.out.println("Error buffering Midi file \"" + fn + "\":");
+                LoggerWrapper.error("Error buffering Midi file \"" + fn + "\":");
             }
             ex.printStackTrace();
         }
@@ -81,12 +82,12 @@ public class RadicalMidi implements RadicalMusic {
             is = new BufferedInputStream(fi);
         } catch (final IOException ex) {
             if (GameSparker.DEBUG) {
-                System.out.println("Midi file not found!");
+                LoggerWrapper.error("Midi file not found!");
             }
             ex.printStackTrace();
         } catch (final Exception ex) {
             if (GameSparker.DEBUG) {
-                System.out.println("Error buffering Midi file:");
+                LoggerWrapper.error("Error buffering Midi file:");
             }
             ex.printStackTrace();
         }
@@ -112,20 +113,17 @@ public class RadicalMidi implements RadicalMusic {
             sequencer.start();
         } catch (final IllegalArgumentException ex) {
             if (GameSparker.DEBUG) {
-                System.out.println("There is a mistake in your Midi code,");
-            }
-            if (GameSparker.DEBUG) {
-                System.out.println("please re-check!");
+                LoggerWrapper.error("There is a mistake in your Midi code, please re-check!");
             }
             ex.printStackTrace();
         } catch (final java.lang.IllegalStateException ex) {
             if (GameSparker.DEBUG) {
-                System.out.println("Error playing Midi file " + s + ", check if the file exists!");
+                LoggerWrapper.error("Error playing Midi file " + s + ", check if the file exists!");
             }
             ex.printStackTrace();
         } catch (final Exception ex) {
             if (GameSparker.DEBUG) {
-                System.out.println("Error playing Midi file:");
+                LoggerWrapper.error("Error playing Midi file:");
             }
             ex.printStackTrace();
         }

@@ -21,7 +21,7 @@ public class Metrics {
     private final Color FT_READOUT_TEXT_COLOR = new Color(0, 0, 0, 200);
     private final Color FT_READOUT_EXCEED_TEXT_COLOR = new Color(255, 0, 0, 200);
     private final int FT_READOUT_X = 10;
-    private final int FT_READOUT_Y = 250;
+    private final int FT_READOUT_Y = 450;
 
     private void renderFrameTimeLatest(Graphics2D rd) {
         int percent_ft_used = (int) (((double) lastFrameTime / (double) MAX_PERMITTED_FT) * 100);
@@ -38,7 +38,7 @@ public class Metrics {
 
     /* controls the look and potition of frametime graph */
     private final int FT_GRAPH_X_START = 5;
-    private final int FT_GRAPH_Y_START = 275;
+    private final int FT_GRAPH_Y_START = 475;
     private final int FT_GRAPH_WIDTH = 150;
     private final int FT_GRAPH_HEIGHT = 50;
     private final Color FT_GRAPH_BOX_COLOR = new Color(0, 0, 0, 128);

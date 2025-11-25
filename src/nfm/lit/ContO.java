@@ -551,7 +551,7 @@ public class ContO {
                 }
             }
         } catch (IOException e) {
-            HLogger.error("Error loading " + Arrays.toString(abyte0) + ".rad");
+            LoggerWrapper.error("Error loading " + Arrays.toString(abyte0) + ".rad");
             e.printStackTrace();
         }
         grat = wheels.ground;

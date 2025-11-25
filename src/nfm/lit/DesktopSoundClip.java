@@ -47,7 +47,7 @@ class DesktopSoundClip implements AudioClip {
             clip = (Clip) AudioSystem.getLine(info);
             loaded = true;
         } catch (Exception exception) {
-            HLogger.error(new StringBuilder().append("Loading Clip error: ").append(exception).toString());
+            LoggerWrapper.error(new StringBuilder().append("Loading Clip error: ").append(exception).toString());
             loaded = false;
         }
     }

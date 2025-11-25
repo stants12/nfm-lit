@@ -23,7 +23,7 @@ class FontHandler {
 
     public FontHandler() {
         loadFonts();
-        HLogger.info("Done loading fonts!");
+        LoggerWrapper.info("Done loading fonts!");
     }
 
     private void loadFonts() {
@@ -46,9 +46,9 @@ class FontHandler {
 			 */
 			/*Font[] fonts = ge.getAllFonts();
 			for (int i = 0; i < fonts.length; i++) {
-				HLogger.info(fonts[i].getFontName() + " : ");
-				HLogger.info(fonts[i].getFamily() + " : ");
-				HLogger.info(fonts[i].getName());
+				LoggerWrapper.info(fonts[i].getFontName() + " : ");
+				LoggerWrapper.info(fonts[i].getFamily() + " : ");
+				LoggerWrapper.info(fonts[i].getName());
 			}*/
 
         } catch (FontFormatException | IOException e) {

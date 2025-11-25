@@ -33,6 +33,11 @@ public class GameSparker extends Applet implements Runnable {
     *
     */
 
+    private volatile Throwable gameException;
+    private Thread exceptionRendererThread;   // Thread for rendering exceptions
+    private volatile boolean running = true;
+    private volatile boolean repainted = false; 
+
     /**
      * get os name / type
      */
@@ -166,7 +171,7 @@ public class GameSparker extends Applet implements Runnable {
 
     public static boolean isMP = false;
 
-    public DevTool devTool;
+    public static DevTool devTool;
 
     /**
      * <a href=
@@ -287,7 +292,8 @@ public class GameSparker extends Applet implements Runnable {
                 cookieFile[0].delete();
                 cookieTempLocation.delete();
 
-                HLogger.info("Successfully saved game (" + filename + ")");
+                LoggerWrapper.info("Successfully saved game (" + filename + ")");
+
             } catch (SecurityException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -329,11 +335,11 @@ public class GameSparker extends Applet implements Runnable {
             }
             zipFile.close();
 
-            HLogger.info("Successfully read cookie " + string + " with value " + Integer.parseInt(fromEntry));
+            LoggerWrapper.info("Successfully read cookie " + string + " with value " + Integer.parseInt(fromEntry));
             return Integer.parseInt(fromEntry);
         } catch (IOException ioexception) {
-            // HLogger.error(ioexception.toString());
-            HLogger.error(string + ".dat probably doesn't exist");
+            // LoggerWrapper.error(ioexception.toString());
+            LoggerWrapper.error(string + ".dat probably doesn't exist");
             return -1;
         } catch (NumberFormatException nfe) {
             return -1;
@@ -399,8 +405,105 @@ public class GameSparker extends Applet implements Runnable {
         graphics2d.drawImage(this.offImage, this.apx + i, this.apy + i_97_, this);
         this.cropit(graphics2d, i, i_97_);
 
+        if (gameException != null) {
+           renderErrorMessage(graphics2d);
+        }
+
         // Restore the original transform to avoid affecting other components
         graphics2d.setTransform(originalTransform);
+    }
+
+    private void startExceptionRenderer() {
+        exceptionRendererThread = new Thread(() -> {
+            while (running) {
+                if (gameException != null) {
+                    // Render the exception message
+                    if (!repainted) {
+                        repaint();
+                        repainted = true;
+                    }
+                }
+
+                try {
+                    Thread.sleep(1);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+        });
+
+        exceptionRendererThread.setDaemon(true); // Ensure the thread stops when the application exits
+        exceptionRendererThread.start();
+    }
+
+    private void stopExceptionRenderer() {
+        running = false;
+        if (exceptionRendererThread != null) {
+            try {
+                exceptionRendererThread.join();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
+    }
+
+    private void renderErrorMessage(Graphics2D g2d) {
+        g2d.setFont(new Font("Monospaced", Font.PLAIN, 12));
+        FontMetrics metrics = g2d.getFontMetrics();
+
+        // calculate the width of the box based on the longest line
+        String exceptionMessage = gameException.getMessage();
+        int maxLineWidth = metrics.stringWidth("An unexpected error occurred:");
+        if (exceptionMessage != null) {
+            maxLineWidth = Math.max(maxLineWidth, metrics.stringWidth(exceptionMessage));
+        }
+        for (StackTraceElement element : gameException.getStackTrace()) {
+            maxLineWidth = Math.max(maxLineWidth, metrics.stringWidth(element.toString()));
+        }
+        maxLineWidth += 60; // Add padding to the width
+
+        // calculate the height of the box based on the number of lines
+        int lineHeight = metrics.getHeight();
+        int numLines = 3 + gameException.getStackTrace().length; // 3 lines for the title, message, and prompt
+        int boxHeight = (numLines * lineHeight) + 40; // Add padding to the height
+
+        int maxWidth = GameFacts.screenWidth - 40;
+        int maxHeight = GameFacts.screenHeight - 40;
+        if (maxLineWidth > maxWidth) {
+            maxLineWidth = maxWidth;
+        }
+        if (boxHeight > maxHeight) {
+            boxHeight = maxHeight;
+        }
+
+        int x = Utility.centeredWidthX(maxLineWidth);
+        int y = Utility.centeredHeightY(boxHeight);
+
+        // bg
+        g2d.setColor(new Color(0, 0, 0, 230)); // Semi-transparent black background
+        g2d.fillRect(x, y, maxLineWidth, boxHeight);
+
+        // border
+        g2d.setColor(Color.RED); // Red border
+        g2d.drawRect(x, y, maxLineWidth, boxHeight);
+
+
+        g2d.setFont(new Font("SansSerif", Font.BOLD, 16));
+        g2d.setColor(Color.WHITE);
+        g2d.drawString("An unexpected error occurred:", x + 20, y + 40);
+
+        // exception
+        if (exceptionMessage != null) {
+            g2d.drawString(exceptionMessage, x + 20, y + 40 + lineHeight);
+        }
+
+        g2d.setFont(new Font("Monospaced", Font.PLAIN, 12));
+        int lineY = y + 40 + (2 * lineHeight);
+        for (StackTraceElement element : gameException.getStackTrace()) {
+            if (lineY > y + boxHeight - 20) break; // Stop if the box is full
+            g2d.drawString(element.toString(), x + 20, lineY);
+            lineY += lineHeight;
+        }
     }
 
     public GameSparker() {
@@ -456,13 +559,13 @@ public class GameSparker extends Applet implements Runnable {
                         addWhat = carModels.length + trackModels.length;
                     }
                     modelId = j + addWhat;
-                    // HLogger.info("Found model " + modelId + " matching string \"" + input +
+                    // LoggerWrapper.info("Found model " + modelId + " matching string \"" + input +
                     // "\"");
                     return modelId;
                 }
             }
         }
-        HLogger.warn("No results for getModel | check you're speling and grammer");
+        LoggerWrapper.warn("No results for getModel | check you're speling and grammer");
         return -1;
     }
 
@@ -516,11 +619,11 @@ public class GameSparker extends Applet implements Runnable {
             /*
              * be sure to add your added arrays here
              */
-            HLogger.info("Contos loaded: " + (carModels.length + trackModels.length + extraModels.length));
+            LoggerWrapper.info("Contos loaded: " + (carModels.length + trackModels.length + extraModels.length));
             ContosCount = carModels.length + trackModels.length + extraModels.length;
             zipinputstream.close();
         } catch (IOException e) {
-            HLogger.error("Error Reading Models: " + e);
+            LoggerWrapper.error("Error Reading Models: " + e);
             e.printStackTrace();
         }
         System.gc();
@@ -659,7 +762,6 @@ public class GameSparker extends Applet implements Runnable {
 
         if (custom) {
             loadStage = stageDir + loadStageCus + ".txt";
-            HLogger.info(loadStage);
         }
 
         String string = "";
@@ -1014,7 +1116,7 @@ public class GameSparker extends Applet implements Runnable {
             stageError = e.toString().substring(0, maxLength) + "...";
 
             xtgraphics.fase = Phase.ERRORLOADINGSTAGE;
-            HLogger.error("Error loading stage " + checkpoints.stage);
+            LoggerWrapper.error("Error loading stage " + checkpoints.stage);
             e.printStackTrace();
         }
         if (checkpoints.stage == 16)
@@ -1244,6 +1346,7 @@ public class GameSparker extends Applet implements Runnable {
     public void run() {
         rd.setColor(new Color(0, 0, 0));
         rd.fillRect(0, 0, GameFacts.screenWidth, GameFacts.screenHeight);
+
         repaint();
         /*
          * start an example timer
@@ -1268,8 +1371,8 @@ public class GameSparker extends Applet implements Runnable {
             u[l] = new Control();
         } while (++l < 51); // dont touch this
 
-
         devTool = new DevTool(this, checkpoints, amadness, aconto, aconto1, xtgraphics);
+        System.setErr(new DevToolPrintStream(System.err, devTool));
 
         l = 0;
         float f = 35F;
@@ -1347,9 +1450,26 @@ public class GameSparker extends Applet implements Runnable {
         boolean flag2 = false;
         exwist = false;
 
+        long lastTime = System.nanoTime();
+        final double ns = 1000000000.0 / 23.0; // Target 23 ticks per second for physics
+        double delta = 0;
+
+        final int targetFPS = 144;
+        final long optimalTime = 1000000000 / targetFPS; // Time per frame in nanoseconds
+
         do {
+            long now = System.nanoTime();
+            delta += (now - lastTime) / ns;
+            lastTime = now;
+
+            if (delta > 10) delta = 10;
+
+
             Date date1 = new Date();
             long l4 = date1.getTime();
+
+            int updates = (int) delta;
+
             if (xtgraphics.fase == Phase.LOADING) {
                 if (mouses == 1)
                     i2 = 800;
@@ -1402,11 +1522,11 @@ public class GameSparker extends Applet implements Runnable {
             //         int port = Integer.parseInt(matcher.group(2));
     
             //         if (port >= 0 && port <= 65535) {
-            //             HLogger.info("Connecting to " + host + " on port " + port + "...");
+            //             LoggerWrapper.info("Connecting to " + host + " on port " + port + "...");
     
             //             try {
             //                 xtgraphics.socket = new Socket(host, port);
-            //                 HLogger.info("Connected to the server");
+            //                 LoggerWrapper.info("Connected to the server");
     
             //                 xtgraphics.serverresponse = new BufferedReader(new InputStreamReader(xtgraphics.socket.getInputStream()));
 
@@ -1419,29 +1539,29 @@ public class GameSparker extends Applet implements Runnable {
 
             //                 xtgraphics.serverresponse = new BufferedReader(new InputStreamReader(xtgraphics.socket.getInputStream()));
             //                 xtgraphics.serverMessage = xtgraphics.serverresponse.readLine();
-            //                 HLogger.info(xtgraphics.serverMessage);
+            //                 LoggerWrapper.info(xtgraphics.serverMessage);
 
             //                 out.close();
     
             //             } catch (java.net.ConnectException e) {
             //                 xtgraphics.serverMessage = e.getMessage();
-            //                 HLogger.info(e.getMessage());
+            //                 LoggerWrapper.info(e.getMessage());
             //             } catch (IOException e) {
-            //                 HLogger.info("An error occurred:\n" + e.toString());
+            //                 LoggerWrapper.info("An error occurred:\n" + e.toString());
             //             } finally {
             //                 try {
             //                     if (xtgraphics.serverresponse != null) xtgraphics.serverresponse.close();
             //                     if (xtgraphics.socket != null) xtgraphics.socket.close();
             //                 } catch (IOException e) {
-            //                     HLogger.info("An error occurred while closing connection:\n" + e.toString());
+            //                     LoggerWrapper.info("An error occurred while closing connection:\n" + e.toString());
             //                 }
             //             }
     
             //         } else {
-            //             HLogger.info("Port must be between 0 and 65535.");
+            //             LoggerWrapper.info("Port must be between 0 and 65535.");
             //         }
             //     } else {
-            //         HLogger.info("Invalid host:port format.");
+            //         LoggerWrapper.info("Invalid host:port format.");
             //     }
             // }
             // if (xtgraphics.fase == Phase.DRMSCREEN) {
@@ -2358,9 +2478,24 @@ public class GameSparker extends Applet implements Runnable {
                 xtgraphics.gameMetrics.render(rd);
             }
             try {
+                //Thread.sleep(1000 / targetFPS);
+                // if (gameException != null) {
+                // // Stop the game loop if an exception occurs
+                //     break;
+                // }
                 Thread.sleep(l2);
             } catch (InterruptedException _ex) {
+                Thread.currentThread().interrupt();
             }
+            // long endTime = System.nanoTime();
+            // long sleepTime = (optimalTime - (endTime - now)) / 1000000; // Convert to milliseconds
+            // if (sleepTime > 0) {
+            //     try {
+            //         Thread.sleep(sleepTime);
+            //     } catch (InterruptedException e) {
+            //         e.printStackTrace();
+            //     }
+            // }
         } while (true);
     }
 
@@ -2371,6 +2506,13 @@ public class GameSparker extends Applet implements Runnable {
          */
         new FontHandler();
 
+        Thread.setDefaultUncaughtExceptionHandler((thread, throwable) -> {
+            gameException = throwable; // Store the exception
+            throwable.printStackTrace(); // Log the exception to the console
+        });
+
+        startExceptionRenderer();
+
         offImage = createImage(GameFacts.screenWidth, GameFacts.screenHeight);
         if (offImage != null) {
             sg = offImage.getGraphics();
@@ -2380,6 +2522,11 @@ public class GameSparker extends Applet implements Runnable {
             rd.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
             rd.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         }
+    }
+
+    @Override
+    public void destroy() {
+        stopExceptionRenderer();
     }
 
     private void addFile(File source, File[] files, String path) {

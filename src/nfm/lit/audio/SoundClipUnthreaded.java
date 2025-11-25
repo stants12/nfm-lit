@@ -1,5 +1,6 @@
 package nfm.lit.audio;
 import fallk.logmaster.HLogger;
+import nfm.lit.LoggerWrapper;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -23,7 +24,7 @@ public class SoundClipUnthreaded implements SoundClip {
             clip = (Clip) AudioSystem.getLine(new DataLine.Info(Clip.class, this.sound.getFormat()));
             loaded = true;
         } catch (Exception var4) {
-            HLogger.error("Loading Clip error: " + var4);
+            LoggerWrapper.error("Loading Clip error: " + var4);
             loaded = false;
         }
     }
@@ -36,7 +37,7 @@ public class SoundClipUnthreaded implements SoundClip {
                     try {
                         clip.open(sound);
                     } catch (Exception e) {
-                        HLogger.error(e);
+                        LoggerWrapper.error(e);
                     }
                     clip.loop(0);
                 } else {
@@ -46,7 +47,7 @@ public class SoundClipUnthreaded implements SoundClip {
                 lfrpo = -1;
                 cntcheck = 5;
             } catch (Exception var3) {
-                HLogger.error(var3);
+                LoggerWrapper.error(var3);
             }
         }
     }
@@ -59,7 +60,7 @@ public class SoundClipUnthreaded implements SoundClip {
                     try {
                         clip.open(sound);
                     } catch (Exception e) {
-                        HLogger.error(e);
+                        LoggerWrapper.error(e);
                     }
                 }
 
@@ -67,7 +68,7 @@ public class SoundClipUnthreaded implements SoundClip {
                 lfrpo = -2;
                 cntcheck = 0;
             } catch (Exception var3) {
-                HLogger.error(var3);
+                LoggerWrapper.error(var3);
             }
         }
     }
@@ -79,7 +80,7 @@ public class SoundClipUnthreaded implements SoundClip {
                 clip.stop();
                 lfrpo = -1;
             } catch (Exception e) {
-                HLogger.error(e);
+                LoggerWrapper.error(e);
             }
         }
     }

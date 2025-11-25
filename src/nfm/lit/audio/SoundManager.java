@@ -1,5 +1,6 @@
 package nfm.lit.audio;
 import fallk.logmaster.HLogger;
+import nfm.lit.LoggerWrapper;
 
 import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
@@ -24,7 +25,7 @@ public class SoundManager {
                 soundClip.play();
             }
         } else {
-            HLogger.warn("clip not found: " + name);
+            LoggerWrapper.warn("clip not found: " + name);
         }
 
     }
@@ -35,10 +36,10 @@ public class SoundManager {
             if (soundClip instanceof SoundClipUnthreaded) {
                 soundClip.stop();
             } else {
-                HLogger.warn("threaded clips cannot be stopped! " + name);
+                LoggerWrapper.warn("threaded clips cannot be stopped! " + name);
             }
         } else {
-            HLogger.warn("clip not found: " + name);
+            LoggerWrapper.warn("clip not found: " + name);
         }
     }
 
@@ -48,10 +49,10 @@ public class SoundManager {
             if (soundClip instanceof SoundClipUnthreaded) {
                 soundClip.loop();
             } else {
-                HLogger.warn("threaded clips cannot be looped! " + name);
+                LoggerWrapper.warn("threaded clips cannot be looped! " + name);
             }
         } else {
-            HLogger.warn("clip not found: " + name);
+            LoggerWrapper.warn("clip not found: " + name);
         }
     }
 

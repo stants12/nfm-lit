@@ -2199,10 +2199,10 @@ public class xtGraphics extends Panel implements Runnable {
         if (CheckPoints.customTrack) {
             customMusic = true;
             path = "data/music/custom/" + CheckPoints.trackname + "." + CheckPoints.trackformat;
-            HLogger.info(path);
+            LoggerWrapper.info(path);
             if (customMusic) {
                 File customMFile = new File(path);
-                HLogger.info(fileFormat);
+                LoggerWrapper.info(fileFormat);
                 try {
                     if (customMFile.exists()) {
                         if (CheckPoints.trackformat.equals("zip") || CheckPoints.trackformat.equals("zipo") || CheckPoints.trackformat.equals("radq")) {
@@ -2212,7 +2212,7 @@ public class xtGraphics extends Panel implements Runnable {
                         }
                     }
                 } catch (final IOException ex) {
-                    System.out.println("Error loading custom music file: " + path);
+                    LoggerWrapper.error("Error loading custom music file: " + path);
                     ex.printStackTrace();
                     loadedt = false;
                 }
@@ -2239,7 +2239,7 @@ public class xtGraphics extends Panel implements Runnable {
                 strack = TrackZipLoader.loadMusic(path + ".mid");
             }
         } catch (final IOException ex) {
-            System.out.println("Error loading music file music/stage" + i);
+            LoggerWrapper.error("Error loading music file music/stage" + i);
             ex.printStackTrace();
             loadedt = false;
         }
@@ -2524,9 +2524,9 @@ public class xtGraphics extends Panel implements Runnable {
                 dnload += 3;
             }
             zipinputstream.close();
-            HLogger.info("Images loaded: " + howManyImages);
+            LoggerWrapper.info("Images loaded: " + howManyImages);
         } catch (IOException e) {
-            HLogger.error("Error Reading Images: " + e);
+            LoggerWrapper.error("Error Reading Images: " + e);
             e.printStackTrace();
         }
         System.gc();
@@ -2547,7 +2547,7 @@ public class xtGraphics extends Panel implements Runnable {
             //
             dnload += 3;
         } catch (Exception exception) {
-            HLogger.error("Error Loading Network Images: " + exception);
+            LoggerWrapper.error("Error Loading Network Images: " + exception);
         }
         System.gc();
         Utility.stopTimer();
@@ -3638,7 +3638,6 @@ public class xtGraphics extends Panel implements Runnable {
             if (checkpoints.stage == unlocked && winner && unlocked != GameFacts.numberOfStages) {
                 checkpoints.stage++;
                 unlocked++;
-                HLogger.info(unlocked);
                 if (byte0 != 0) {
                     GameSparker.ownedCarIds.add((int)byte0);
                     try {
@@ -3684,7 +3683,7 @@ public class xtGraphics extends Panel implements Runnable {
             }
 
             // DEBUG: Prints the range of possible cars to the console
-            // HLogger.info("Minimum car: " + cd.names[(i - 1) / 2] + ", maximum car: " +
+            // LoggerWrapper.info("Minimum car: " + cd.names[(i - 1) / 2] + ", maximum car: " +
             // cd.names[nplayers + ((i - 1) / 2)] + ", therefore: " + (((i - 1) / 2) -
             // (nplayers + ((i - 1) / 2))) + " car difference");
 
@@ -3717,10 +3716,10 @@ public class xtGraphics extends Panel implements Runnable {
                 // unfortunately i have no idea how to make this work properly so we'll just
                 // have to ignore the duplicates here
                 while (sc[j] > GameFacts.numberOfCars - 1) {
-                    HLogger.error("Car " + j + " is out of bounds");
+                    LoggerWrapper.error("Car " + j + " is out of bounds");
                     sc[j] -= ThreadLocalRandom.current().nextDouble() * 5F;
                 }
-                // HLogger.info("sc of " + j + " is " + sc[j]);
+                // LoggerWrapper.info("sc of " + j + " is " + sc[j]);
             }
         }
         // this error will never be thrown in a deployment environment
@@ -4342,7 +4341,7 @@ public class xtGraphics extends Panel implements Runnable {
 
     //     if (GameSparker.DEBUG) {
     //         if (!devtriggered) {
-    //             HLogger.info("Developer Console triggered");
+    //             LoggerWrapper.info("Developer Console triggered");
 
     //             DevTool console = new DevTool(checkpoints, madness, conto, conto1, this);
     //             console.showConsole();
@@ -5875,7 +5874,7 @@ public class xtGraphics extends Panel implements Runnable {
 
             soundsInputStream.close();
         } catch (Exception var12) {
-            HLogger.error("Error Loading Sounds: " + var12);
+            LoggerWrapper.error("Error Loading Sounds: " + var12);
 
         }
 

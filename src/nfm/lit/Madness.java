@@ -612,6 +612,11 @@ class Madness {
     }
 
     public void drive(Control control, ContO conto, Trackers trackers, CheckPoints checkpoints) {
+        //drive(control, conto, trackers, checkpoints, 21f / 60f);
+        drive(control, conto, trackers, checkpoints, 1f);
+    }
+
+    public void drive(Control control, ContO conto, Trackers trackers, CheckPoints checkpoints, float m) {
         int i = 1;
         int j = 1;
         boolean flag = false;
@@ -700,11 +705,11 @@ class Madness {
                         ucomp *= stat.airs;
                     }
                     if (ucomp < 20F)
-                        ucomp += 0.5D * stat.airs;
+                        ucomp += 0.5D * stat.airs * m;
                     f = (-stat.airc) * RadicalMath.sin(conto.xz) * j;
                     f1 = stat.airc * RadicalMath.cos(conto.xz) * j;
                 } else if (ucomp != 0.0F && ucomp > -2F)
-                    ucomp -= 0.5D * stat.airs;
+                    ucomp -= 0.5D * stat.airs * m;
                 if (control.down) {
                     if (dcomp == 0.0F) {
                         dcomp = 10F + (scy[0] + 50F) / 20F;
@@ -715,34 +720,34 @@ class Madness {
                         dcomp *= stat.airs;
                     }
                     if (dcomp < 20F)
-                        dcomp += 0.5D * stat.airs;
-                    f2 = -stat.airc;
+                        dcomp += 0.5D * stat.airs * m;
+                    f2 = -stat.airc * m;
                 } else if (dcomp != 0.0F && ucomp > -2F)
-                    dcomp -= 0.5D * stat.airs;
+                    dcomp -= 0.5D * stat.airs * m;
                 if (control.left) {
                     if (lcomp == 0.0F)
                         lcomp = 5F;
                     if (lcomp < 20F)
-                        lcomp += 2.0F * stat.airs;
-                    f = (-stat.airc) * RadicalMath.cos(conto.xz) * i;
-                    f1 = (-stat.airc) * RadicalMath.sin(conto.xz) * i;
+                        lcomp += 2.0F * stat.airs * m;
+                    f = (-stat.airc) * RadicalMath.cos(conto.xz) * i * m;
+                    f1 = (-stat.airc) * RadicalMath.sin(conto.xz) * i * m;
                 } else if (lcomp > 0.0F)
-                    lcomp -= 2.0F * stat.airs;
+                    lcomp -= 2.0F * stat.airs * m;
                 if (control.right) {
                     if (rcomp == 0.0F)
                         rcomp = 5F;
                     if (rcomp < 20F)
-                        rcomp += 2.0F * stat.airs;
-                    f = stat.airc * RadicalMath.cos(conto.xz) * i;
-                    f1 = stat.airc * RadicalMath.sin(conto.xz) * i;
+                        rcomp += 2.0F * stat.airs * m;
+                    f = stat.airc * RadicalMath.cos(conto.xz) * i * m;
+                    f1 = stat.airc * RadicalMath.sin(conto.xz) * i * m;
                 } else if (rcomp > 0.0F)
-                    rcomp -= 2.0F * stat.airs;
+                    rcomp -= 2.0F * stat.airs * m;
                 pzy += (dcomp - ucomp) * RadicalMath.cos(pxy);
                 if (flag)
-                    conto.xz += (dcomp - ucomp) * RadicalMath.sin(pxy);
+                    conto.xz += (dcomp - ucomp) * RadicalMath.sin(pxy) * m;
                 else
-                    conto.xz -= (dcomp - ucomp) * RadicalMath.sin(pxy);
-                pxy += rcomp - lcomp;
+                    conto.xz -= (dcomp - ucomp) * RadicalMath.sin(pxy) * m;
+                pxy += (rcomp - lcomp) * m;
             } else {
                 float f4 = power;
                 if (f4 < 40F)
@@ -754,7 +759,7 @@ class Madness {
                         f4 = (float) (f4 * 0.90000000000000002D);
                 if (control.down)
                     if (speed > 0.0F) {
-                        speed -= stat.handb / 2;
+                        speed -= (stat.handb / 2) * m;
                     } else {
                         int k1 = 0;
                         int j2 = 0;
@@ -763,13 +768,13 @@ class Madness {
                                 k1++;
                         while (++j2 < 2);
                         if (k1 != 2)
-                            speed -= stat.acelf[k1] / 2.0F + f4 * (stat.acelf[k1]) / 196F;
+                            speed -= stat.acelf[k1] / 2.0F + f4 * (stat.acelf[k1]) / 196F * m;
                         else
                             speed = -(stat.swits[1] / 2 + f4 * (stat.swits[1]) / 196F);
                     }
                 if (control.up)
                     if (speed < 0.0F) {
-                        speed += stat.handb;
+                        speed += stat.handb * m;
                     } else {
                         int l1 = 0;
                         int k2 = 0;
@@ -778,87 +783,87 @@ class Madness {
                                 l1++;
                         while (++k2 < 3);
                         if (l1 != 3)
-                            speed += stat.acelf[l1] / 2.0F + (f4 * stat.acelf[l1]) / 196F;
+                            speed += stat.acelf[l1] / 2.0F + (f4 * stat.acelf[l1]) / 196F * m;
                         else
                             speed = stat.swits[2] / 2 + (f4 * stat.swits[2]) / 196F;
                     }
                 if (control.handb && Math.abs(speed) > stat.handb)
                     if (speed < 0.0F)
-                        speed += stat.handb;
+                        speed += stat.handb * m;
                     else
-                        speed -= stat.handb;
+                        speed -= stat.handb * m;
                 if (loop == -1 && conto.y < 100) {
                     if (control.left) {
                         if (!pl) {
                             if (lcomp == 0.0F)
-                                lcomp = 5F * stat.airs;
+                                lcomp = 5F * stat.airs * m;
                             if (lcomp < 20F)
-                                lcomp += 2.0F * stat.airs;
+                                lcomp += 2.0F * stat.airs * m;
                         }
                     } else {
                         if (lcomp > 0.0F)
-                            lcomp -= 2.0F * stat.airs;
+                            lcomp -= 2.0F * stat.airs * m;
                         pl = false;
                     }
                     if (control.right) {
                         if (!pr) {
                             if (rcomp == 0.0F)
-                                rcomp = 5F * stat.airs;
+                                rcomp = 5F * stat.airs * m;
                             if (rcomp < 20F)
-                                rcomp += 2.0F * stat.airs;
+                                rcomp += 2.0F * stat.airs * m;
                         }
                     } else {
                         if (rcomp > 0.0F)
-                            rcomp -= 2.0F * stat.airs;
+                            rcomp -= 2.0F * stat.airs * m;
                         pr = false;
                     }
                     if (control.up) {
                         if (!pu) {
                             if (ucomp == 0.0F)
-                                ucomp = 5F * stat.airs;
+                                ucomp = 5F * stat.airs * m;
                             if (ucomp < 20F)
-                                ucomp += 2.0F * stat.airs;
+                                ucomp += 2.0F * stat.airs * m;
                         }
                     } else {
                         if (ucomp > 0.0F)
-                            ucomp -= 2.0F * stat.airs;
+                            ucomp -= 2.0F * stat.airs * m;
                         pu = false;
                     }
                     if (control.down) {
                         if (!pd) {
                             if (dcomp == 0.0F)
-                                dcomp = 5F * stat.airs;
+                                dcomp = 5F * stat.airs * m;
                             if (dcomp < 20F)
-                                dcomp += 2.0F * stat.airs;
+                                dcomp += 2.0F * stat.airs * m;
                         }
                     } else {
                         if (dcomp > 0.0F)
-                            dcomp -= 2.0F * stat.airs;
+                            dcomp -= 2.0F * stat.airs * m;
                         pd = false;
                     }
                     pzy += (dcomp - ucomp) * RadicalMath.cos(pxy);
                     if (flag)
-                        conto.xz += (dcomp - ucomp) * RadicalMath.sin(pxy);
+                        conto.xz += (dcomp - ucomp) * RadicalMath.sin(pxy) * m;
                     else
-                        conto.xz -= (dcomp - ucomp) * RadicalMath.sin(pxy);
-                    pxy += rcomp - lcomp;
+                        conto.xz -= (dcomp - ucomp) * RadicalMath.sin(pxy) * m;
+                    pxy += (rcomp - lcomp) * m;
                 }
             }
         float f5 = (20F * speed) / (154F * stat.simag);
         if (f5 > 20F)
             f5 = 20F;
-        conto.wzy -= f5;
+        conto.wzy -= f5 * m;
         if (conto.wzy < -45)
             conto.wzy += 45;
         if (conto.wzy > 45)
             conto.wzy -= 45;
         if (control.right) {
-            conto.wxz -= stat.turn;
+            conto.wxz -= stat.turn * m;
             if (conto.wxz < -36)
                 conto.wxz = -36;
         }
         if (control.left) {
-            conto.wxz += stat.turn;
+            conto.wxz += stat.turn * m;
             if (conto.wxz > 36)
                 conto.wxz = 36;
         }
@@ -867,16 +872,16 @@ class Madness {
                 if (Math.abs(conto.wxz) == 1)
                     conto.wxz = 0;
                 if (conto.wxz > 0)
-                    conto.wxz--;
+                    conto.wxz -= 1 * m;
                 if (conto.wxz < 0)
-                    conto.wxz++;
+                    conto.wxz += 1 * m;
             } else {
-                if (Math.abs(conto.wxz) < stat.turn * 2)
+                if (Math.abs(conto.wxz) < stat.turn * 2 * m)
                     conto.wxz = 0;
                 if (conto.wxz > 0)
-                    conto.wxz -= stat.turn * 2;
+                    conto.wxz -= stat.turn * 2 * m;
                 if (conto.wxz < 0)
-                    conto.wxz += stat.turn * 2;
+                    conto.wxz += stat.turn * 2 * m;
             }
         int i2 = (int) (3600F / (speed * speed));
         if (i2 < 5)
@@ -889,12 +894,12 @@ class Madness {
                     fxz = conto.wxz / (i2 * 3);
                 else
                     fxz = conto.wxz / i2;
-                conto.xz += conto.wxz / i2;
+                conto.xz += (conto.wxz / i2) * m;
             }
             wtouch = false;
             gtouch = false;
         } else {
-            conto.xz += fxz;
+            conto.xz += fxz * m;
         }
         if (speed > 30F || speed < -100F) {
             do {
@@ -906,12 +911,12 @@ class Madness {
                     cxz += 360;
             } while (true);
             if (Math.abs(mxz - cxz) < 30) {
-                cxz += (mxz - cxz) / 4F;
+                cxz += ((mxz - cxz) / 4F) * m;
             } else {
                 if (cxz > mxz)
-                    cxz -= 10;
+                    cxz -= 10 * m;
                 if (cxz < mxz)
-                    cxz += 10;
+                    cxz += 10 * m;
             }
         }
         float af[] = new float[4];
@@ -922,7 +927,7 @@ class Madness {
             af[l2] = conto.keyx[l2] + conto.x;
             af2[l2] = i1 + conto.y;
             af1[l2] = conto.z + conto.keyz[l2];
-            scy[l2] += 7F;
+            scy[l2] += 7F * m;
         } while (++l2 < 4);
         Utility.rot(af, af2, conto.x, conto.y, pxy, 4);
         Utility.rot(af2, af1, conto.y, conto.z, pzy, 4);
@@ -962,13 +967,16 @@ class Madness {
             if (f6 < stat.grip) {
                 if (skid != 2)
                     skid = 1;
-                speed -= speed / 100F;
+                speed -= (speed / 100F) * m;
             } else if (skid == 1)
                 skid = 2;
             if (k3 == 1)
                 f6 = (float) (f6 * 0.75D);
             if (k3 == 2)
                 f6 = (float) (f6 * 0.55000000000000004D);
+
+            f6 *= m; // Apply multiplier to grip step
+
             int j4 = -(int) (speed * RadicalMath.sin(conto.xz) * RadicalMath.cos(pzy));
             int k4 = (int) (speed * RadicalMath.cos(conto.xz) * RadicalMath.cos(pzy));
             int i5 = -(int) (speed * RadicalMath.sin(pzy));
@@ -976,10 +984,10 @@ class Madness {
             if (!control.up) {
                 if (speed <= stat.swits[2]) {
                     if (speed > 0.0F)
-                        speed -= 0.5F;
+                        speed -= 0.5F * m;
                 } else {
                     if (speed > 0.0F)
-                        speed -= speeddec;
+                        speed -= speeddec * m;
                 }
             }
 
@@ -987,11 +995,11 @@ class Madness {
                 j4 = 0;
                 k4 = 0;
                 i5 = 0;
-                f6 = stat.grip / 5F;
+                f6 = (stat.grip / 5F) * m;
                 if (speed > 0.0F)
-                    speed -= 2.0F;
+                    speed -= 2.0F * m;
                 else
-                    speed += 2.0F;
+                    speed += 2.0F * m;
             }
             if (f6 < 1.0F)
                 f6 = 1.0F;
@@ -1023,12 +1031,12 @@ class Madness {
                 } else {
                     scy[l6] = i5;
                 }
-                if (f6 < stat.grip) {
+                if (f6 < stat.grip * m) {
                     if (txz != conto.xz)
                         dcnt++;
                     else if (dcnt != 0)
                         dcnt = 0;
-                    if (dcnt > (40F * f6) / stat.grip || capsized) {
+                    if (dcnt > (40F * f6) / (stat.grip * m) || capsized) {
                         float f11 = 1.0F;
                         if (k3 != 0)
                             f11 = 1.2F;
@@ -1119,7 +1127,7 @@ class Madness {
                 f8 += stat.bounce;
                 if (f8 < 1.1000000000000001D)
                     f8 = 1.1F;
-                regy(l4, Math.abs(scy[l4] * f8), conto);
+                regy(l4, Math.abs(scy[l4] * f8) / m, conto);
                 if (scy[l4] > 0.0F)
                     scy[l4] -= Math.abs(scy[l4] * f8);
             }
@@ -1165,7 +1173,7 @@ class Madness {
                         f13 += stat.bounce;
                         if (f13 < 1.1000000000000001D)
                             f13 = 1.1F;
-                        regy(i7, Math.abs(scy[i7] * f13), conto);
+                        regy(i7, Math.abs(scy[i7] * f13) / m, conto);
                         if (scy[i7] > 0.0F)
                             scy[i7] -= Math.abs(scy[i7] * f13);
                         aflag[i7] = true;
@@ -1187,7 +1195,7 @@ class Madness {
                         f14 = (float) (f14 + (stat.bounce - 0.20000000000000001D));
                         if (f14 < 1.1000000000000001D)
                             f14 = 1.1F;
-                        regz(i7, Math.abs(scz[i7] * f14 * trackers.dam[j5]), conto);
+                        regz(i7, Math.abs(scz[i7] * f14 * trackers.dam[j5]) / m, conto);
                         scz[i7] += Math.abs(scz[i7] * f14);
                         skid = 2;
                         flag2 = true;
@@ -1211,7 +1219,7 @@ class Madness {
                         f15 = (float) (f15 + (stat.bounce - 0.20000000000000001D));
                         if (f15 < 1.1000000000000001D)
                             f15 = 1.1F;
-                        regz(i7, -Math.abs(scz[i7] * f15 * trackers.dam[j5]), conto);
+                        regz(i7, -Math.abs(scz[i7] * f15 * trackers.dam[j5]) / m, conto);
                         scz[i7] -= Math.abs(scz[i7] * f15);
                         skid = 2;
                         flag2 = true;
@@ -1235,7 +1243,7 @@ class Madness {
                         f16 = (float) (f16 + (stat.bounce - 0.20000000000000001D));
                         if (f16 < 1.1000000000000001D)
                             f16 = 1.1F;
-                        regx(i7, Math.abs(scx[i7] * f16 * trackers.dam[j5]), conto);
+                        regx(i7, Math.abs(scx[i7] * f16 * trackers.dam[j5]) / m, conto);
                         scx[i7] += Math.abs(scx[i7] * f16);
                         skid = 2;
                         flag2 = true;
@@ -1259,7 +1267,7 @@ class Madness {
                         f17 = (float) (f17 + (stat.bounce - 0.20000000000000001D));
                         if (f17 < 1.1000000000000001D)
                             f17 = 1.1F;
-                        regx(i7, -Math.abs(scx[i7] * f17 * trackers.dam[j5]), conto);
+                        regx(i7, -Math.abs(scx[i7] * f17 * trackers.dam[j5]) / m, conto);
                         scx[i7] -= Math.abs(scx[i7] * f17);
                         skid = 2;
                         flag2 = true;
@@ -1276,7 +1284,7 @@ class Madness {
                         float f23 = trackers.z[j5] + ((af2[i7] - trackers.y[j5]) * RadicalMath.sin(l7)
                                 + (af1[i7] - trackers.z[j5]) * RadicalMath.cos(l7));
                         if (f23 > trackers.z[j5] && f23 < trackers.z[j5] + 200) {
-                            scy[i7] -= (f23 - trackers.z[j5]) / f19;
+                            scy[i7] -= (f23 - trackers.z[j5]) / f19 * m;
                             f23 = trackers.z[j5];
                         }
                         if (f23 > trackers.z[j5] - 30) {
@@ -1307,7 +1315,7 @@ class Madness {
                         float f24 = trackers.x[j5] + ((af2[i7] - trackers.y[j5]) * RadicalMath.sin(i8)
                                 + (af[i7] - trackers.x[j5]) * RadicalMath.cos(i8));
                         if (f24 > trackers.x[j5] && f24 < trackers.x[j5] + 200) {
-                            scy[i7] -= (f24 - trackers.x[j5]) / f20;
+                            scy[i7] -= (f24 - trackers.x[j5]) / f20 * m;
                             f24 = trackers.x[j5];
                         }
                         if (f24 > trackers.x[j5] - 30) {
@@ -1416,19 +1424,19 @@ class Madness {
         conto.xz += forca
                 * (((((scz[0] * nmlt - scz[1] * pmlt) + scz[2] * pmlt) - scz[3] * nmlt)
                 + scx[0] * pmlt + scx[1] * nmlt) - scx[2] * nmlt
-                - scx[3] * pmlt);
+                - scx[3] * pmlt) * m;
         if (Math.abs(i6) > Math.abs(k5))
             k5 = i6;
         if (Math.abs(j7) > Math.abs(k6))
             k6 = j7;
         if (!flag)
-            pzy += k5;
+            pzy += k5 * m;
         else
-            pzy -= k5;
+            pzy -= k5 * m;
         if (!flag3)
-            pxy += k6;
+            pxy += k6 * m;
         else
-            pxy -= k6;
+            pxy -= k6 * m;
         if (i4 == 4) {
             int k8 = 0;
             while (pzy < 360) {
@@ -1498,17 +1506,17 @@ class Madness {
         if (Math.abs(speed) > 10F || !mtouch) {
             if (Math.abs(pxy - conto.xy) >= 4) {
                 if (pxy > conto.xy)
-                    conto.xy += 2 + (pxy - conto.xy) / 2;
+                    conto.xy += (2 + (pxy - conto.xy) / 2) * m;
                 else
-                    conto.xy -= 2 + (conto.xy - pxy) / 2;
+                    conto.xy -= (2 + (conto.xy - pxy) / 2) * m;
             } else {
                 conto.xy = pxy;
             }
             if (Math.abs(pzy - conto.zy) >= 4) {
                 if (pzy > conto.zy)
-                    conto.zy += 2 + (pzy - conto.zy) / 2;
+                    conto.zy += (2 + (pzy - conto.zy) / 2) * m;
                 else
-                    conto.zy -= 2 + (conto.zy - pzy) / 2;
+                    conto.zy -= (2 + (conto.zy - pzy) / 2) * m;
             } else {
                 conto.zy = pzy;
             }
@@ -1517,14 +1525,14 @@ class Madness {
             float f18 = (float) ((speed / stat.swits[2]) * 14F
                     * (stat.bounce - 0.40000000000000002D));
             if (control.left && tilt < f18 && tilt >= 0.0F)
-                tilt += 0.40000000000000002D;
+                tilt += 0.40000000000000002D * m;
             else if (control.right && tilt > -f18 && tilt <= 0.0F)
-                tilt -= 0.40000000000000002D;
+                tilt -= 0.40000000000000002D * m;
             else if (Math.abs(tilt) > 3D * (stat.bounce - 0.40000000000000002D)) {
                 if (tilt > 0.0F)
-                    tilt -= 3D * (stat.bounce - 0.29999999999999999D);
+                    tilt -= 3D * (stat.bounce - 0.29999999999999999D) * m;
                 else
-                    tilt += 3D * (stat.bounce - 0.29999999999999999D);
+                    tilt += 3D * (stat.bounce - 0.29999999999999999D) * m;
             } else {
                 tilt = 0.0F;
             }
@@ -1535,15 +1543,15 @@ class Madness {
             tilt = 0.0F;
         if (wtouch && k3 == 2) {
             conto.zy += (int) (((Medium.random() * 25F * speed) / stat.swits[2]
-                    - (15F * speed) / stat.swits[2]) * (stat.bounce - 0.99999999999999989D));
+                    - (15F * speed) / stat.swits[2]) * (stat.bounce - 0.99999999999999989D) * m);
             conto.xy += (int) (((Medium.random() * 25F * speed) / stat.swits[2]
-                    - (15F * speed) / stat.swits[2]) * (stat.bounce - 0.99999999999999989D));
+                    - (15F * speed) / stat.swits[2]) * (stat.bounce - 0.99999999999999989D) * m);
         }
         if (wtouch && k3 == 1) {
             conto.zy += (int) (((Medium.random() * 20F * speed) / stat.swits[2]
-                    - (10F * speed) / stat.swits[2]) * (stat.bounce - 0.99999999999999989D));
+                    - (10F * speed) / stat.swits[2]) * (stat.bounce - 0.99999999999999989D) * m);
             conto.xy += (int) (((Medium.random() * 20F * speed) / stat.swits[2]
-                    - (10F * speed) / stat.swits[2]) * (stat.bounce - 0.99999999999999989D));
+                    - (10F * speed) / stat.swits[2]) * (stat.bounce - 0.99999999999999989D) * m);
         }
         if (hitmag > stat.maxmag && !dest) {
             distruct(conto);
@@ -1706,10 +1714,10 @@ class Madness {
                 lxz = conto.xz;
             }
             if (loop == 2 || loop == -1) {
-                travxy += rcomp - lcomp;
+                travxy += (rcomp - lcomp) * m;
                 if (Math.abs(travxy) > 135)
                     rtab = true;
-                travzy += ucomp - dcomp;
+                travzy += (ucomp - dcomp) * m;
                 if (travzy > 135)
                     ftab = true;
                 if (travzy < -135)
@@ -1811,7 +1819,7 @@ class Madness {
             if (trcnt == 0 && speed != 0.0F)
                 if (xtpower == 0) {
                     if (power > 0.0F)
-                        power -= (power * power * power) / stat.powerloss;
+                        power -= ((power * power * power) / stat.powerloss) * m;
                     else
                         power = 0.0F;
                 } else {

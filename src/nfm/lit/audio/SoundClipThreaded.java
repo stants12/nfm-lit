@@ -1,5 +1,6 @@
 package nfm.lit.audio;
 import fallk.logmaster.HLogger;
+import nfm.lit.LoggerWrapper;
 
 import javax.sound.sampled.*;
 import java.io.ByteArrayInputStream;
@@ -16,7 +17,7 @@ public class SoundClipThreaded implements Runnable, SoundClip {
             this.clipBytes = byteInput;
             loaded = true;
         } catch (Exception e) {
-            HLogger.error(e);
+            LoggerWrapper.error(e);
             loaded = false;
         }
     }
@@ -57,7 +58,7 @@ public class SoundClipThreaded implements Runnable, SoundClip {
                 audioInputStream.close();
 
             } catch (LineUnavailableException | IOException | UnsupportedAudioFileException e) {
-                HLogger.error(e);
+                LoggerWrapper.error(e);
             }
         }
         isPlaying = false;

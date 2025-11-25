@@ -7,6 +7,7 @@ import jouvieje.bass.structures.HMUSIC;
 import jouvieje.bass.structures.HSTREAM;
 import jouvieje.bass.structures.HSYNC;
 import jouvieje.bass.utils.Pointer;
+import nfm.lit.LoggerWrapper;
 
 import java.io.File;
 
@@ -141,7 +142,7 @@ class RadicalBASS implements RadicalMusic {
             errStr = "BASS_ERROR_UNKNOWN ";
         }
 
-        System.err.println("BASS error: " + text + "\nError code: " + errCode + "\nError data: " + errStr);
+        LoggerWrapper.error("BASS error: " + text + "\nError code: " + errCode + "\nError data: " + errStr);
     }
 
     /**
@@ -181,7 +182,7 @@ class RadicalBASS implements RadicalMusic {
 
         // Initialize BASS
         if (!BASS_Init(forceNoSoundDevice(-1), forceFrequency(44100), 0, null, null)) {
-            System.out.println("Can't initialize device");
+            LoggerWrapper.error("BASS: Can't initialize device");
             error("Can't initialize device");
             end();
         }

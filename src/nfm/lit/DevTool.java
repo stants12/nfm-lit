@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.awt.datatransfer.DataFlavor;
 
 /**
  * Source Engine style Developer console for Need For Madness
@@ -69,13 +70,13 @@ public class DevTool {
         g.drawLine(0, consoleHeight, width, consoleHeight);
 
         // Text setup
-        g.setColor(Color.WHITE);
         g.setFont(new Font("SansSerif", Font.BOLD, 13));
         FontMetrics fm = g.getFontMetrics();
         int lineHeight = fm.getHeight();
         int y = consoleHeight - 10;
 
         // Draw Input Line
+        g.setColor(Color.WHITE); // Red for errors
         String inputStr = "> " + currentInput.toString() + "_";
         g.drawString(inputStr, 10, y);
         y -= lineHeight;
@@ -83,7 +84,22 @@ public class DevTool {
         // Draw Log History
         for (int i = consoleLog.size() - 1; i >= 0; i--) {
             String line = consoleLog.get(i);
+
+            // Set color based on message type
+            if (line.contains("[ERROR]")) {
+                g.setColor(Color.RED); // Red for errors
+            } else if (line.contains("[WARN]")) {
+                g.setColor(Color.YELLOW); // Yellow for warnings
+            } else if (line.contains("[INFO]")) {
+                g.setColor(Color.ORANGE); // Orange for info
+            } else if (line.contains("[DEBUG]")) {
+                g.setColor(Color.BLUE); // Blue for debug
+            } else {
+                g.setColor(Color.WHITE); // Default color for other messages
+            }
+
             g.drawString(line, 10, y);
+
             y -= lineHeight;
             if (y < 0) break;
         }
@@ -124,13 +140,23 @@ public class DevTool {
             }
         } else if (key >= 32 && key <= 126) { // Printable characters
             currentInput.append((char) key);
+        } else if (key == 22) { // ctrl + v
+            try {
+                String clipboardText = Toolkit.getDefaultToolkit()
+                                            .getSystemClipboard()
+                                            .getData(DataFlavor.stringFlavor)
+                                            .toString();
+                currentInput.append(clipboardText);
+            } catch (Exception e) {
+                print("Failed to paste from clipboard: " + e.getMessage());
+            }
         }
     }
 
     public void print(String s) {
         String[] lines = s.split("\n");
         for (String line : lines) {
-            consoleLog.add(line);
+           consoleLog.add(line);
         }
         // Keep log size manageable
         if (consoleLog.size() > 100) {
@@ -152,6 +178,8 @@ public class DevTool {
             case "exit":
                 RunApp.exitSequence();
                 break;
+            case "crash":
+                throw new RuntimeException("Test crash!");
             case "nplayers":
                 if (args.length == 1) {
                     try {

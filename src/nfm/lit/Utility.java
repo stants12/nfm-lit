@@ -177,7 +177,7 @@ public class Utility {
     }
 
     public static BufferedImage webGet(String string) throws IOException {
-        HLogger.info("Loaded " + string);
+        LoggerWrapper.info("Loaded " + string);
         return ImageIO.read(new URL(string));
     }
 
@@ -328,7 +328,7 @@ public class Utility {
     }
 
     public static void startTimer() {
-        HLogger.info("Timer started!");
+        LoggerWrapper.info("Timer started!");
         startTime = System.nanoTime();
     }
 
@@ -337,6 +337,6 @@ public class Utility {
         long finalTime = (endTime - startTime) / 1000000;
         startTime = 0;
 
-        HLogger.info("Timer ended at " + finalTime + " ms");
+        LoggerWrapper.info("Timer ended at " + finalTime + " ms");
     }
 }

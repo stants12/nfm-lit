@@ -41,11 +41,11 @@ class RunApp extends Panel {
 
     public static void main(String[] strings) {
         //System.runFinalizersOnExit(true);
-        HLogger.info("Need For Madness: LIT"); // Change this to the message of your preference
+        LoggerWrapper.info("Need For Madness: LIT"); // Change this to the message of your preference
         try {
             javax.swing.UIManager.setLookAndFeel(javax.swing.UIManager.getSystemLookAndFeelClassName());
         } catch (Exception ex) {
-            HLogger.warn("Could not setup System Look&Feel: " + ex.toString());
+            LoggerWrapper.warn("Could not setup System Look&Feel: " + ex.toString());
         }
         startup();
     }
@@ -106,7 +106,7 @@ class RunApp extends Panel {
             device.setFullScreenWindow(null);
             isFullscreen = false;
             isBorderless = false;
-            System.out.println("Windowed mode.");
+            LoggerWrapper.info("Windowed mode.");
         } else if (isBorderless) {
             frame.dispose();
             frame.setUndecorated(true);
@@ -115,7 +115,7 @@ class RunApp extends Panel {
             device.setFullScreenWindow(frame);
             isFullscreen = true;
             isBorderless = false;
-            System.out.println("Fullscreen mode.");
+            LoggerWrapper.info("Fullscreen mode.");
         } else {
             frame.dispose();
             frame.setUndecorated(true);
@@ -124,7 +124,7 @@ class RunApp extends Panel {
             frame.setVisible(true);
             isBorderless = true;
             isFullscreen = false;
-            System.out.println("Borderless fullscreen mode.");
+            LoggerWrapper.info("Borderless fullscreen mode.");
         }
     }
 
