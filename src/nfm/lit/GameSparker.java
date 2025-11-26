@@ -1,5 +1,4 @@
 package nfm.lit;
-import fallk.logmaster.HLogger;
 import nfm.lit.audio.BASSLoader;
 
 import java.applet.Applet;
@@ -234,7 +233,12 @@ public class GameSparker extends Applet implements Runnable {
     public void stop() {
         if (exwist && gamer != null) {
             System.gc();
-            gamer.stop();
+            running = false;
+            try {
+                gamer.join(100);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
             gamer = null;
         }
         exwist = true;
